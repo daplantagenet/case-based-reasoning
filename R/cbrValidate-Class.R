@@ -1,0 +1,1 @@
+cbrValidate <- R6Class("cbrValidate")
