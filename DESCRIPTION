@@ -3,7 +3,7 @@ Type: Package
 Title: Case Based Reasoning
 Version: 0.1
 Date: 2015-04-29
-Author: Who wrote it
+Author: Dr. Simon Müller <info@muon-stat.com>
 Maintainer: Dr. Simon Müller <info@muon-stat.com>
 Description: Case Based Reasoning for Event Data
 License: AGPL
@@ -14,7 +14,8 @@ Imports:
     Rcpp (>= 0.11.5),
     RcppArmadillo,
     R6 (>= 2.0.1),
-    dplyr (>= 0.4.1)
+    dplyr (>= 0.4.1),
+    ggplot2
 LinkingTo:
     Rcpp,
     RcppArmadillo
