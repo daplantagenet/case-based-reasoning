@@ -1,11 +1,19 @@
 # library(survival)
 # library(cbr)
 #
+#
 # ovarian$tt <- factor(sample(1:3, 26, replace=T))
 # sc <- cbrCoxModel$new(ovarian, endPoint=c("futime", "fustat"))
 # sc$getFullDistanceMatrix(ovarian)
 # sc$distMat
-# sc$getSimilarCases(ovarian, 3)
+# sc$getSimilarCases(ovarian, 1)
+# sc$validate()
+#
+#
+# val <- cbrValidate$new()
+# learnVars <- names(ovarian)
+# learnVars <- learnVars[-c(1, 2)]
+# val$validate(ovarian, scc, learnVars, TRUE)
 #
 # ovarian$tt <- factor(sample(1:3, 26, replace = T))
 # test <- ovarian[rep(1:26, each=1000), ]
@@ -23,3 +31,9 @@
 #
 # nearestElements(a, b, w, 2)
 #
+# test <- function(formula, grouping, data) {
+#   a <- model.frame(formula, data=data)
+#   browser()
+# }
+#
+# test(~tt, grouping="tt", data=ovarian)

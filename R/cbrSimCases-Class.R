@@ -1,60 +1,28 @@
+#' Case Based Reasoning Get Similar Cases
+#'
+#' @docType class
+#' @importFrom R6 R6Class
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+#' @keywords Cox Model
 simCases <- R6Class("simCases",
-                    public=list(# calculate distance matrix for new data
-                      getFullDistanceMatrix = function(newData) {
-                        if (missing(newData)) {
-                          cat("No new data: use reference data for distance calculation!\n")
-                          self$newData <- self$refData
-                        } else {
-                          # validation check new data
-                          self$newData <- private$check_data(newData, isReference=F)
-                        }
-
-                        # learn if weights are empty
-                        if (class(self$Weights) != "list")
-                          self$learn()
-
+                    public=list(
+                      distMat      = NA,
+                      distOrder    = NA,
+                      similarCases = NA,
+                      # calculate distance matrix for new data
+                      getFullDistanceMatrix = function(newData, refData, learnVars, Weights) {
                         # Start calculation
-                        start <- Sys.time()
-                        cat("Start calculating distance matrix...\n")
-                        # subsetting new data
-                        newData <- self$newData[, self$learnVars]
-                        self$distMat <- private$calcDist(newData, self$refData, self$learnVars, self$Weights)
-                        end <- Sys.time()
-                        duration <- round(as.numeric(end - start), 2)
-                        cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
+                        return(private$calcDist(newData, refData, learnVars, Weights))
                       },
                       # get similar cases from reference data
-                      getSimilarCases = function(newData, nCases) {
-                        if (missing(newData))
-                          stop("New data is missing!")
-
-                        # validation check new data
-                        self$newData <- private$check_data(newData, isReference=F)
-
-                        start <- Sys.time()
-                        cat("Start caclulating similar cases...\n")
-                        # learn if weights are empty
-                        if (class(self$Weights) != "list")
-                          self$learn()
-
-                        # check nCases input
-                        if (missing(nCases))
-                          nCases <- 1
-                        if (!is.numeric(nCases))
-                          stop("nCases must be numeric!")
-                        if (nCases <= 0)
-                          stop("nCases must be positive integer value!")
-
-                        # catch floating numbers
-                        nCases <- as.integer(nCases)
-
+                      getSimilarCases = function(newData, refData, learnVars, Weights, nCases) {
                         # calculate distance and order of cases based on distance calculation
-                        ordDist <- private$calcNDist(newData, self$refData, self$learnVars, self$Weights, nCases)
-                        self$distMat <- ordDist$distance
+                        ordDist <- private$calcNDist(newData, refData, learnVars, Weights, nCases)
 
                         # get most similar cases
                         similarCases <- do.call(rbind, apply(ordDist$order, 2,
-                                                             function(x, data=self$refData) {
+                                                             function(x, data=refData) {
                                                                data[x, ]
                                                              }
                         )
@@ -64,10 +32,9 @@ simCases <- R6Class("simCases",
                         # get distances
                         # distList <- apply(ordDist$distance, 2, list)
                         # similarCases$distance <- unlist(lapply(distList, function(x, n=nCases) {or <- order(x[[1]]);x[[1]][or[1:n]]}))
-                        end <- Sys.time()
-                        duration <- round(as.numeric(end - start), 2)
-                        cat(paste0("Similar cases calculation finished in: ", duration, " seconds.\n"))
-                        return(similarCases)
+                        self$distMat <- ordDist$distance
+                        self$distOrder <- ordDist$order
+                        self$similarCases <- similarCases
                       }),
                     private=list(
                       # calculate distance matrix
@@ -79,7 +46,7 @@ simCases <- R6Class("simCases",
                         return(.Call("cbr_get_Distance_Matrix",
                                      trfData$newCases,
                                      trfData$refData,
-                                     trfData$trafoWeights,  PACKAGE = "cbr"))
+                                     trfData$trafoWeights, PACKAGE = "cbr"))
                       },
                       # calculate distance and return n nearest distance and
                       # row id of n nearest cases from reference data
@@ -89,7 +56,7 @@ simCases <- R6Class("simCases",
                                      trfData$newCases,
                                      trfData$refData,
                                      trfData$trafoWeights,
-                                     nCases,  PACKAGE = "cbr"))
+                                     nCases, PACKAGE = "cbr"))
                       },
                       transform_data = function(newCases, refData, learnVars, Weights) {
                         # data preparation:
@@ -108,8 +75,8 @@ simCases <- R6Class("simCases",
                           }
                         }
                         names(trafoWeights) <- NULL
-                        return(list(newCases     = unname(as.matrix(newCases[,learnVars])),
-                                    refData      = unname(as.matrix(refData[,learnVars])),
+                        return(list(newCases     = unname(as.matrix(newCases[, learnVars])),
+                                    refData      = unname(as.matrix(refData[, learnVars])),
                                     trafoWeights = trafoWeights))
                       }
                     ))

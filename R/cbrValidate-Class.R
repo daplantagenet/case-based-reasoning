@@ -1,3 +1,10 @@
+#' R6 Validation Class for case based reasoning
+#'
+#' @docType class
+#' @importFrom R6 R6Class
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+#' @keywords validation
 cbrValidate <- R6Class("cbrValidate",
                        public=list(
                          validate=function(newData, simCases, learnVars, plots=FALSE) {
@@ -37,5 +44,6 @@ cbrValidate <- R6Class("cbrValidate",
                              theme_set(theme_classic())
                              multiplot(plotlist=ggPlot, cols=3)
                            }
+                           return(ggPlot)
                          }
                        ))
