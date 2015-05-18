@@ -11,7 +11,6 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                         Weights    = NA,
                         distMat    = NA,
                         orderMat   = NA,
-                        newData    = NA,
                         simCases   = NA,
                         learn = function() {
                           if (!private$refDataValid)

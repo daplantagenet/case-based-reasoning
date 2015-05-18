@@ -49,7 +49,7 @@ simCases <- R6Class("simCases",
                           self$similarCases <- similarCases
                         } else if (self$method == "rfProxy") {
                           # fast ordering of similar cases
-                          ordDist <- getOrder(nCases)
+                          ordDist <- private$getOrder(nCases)
                           # get most similar cases
                           similarCases <- do.call(rbind, apply(ordDist, 2,
                                                                function(x, data=refData) {
@@ -86,7 +86,7 @@ simCases <- R6Class("simCases",
                                      nCases, PACKAGE = "cbr"))
                       },
                       getOrder = function(nCases) {
-                        return(.Call("fast_Matrix_Order",
+                        return(.Call("cbr_fast_Matrix_Order",
                                      self$distMat,
                                      nCases, PACKAGE = "cbr"))
                       },

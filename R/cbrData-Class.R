@@ -1,6 +1,7 @@
 cbrData <- R6Class("cbrData",
                    public = list(
                      refData   = NA,
+                     newData   = NA,
                      learnVars = NA,
                      endPoint  = NA,
                      refEQNew  = FALSE,
@@ -43,7 +44,7 @@ cbrData <- R6Class("cbrData",
                          self$refEQNew <- TRUE
                        } else {
                          # validation check new data
-                         self$newData <- private$check_data(newData, FALSE, isReference=F)
+                         self$newData <- private$check_data(newData, impute, isReference=F)
                        }
 
                        # impute data; just RF
