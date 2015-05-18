@@ -8,7 +8,10 @@ cbrData <- R6Class("cbrData",
                      # initialize class
                      initialize = function(refData, newData, learnVars, endPoint, impute=FALSE) {
                        # check for missing input
-                       if (missing(refData)) stop("Please add reference data!")
+                       if (missing(refData)) {
+                         stop("Please add reference data!")
+                       }
+
                        # check endpoint
                        if (missing(endPoint)) {
                          self$endPoint <- c("Time2Event", "Event")
@@ -20,6 +23,18 @@ cbrData <- R6Class("cbrData",
                        chkEP <- self$endPoint %in% names(refData)
                        if (sum(chkEP) != 2)
                          stop("End point is not in reference data!")
+
+                       # are there variables for learning
+                       if (missing(learnVars)) {
+                         cat("All variables of the reference data will be used for learning!\n")
+                         idEP <- which(names(refData) %in% self$endPoint)
+                         self$learnVars <- names(refData)[-idEP]
+                       } else {
+                         self$learnVars <- learnVars
+                       }
+
+                       # check data & add data to internal frame
+                       self$refData <- private$check_data(refData, impute)
 
                        # validation check new data
                        if (missing(newData)) {
@@ -34,17 +49,6 @@ cbrData <- R6Class("cbrData",
                        # impute data; just RF
                        self$impute <- impute
 
-                       # are there variables for learning
-                       if (missing(learnVars)) {
-                         cat("All variables of the reference data will be used for learning!\n")
-                         idEP <- which(names(refData) %in% self$endPoint)
-                         self$learnVars <- names(refData)[-idEP]
-                       } else {
-                         self$learnVars <- learnVars
-                       }
-
-                       # check data & add data to internal frame
-                       self$refData <- private$check_data(refData, impute)
                      }
                    ),
                    private = list(

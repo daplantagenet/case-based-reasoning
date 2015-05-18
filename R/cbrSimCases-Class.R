@@ -29,7 +29,7 @@ simCases <- R6Class("simCases",
                       },
                       # get similar cases from reference data
                       getSimilarCases = function(newData, refData, learnVars, Weights, nCases) {
-                        if (method == "cox") {
+                        if (self$method == "cox") {
                           # calculate distance and order of cases based on distance calculation
                           ordDist <- private$calcNDist(newData, refData, learnVars, Weights, nCases)
                           # get most similar cases
@@ -47,7 +47,7 @@ simCases <- R6Class("simCases",
                           self$distMat <- ordDist$distance
                           self$distOrder <- ordDist$order
                           self$similarCases <- similarCases
-                        } else if (method == "rfProxy") {
+                        } else if (self$method == "rfProxy") {
                           # fast ordering of similar cases
                           ordDist <- getOrder(nCases)
                           # get most similar cases

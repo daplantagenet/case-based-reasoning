@@ -64,7 +64,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           start <- Sys.time()
                           cat("Start calculating distance matrix...\n")
                           # get distance matrix
-                          sc <- simCases$new()
+                          sc <- simCases$new(method="cox")
                           self$distMat <- sc$getFullDistanceMatrix(self$newData, self$refData, self$learnVars, self$Weights)
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)

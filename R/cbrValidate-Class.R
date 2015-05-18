@@ -25,6 +25,7 @@ cbrValidate <- R6Class("cbrValidate",
                              if (is.numeric(simCases[, var])) {
                                w <- wilcox.test(formel, data=sc, exact = F)
                                tit <- paste0(var, " (p = ", round(w$p.value, 3), ")")
+                               cat(paste0("Two-sample Wilcoxon test for variable: ", var, "; p = ", round(w$p.value, 3), "\n"))
                                if (plots)
                                  ggPlot <-  c(ggPlot, list(ggplot(sc) +
                                                              geom_boxplot(aes_string(x="simCases", y=var), alpha=0) +
@@ -32,6 +33,7 @@ cbrValidate <- R6Class("cbrValidate",
                              } else if (is.factor(simCases[, var])) {
                                w <- chisq.test(sc$simCases, sc[, var])
                                tit <- paste0(var, " (p = ", round(w$p.value, 3), ")")
+                               cat(paste0("Chi-Square test for variable: ", var, "; p = ", round(w$p.value, 3), "\n"))
                                df <- data.frame(prop.table(table(sc$simCases, sc[, var]), 1))
                                if (plots)
                                  ggPlot <-  c(ggPlot, list(ggplot(df) +
