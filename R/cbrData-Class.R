@@ -1,10 +1,12 @@
 cbrData <- R6Class("cbrData",
                    public = list(
-                     refData = NA,
+                     refData   = NA,
                      learnVars = NA,
-                     endPoint = NA,
+                     endPoint  = NA,
+                     refEQNew  = FALSE,
+                     impute    = FALSE,
                      # initialize class
-                     initialize = function(refData, learnVars, endPoint) {
+                     initialize = function(refData, newData, learnVars, endPoint, impute=FALSE) {
                        # check for missing input
                        if (missing(refData)) stop("Please add reference data!")
                        # check endpoint
@@ -19,6 +21,19 @@ cbrData <- R6Class("cbrData",
                        if (sum(chkEP) != 2)
                          stop("End point is not in reference data!")
 
+                       # validation check new data
+                       if (missing(newData)) {
+                         cat("No new data: use reference data for distance calculation!\n")
+                         self$newData <- self$refData
+                         self$refEQNew <- TRUE
+                       } else {
+                         # validation check new data
+                         self$newData <- private$check_data(newData, FALSE, isReference=F)
+                       }
+
+                       # impute data; just RF
+                       self$impute <- impute
+
                        # are there variables for learning
                        if (missing(learnVars)) {
                          cat("All variables of the reference data will be used for learning!\n")
@@ -29,14 +44,14 @@ cbrData <- R6Class("cbrData",
                        }
 
                        # check data & add data to internal frame
-                       self$refData <- private$check_data(refData)
+                       self$refData <- private$check_data(refData, impute)
                      }
                    ),
                    private = list(
                      refDataValid = FALSE,
                      newDataValid = FALSE,
                      # check data sets
-                     check_data = function(x, isReference=T) {
+                     check_data = function(x, impute=F, isReference=T) {
                        # check variable names new data are in data
                        inData <- !(self$learnVars %in% names(x))
                        if (any(inData)) {
@@ -65,12 +80,14 @@ cbrData <- R6Class("cbrData",
                        }
 
                        # drop cases with missing values in the relevant variables
-                       x <- private$drop_missing(x)
-                       if (nrow(x) == 0) {
-                         if (isReference) {
-                           stop("Reference data is empty after NA elimination")
-                         } else {
-                           stop("Data is empty after NA elimination")
+                       if (!impute) {
+                         x <- private$drop_missing(x)
+                         if (nrow(x) == 0) {
+                           if (isReference) {
+                             stop("Reference data is empty after NA elimination")
+                           } else {
+                             stop("Data is empty after NA elimination")
+                           }
                          }
                        }
 

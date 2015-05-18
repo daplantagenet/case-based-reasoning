@@ -12,7 +12,8 @@ Depends:
     R6,
     Rtsne,
     ggplot2,
-    dplyr
+    dplyr,
+    randomForestSRC
 Imports:
     Rcpp (>= 0.11.5),
     RcppArmadillo,

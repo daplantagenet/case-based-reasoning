@@ -10,6 +10,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                       public=list(
                         Weights    = NA,
                         distMat    = NA,
+                        orderMat   = NA,
                         newData    = NA,
                         simCases   = NA,
                         learn = function() {
@@ -46,41 +47,34 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                             }
                           }
                           self$Weights <- Weights
+
+                          # end timing
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Learning finished in: ", duration, " seconds.\n"))
                         },
                         # calculate distance matrix for new data
-                        getFullDistanceMatrix = function(newData) {
-                          if (missing(newData)) {
-                            cat("No new data: use reference data for distance calculation!\n")
-                            self$newData <- self$refData
-                          } else {
-                            # validation check new data
-                            self$newData <- private$check_data(newData, isReference=F)
-                          }
-
+                        getFullDistanceMatrix = function() {
                           # learn if weights are empty
-                          if (class(self$Weights) != "list")
+                          if (class(self$Weights) != "list") {
                             self$learn()
+                          }
 
                           # Start calculation
                           start <- Sys.time()
                           cat("Start calculating distance matrix...\n")
                           # get distance matrix
                           sc <- simCases$new()
-                          self$distMat <- sc$getFullDistanceMatrix(newData, self$refData, self$learnVars, self$Weights)
+                          self$distMat <- sc$getFullDistanceMatrix(self$newData, self$refData, self$learnVars, self$Weights)
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
                         },
                         # get similar cases from reference data
-                        getSimilarCases = function(newData, nCases) {
-                          if (missing(newData))
-                            stop("New data is missing!")
-
-                          # validation check new data
-                          self$newData <- private$check_data(newData, isReference=F)
+                        getSimilarCases = function(nCases) {
+                          if (self$refEQNew) {
+                            stop("no new data!")
+                          }
 
                           start <- Sys.time()
                           cat("Start caclulating similar cases...\n")
@@ -101,9 +95,9 @@ cbrCoxModel <- R6Class("cbrCoxModel",
 
                           # calculate distance and order of cases based on distance calculation
                           sc <- simCases$new()
-                          sc$getSimilarCases(newData, self$refData, self$learnVars, self$Weights, nCases)
+                          sc$getSimilarCases(self$newData, self$refData, self$learnVars, self$Weights, nCases)
                           self$distMat <- sc$distMat
-                          self$distMat <- sc$order
+                          self$orderMat <- sc$order
                           self$simCases <- sc$similarCases
 
                           end <- Sys.time()

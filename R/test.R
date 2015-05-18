@@ -3,9 +3,11 @@
 #
 #
 # ovarian$tt <- factor(sample(1:3, 26, replace=T))
+# ovarian$tt <- NULL
 # sc <- cbrCoxModel$new(ovarian, endPoint=c("futime", "fustat"))
 # sc$getFullDistanceMatrix(ovarian)
-# sc$distMat
+# res <- Rtsne(X = sc$distMat, dims=2, perplexity = 5)
+# plot(res$Y, col=as.factor(ovarian$ecog.ps))
 # sc$getSimilarCases(ovarian, 1)
 # sc$validate()
 #

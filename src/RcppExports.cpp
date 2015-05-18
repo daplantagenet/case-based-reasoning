@@ -6,6 +6,18 @@
 
 using namespace Rcpp;
 
+// fast_Matrix_Order
+Rcpp::NumericMatrix fast_Matrix_Order(arma::mat mDist, int nCases);
+RcppExport SEXP cbr_fast_Matrix_Order(SEXP mDistSEXP, SEXP nCasesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat >::type mDist(mDistSEXP);
+    Rcpp::traits::input_parameter< int >::type nCases(nCasesSEXP);
+    __result = Rcpp::wrap(fast_Matrix_Order(mDist, nCases));
+    return __result;
+END_RCPP
+}
 // fast_Vector_Order
 RcppExport SEXP fast_Vector_Order(SEXP x, SEXP n);
 RcppExport SEXP cbr_fast_Vector_Order(SEXP xSEXP, SEXP nSEXP) {
