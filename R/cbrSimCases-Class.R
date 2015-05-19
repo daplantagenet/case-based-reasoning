@@ -51,7 +51,7 @@ simCases <- R6Class("simCases",
                           # fast ordering of similar cases
                           ordDist <- private$getOrder(nCases)
                           # get most similar cases
-                          similarCases <- do.call(rbind, apply(ordDist, 2,
+                          similarCases <- do.call(rbind, apply(ordDist, 1,
                                                                function(x, data=refData) {
                                                                  data[x, ]
                                                                }

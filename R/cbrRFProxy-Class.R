@@ -82,7 +82,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                             self$distMat <- rsf$proximity
                           } else {
                             nRef <- nrow(self$refData)
-                            self$distMat <- rsf$proximity # [1:nRef, (nRef + 1):ncol(rsf$proximity)]
+                            self$distMat <- rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)]
                           }
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
@@ -121,5 +121,11 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Similar cases calculation finished in: ", duration, " seconds.\n"))
+                        },
+                        validate = function(plot=T) {
+                          if (is.null(nrow(self$simCases)))
+                            stop("no similar cases")
+                          valSC <- cbrValidate$new()
+                          return(valSC$validate(self$newData, self$simCases, self$learnVars, plot))
                         }
                       ))
