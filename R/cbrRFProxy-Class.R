@@ -49,10 +49,11 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           cat("Start learning...\n")
 
                           # new data available?
+                          variables <- c(self$endPoint, self$learnVars)
                           if (self$refEQNew) {
-                            learnData <- self$refData
+                            learnData <- self$refData[, variables]
                           } else {
-                            learnData <- rbind(self$refData, self$newData)
+                            learnData <- rbind(self$refData[, variables], self$newData[, variables])
                           }
 
                           # impute
