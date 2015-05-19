@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 
+//' @export
 // [[Rcpp::export]]
 RcppExport SEXP get_Distance_Matrix(SEXP newData, SEXP refData, SEXP weights) {
   Rcpp::NumericVector vWeights(weights);

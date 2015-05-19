@@ -86,7 +86,7 @@ simCases <- R6Class("simCases",
                                      nCases, PACKAGE = "cbr"))
                       },
                       getOrder = function(nCases) {
-                        return(.Call("cbr_fast_Matrix_Order",
+                        return(.Call("fast_Matrix_Order",
                                      self$distMat,
                                      nCases, PACKAGE = "cbr"))
                       },

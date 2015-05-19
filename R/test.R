@@ -1,21 +1,34 @@
 # library(survival)
 # library(cbr)
 #
-#
+# # Cox model
 # ovarian$tt <- factor(sample(1:3, 26, replace=T))
+# sc <- cbrCoxModel$new(refData=ovarian, ovarian, endPoint=c("futime", "fustat"))
+# sc$learn()
+# sc$getFullDistanceMatrix()
+# sc$getSimilarCases(1)
+# pp <- sc$validate()
+#
+#
+# # RF model
 # ovarian$tt <- NULL
-# sc <- cbrCoxModel$new(ovarian, endPoint=c("futime", "fustat"))
-# sc$getFullDistanceMatrix(ovarian)
+# sc <- cbrRFProxy$new(refData=ovarian, newData=ovarian, endPoint=c("futime", "fustat"), impute=TRUE)
+# sc$learn()
+# sc$getSimilarCases(nCases=1)
+# pp <- sc$validate()
+#
+#
+#
 # res <- Rtsne(X = sc$distMat, dims=2, perplexity = 5)
 # plot(res$Y, col=as.factor(ovarian$ecog.ps))
-# sc$getSimilarCases(ovarian, 1)
-# sc$validate()
+#
 #
 #
 # val <- cbrValidate$new()
 # learnVars <- names(ovarian)
 # learnVars <- learnVars[-c(1, 2)]
 # val$validate(ovarian, scc, learnVars, TRUE)
+#
 #
 # ovarian$tt <- factor(sample(1:3, 26, replace = T))
 # test <- ovarian[rep(1:26, each=1000), ]

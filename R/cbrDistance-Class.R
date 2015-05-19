@@ -46,7 +46,7 @@ cbrDistance <- R6Class("cbrDistance",
                          # row id of n nearest cases from reference data
                          calcNDist = function(newCases, refData, learnVars, Weights, nCases) {
                            trfData <- private$transform_data(newCases, refData, learnVars, Weights)
-                           return(.Call("cbr_get_nearest_Elements",
+                           return(.Call("get_nearest_Elements",
                                         trfData$newCases,
                                         trfData$refData,
                                         trfData$trafoWeights,

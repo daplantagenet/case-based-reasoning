@@ -1,6 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
+//' @export
 // [[Rcpp::export]]
 Rcpp::List get_nearest_Elements(arma::mat mNew,
                                 arma::mat mRef,

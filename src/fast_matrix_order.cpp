@@ -1,6 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
+//' @export
 // [[Rcpp::export]]
 Rcpp::NumericMatrix fast_Matrix_Order(arma::mat mDist, int nCases) {
   try{

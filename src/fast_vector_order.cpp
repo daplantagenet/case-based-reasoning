@@ -1,6 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
+//' @export
 // [[Rcpp::export]]
 RcppExport SEXP fast_Vector_Order(SEXP x, SEXP n) {
   arma::vec vX = Rcpp::as<arma::vec>(x);
