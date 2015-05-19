@@ -3,8 +3,8 @@ Type: Package
 Title: Case Based Reasoning
 Version: 0.1
 Date: 2015-04-29
-Author: Dr. Simon Müller <info@muon-stat.com>
-Maintainer: Dr. Simon Müller <info@muon-stat.com>
+Author: Dr. Simon Mueller <info@muon-stat.com>
+Maintainer: Dr. Simon Mueller <info@muon-stat.com>
 Description: Case Based Reasoning for Event Data
 License: AGPL
 LazyData: TRUE
