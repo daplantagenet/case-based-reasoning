@@ -1,8 +1,7 @@
-#' Case Based Reasoning Get Similar Cases
+#' R6 reference class for getting the similar cases
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @keywords Cox Model
 simCases <- R6Class("simCases",

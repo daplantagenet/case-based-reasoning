@@ -19,14 +19,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // fast_Vector_Order
-RcppExport SEXP fast_Vector_Order(SEXP x, SEXP n);
-RcppExport SEXP cbr_fast_Vector_Order(SEXP xSEXP, SEXP nSEXP) {
+Rcpp::NumericVector fast_Vector_Order(arma::vec vX, int n);
+RcppExport SEXP cbr_fast_Vector_Order(SEXP vXSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type n(nSEXP);
-    __result = Rcpp::wrap(fast_Vector_Order(x, n));
+    Rcpp::traits::input_parameter< arma::vec >::type vX(vXSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    __result = Rcpp::wrap(fast_Vector_Order(vX, n));
     return __result;
 END_RCPP
 }

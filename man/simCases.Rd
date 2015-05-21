@@ -3,13 +3,13 @@
 \docType{class}
 \name{simCases}
 \alias{simCases}
-\title{Case Based Reasoning Get Similar Cases}
+\title{R6 reference class for getting the similar cases}
 \format{An \code{\link{R6Class}} generator object}
 \usage{
 simCases
 }
 \description{
-Case Based Reasoning Get Similar Cases
+R6 reference class for getting the similar cases
 }
 \keyword{Cox}
 \keyword{Model}

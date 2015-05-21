@@ -1,7 +1,11 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
-//' @export
+//' Order distance matrix
+//'
+//' @param mDist distance matrix
+//' @param nCases number of cases
+//' @return matrix with nearest cases
 // [[Rcpp::export]]
 Rcpp::NumericMatrix fast_Matrix_Order(arma::mat mDist, int nCases) {
   try{

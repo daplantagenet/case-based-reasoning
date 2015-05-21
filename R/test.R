@@ -3,12 +3,16 @@
 #
 # # Cox model
 # ovarian$tt <- factor(sample(1:3, 26, replace=T))
-# sc <- cbrCoxModel$new(refData=ovarian, ovarian, endPoint=c("futime", "fustat"))
+# sc <- cbrCoxModel$new(refData=ovarian, endPoint=c("futime", "fustat"))
 # sc$learn()
 # sc$getFullDistanceMatrix()
 # sc$getSimilarCases(1)
 # pp <- sc$validate()
 #
+# p <- cmdscale(sc$distMat, k = 2)
+# plot(p, col=as.factor(ovarian$rx))
+# p <- prcomp(sc$distMat)
+# plot(p, col=as.factor(ovarian$rx))
 #
 # # RF model
 # ovarian$tt <- NULL

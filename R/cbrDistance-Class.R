@@ -1,8 +1,7 @@
-#' Case Based Reasoning distance calculation
+#' R6 reference class
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @keywords Cox Model
 cbrDistance <- R6Class("cbrDistance",
@@ -37,7 +36,7 @@ cbrDistance <- R6Class("cbrDistance",
                            # drop endpoints from reference
                            # now all columns of refData and newData are numeric,
                            # s.t. we can now apply our rcpp function
-                           return(.Call("cbr_get_Distance_Matrix",
+                           return(.Call("get_Distance_Matrix",
                                         trfData$newCases,
                                         trfData$refData,
                                         trfData$trafoWeights,  PACKAGE = "cbr"))

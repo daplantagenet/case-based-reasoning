@@ -1,7 +1,11 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
-//' @export
+//' calculate weighted distance matrix and get nearest elements
+//'
+//' @param newData new data
+//' @param refData reference data
+//' @return weights weights
 // [[Rcpp::export]]
 Rcpp::List get_nearest_Elements(arma::mat mNew,
                                 arma::mat mRef,

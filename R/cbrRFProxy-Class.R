@@ -1,3 +1,10 @@
+#' R6 class
+#'
+#' @docType class
+#' @importFrom R6 R6Class
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+#' @keywords Cox Model
 cbrRFProxy <- R6Class("cbrRFProxy",
                       inherit = cbrData,
                       public=list(
@@ -90,6 +97,9 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           cat(paste0("Random Forest for Survival calculation finished in: ", duration, " seconds.\n"))
                         },
                         getFullDistanceMatrix = function() {
+                          if (class(self$distMat) != "matrix") {
+                            self$learn()
+                          }
 
                         },
                         getSimilarCases = function(nCases) {

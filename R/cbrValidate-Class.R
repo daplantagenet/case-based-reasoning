@@ -2,7 +2,6 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @keywords validation
 cbrValidate <- R6Class("cbrValidate",

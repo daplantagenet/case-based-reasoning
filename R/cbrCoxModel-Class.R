@@ -1,5 +1,6 @@
 #' Case Based Reasoning with Cox Model for distance calculation
 #'
+#' @useDynLib cbr
 #' @docType class
 #' @importFrom R6 R6Class
 #' @export
