@@ -14,7 +14,8 @@ Depends:
     ggplot2,
     dplyr,
     randomForestSRC,
-    survival
+    survival,
+    Rtsne
 Imports:
     Rcpp (>= 0.11.5),
     RcppArmadillo,

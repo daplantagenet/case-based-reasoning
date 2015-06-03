@@ -24,8 +24,9 @@ heatmap(cbr.cox$distMat)
 
 #### Get distance matrix 
 ```{r}
-cbr.RF <- cbrRFProxy$new(refData=ovarian, newData=ovarian, endPoint=c("futime", "fustat"))
+cbr.RF <- cbrRFProxy$new(refData=ovarian, newData=ovarian, endPoint=c("futime", "fustat"), impute =TRUE)
 cbr.RF$getFullDistanceMatrix()
+cbr.RF$
 heatmap(cbr.RF$distMat)
 ```
 

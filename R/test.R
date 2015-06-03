@@ -16,14 +16,13 @@
 #
 # # RF model
 # ovarian$tt <- NULL
+# ovarian$rx <- factor(ovarian$rx)
 # sc <- cbrRFProxy$new(refData=ovarian, newData=ovarian, endPoint=c("futime", "fustat"), impute=TRUE)
 # sc$learn()
 # sc$getSimilarCases(nCases=1)
 # pp <- sc$validate()
 #
-#
-#
-# res <- Rtsne(X = sc$distMat, dims=2, perplexity = 5)
+# res <- Rtsne(X = sc$distMat, dims=2, perplexity = 5, is_distance = T)
 # plot(res$Y, col=as.factor(ovarian$ecog.ps))
 #
 #

@@ -34,6 +34,9 @@ cbrData <- R6Class("cbrData",
                          self$learnVars <- learnVars
                        }
 
+                       if (missing(impute))
+                         impute <- FALSE
+
                        # check data & add data to internal frame
                        self$refData <- private$check_data(refData, impute)
 

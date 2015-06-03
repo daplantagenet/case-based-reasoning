@@ -11,7 +11,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                         distMat    = NA,
                         orderMat   = NA,
                         simCases   = NA,
-                        learn=function(nCores, ntree, mtry, splitrule, ntime, nsplit) {
+                        learn=function(nCores, ntree, mtry, splitrule, ntime, nsplit, verbose) {
 
                           # split rule
                           if (missing(splitrule)) {
@@ -19,6 +19,11 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           }
                           if (!splitrule %in% c("logrank", "logrankscore"))
                             stop("splitrule should be: logrank or logrankscore")
+
+                          # verbose
+                          if (missing(verbose)) {
+                            verbose <- FALSE
+                          }
 
                           # tree
                           if (missing(ntree)) {
@@ -79,7 +84,8 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                                        splitrule  = splitrule,
                                        proximity  = "all",
                                        na.action  = impute,
-                                       importance = "none")
+                                       importance = "none",
+                                       do.trace   = verbose)
                           plot(rsf)
                           # get distance matrix: rsf$proximity has dimension n x n.
                           # n = nRef + nNew
