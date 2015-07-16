@@ -14,7 +14,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                         orderMat   = NA,
                         simCases   = NA,
                         learn = function() {
-                          if (!private$refDataValid)
+                          if (!private$learningValid)
                             stop("Reference data is not valid!")
 
                           # Timing
@@ -22,18 +22,18 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           cat("Start learning...\n")
                           # formula and Cox-Model
                           formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
-                          coxFit <- coxph(formel, data=self$refData)
+                          coxFit <- coxph(formel, data=self$learning)
                           nVars <- length(self$learnVars)
                           Weights <- vector("list", nVars)
                           names(Weights) <- self$learnVars
                           # get weights
                           for (i in 1:nVars) {
-                            if (is.factor(self$refData[, self$learnVars[i]])) {
-                              nLev <- nlevels(self$refData[, self$learnVars[i]])
+                            if (is.factor(self$learning[, self$learnVars[i]])) {
+                              nLev <- nlevels(self$learning[, self$learnVars[i]])
                               weights <- rep(NA, times = nLev)
-                              names(weights) <- levels(self$refData[, self$learnVars[i]])
+                              names(weights) <- levels(self$learning[, self$learnVars[i]])
                               for (j in 1:nLev) {
-                                myLevel <- paste(self$learnVars[i], levels(self$refData[, self$learnVars[i]])[j], sep="")
+                                myLevel <- paste(self$learnVars[i], levels(self$learning[, self$learnVars[i]])[j], sep="")
                                 if (j==1) {
                                   weights[j] <- 0
                                 } else {
@@ -53,6 +53,41 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Learning finished in: ", duration, " seconds.\n"))
                         },
+                        # checking linearity of numeric variables
+                        check_linearity = function() {
+                          # which variables are numeric
+                          varClass <- unlist(lapply(self$learning[self$learnVars], class))
+                          idNum <- which(varClass %in% "numeric")
+                          if (length(idNum) == 0) {
+                            return()
+                          }
+                          
+                          #  datadist scoping
+                          on.exit(detach("design.options"))
+                          attach(list(), name="design.options")
+                          assign('dd', datadist(self$learning), pos='design.options')
+                          options(datadist="dd")
+                          
+                          # residual plots
+                          ggPlot <- list()
+                          for (i in idNum) {
+                            formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", self$learnVars[i]))
+                            fit <- cph(formel, data=self$learning, x=T, y=T)
+                            self$learning$res <- residuals(fit, "martingale")
+                            var <- names(self$learning)[i]
+                            g <- ggplot(self$learning, aes_string(x=var, y="res")) +
+                              geom_hline(yintercept=0, colour="grey") +
+                              geom_point() +
+                              geom_smooth(color="steelblue", fill="steelblue") +
+                              ylab("Martingal Residuen") + xlab(var)
+                            ggPlot <- c(ggPlot, list(g))
+                          }
+                          self$learning$res <- NULL
+                          options(datadist=NULL)
+                          return(plot_grid(plotlist = ggPlot, 
+                                           labels   = names(self$learning)[idNum], 
+                                           ncol     = 2))
+                        },
                         # calculate distance matrix for new data
                         getFullDistanceMatrix = function() {
                           # learn if weights are empty
@@ -65,7 +100,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           cat("Start calculating distance matrix...\n")
                           # get distance matrix
                           sc <- simCases$new(method="cox")
-                          self$distMat <- sc$getFullDistanceMatrix(self$newData, self$refData, self$learnVars, self$Weights)
+                          self$distMat <- sc$getFullDistanceMatrix(self$newData, self$learning, self$learnVars, self$Weights)
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
@@ -95,7 +130,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
 
                           # calculate distance and order of cases based on distance calculation
                           sc <- simCases$new()
-                          sc$getSimilarCases(self$newData, self$refData, self$learnVars, self$Weights, nCases)
+                          sc$getSimilarCases(self$newData, self$learning, self$learnVars, self$Weights, nCases)
                           self$distMat <- sc$distMat
                           self$orderMat <- sc$order
                           self$simCases <- sc$similarCases

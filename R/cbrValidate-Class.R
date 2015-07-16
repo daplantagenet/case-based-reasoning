@@ -35,16 +35,16 @@ cbrValidate <- R6Class("cbrValidate",
                                cat(paste0("Chi-Square test for variable: ", var, "; p = ", round(w$p.value, 3), "\n"))
                                df <- data.frame(prop.table(table(sc$simCases, sc[, var]), 1))
                                if (plots)
-                                 ggPlot <-  c(ggPlot, list(ggplot(df) +
-                                                             geom_bar(aes_string(x="Var1", y="Freq", fill="Var2"), stat = "identity", position="dodge", alpha=.7) +
-                                                             scale_fill_manual(name="", values = stat.color <- c("#0A71B4", "#61636B", "#13235B", "#E36929", "#C9D30F", "66B8DC")) +
-                                                             ggtitle(tit) + xlab("") + ylab("")))
+                                 ggPlot <- c(ggPlot, list(ggplot(df) +
+                                                            geom_bar(aes_string(x="Var1", y="Freq", fill="Var2"), stat = "identity", position="dodge", alpha=.7) +
+                                                            scale_fill_manual(name="", values = stat.color <- c("#0A71B4", "#61636B", "#13235B", "#E36929", "#C9D30F", "66B8DC")) +
+                                                            ggtitle(tit) + xlab("") + ylab("")))
                              }
                            }
                            if (plots) {
-                             theme_set(theme_classic())
-                             multiplot(plotlist=ggPlot, cols=3)
+                             theme_set(theme_cowplot())
+                             return(plot_grid(plotlist = ggPlot, labels=learnVars, ncol=2))
                            }
-                           return(ggPlot)
+                           return(NULL)
                          }
                        ))

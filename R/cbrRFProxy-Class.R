@@ -63,9 +63,9 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           # new data available?
                           variables <- c(self$endPoint, self$learnVars)
                           if (self$refEQNew) {
-                            learnData <- self$refData[, variables]
+                            learnData <- self$learning[, variables]
                           } else {
-                            learnData <- rbind(self$refData[, variables], self$newData[, variables])
+                            learnData <- rbind(self$learning[, variables], self$newData[, variables])
                           }
 
                           # impute
@@ -95,7 +95,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           if (self$refEQNew) {
                             self$distMat <- rsf$proximity
                           } else {
-                            nRef <- nrow(self$refData)
+                            nRef <- nrow(self$learning)
                             self$distMat <- rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)]
                           }
                           end <- Sys.time()
@@ -131,7 +131,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           # catch floating numbers
                           nCases <- as.integer(nCases)
                           sc <- simCases$new(distMat=self$distMat, method="rfProxy")
-                          sc$getSimilarCases(self$newData, self$refData, self$learnVars, nCases=nCases)
+                          sc$getSimilarCases(self$newData, self$learning, self$learnVars, nCases=nCases)
                           self$orderMat <- sc$order
                           self$simCases <- sc$similarCases
 
