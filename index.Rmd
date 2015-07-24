@@ -1,0 +1,21 @@
+---
+  title: 'CBR: Case-Based-Reasoning for Survival Data'
+---
+  
+  ---
+  
+  The R package **case-based-reasoning** provides an R interface case based reasoning on survival data.
+
+You may install the development version using 
+```{r, eval=FALSE}
+install.packages("devtools")
+devtools::install_github("sipemu/case-based-reasoning")
+```
+
+If you want multicore support for RandomForest package, please follow the instruction of the following link:
+  
+  http://www.ccs.miami.edu/~hishwaran/rfsrc.html
+
+Please use [Github issues](https://github.com/sipemu/case-based-reasoning/issues) if you want to file bug reports or feature requests.
+
+# Usage
