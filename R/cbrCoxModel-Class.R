@@ -100,7 +100,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           cat("Start calculating distance matrix...\n")
                           # get distance matrix
                           sc <- simCases$new(method="cox")
-                          self$distMat <- sc$getFullDistanceMatrix(self$newData, self$learning, self$learnVars, self$Weights)
+                          self$distMat <- sc$getFullDistanceMatrix(self$verumData, self$learning, self$learnVars, self$Weights)
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
@@ -130,7 +130,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
 
                           # calculate distance and order of cases based on distance calculation
                           sc <- simCases$new()
-                          sc$getSimilarCases(self$newData, self$learning, self$learnVars, self$Weights, nCases)
+                          sc$getSimilarCases(self$verumData, self$learning, self$learnVars, self$Weights, nCases)
                           self$distMat <- sc$distMat
                           self$orderMat <- sc$order
                           self$simCases <- sc$similarCases
@@ -143,7 +143,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           if (is.null(nrow(self$simCases)))
                             stop("no similar cases")
                           valSC <- cbrValidate$new()
-                          return(valSC$validate(self$newData, self$simCases, self$learnVars, plot))
+                          return(valSC$validate(self$verumData, self$simCases, self$learnVars, plot))
                         }
                       )
 )

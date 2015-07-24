@@ -11,6 +11,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                         distMat    = NA,
                         orderMat   = NA,
                         simCases   = NA,
+                        impData    = NA,
                         learn=function(nCores, ntree, mtry, splitrule, ntime, nsplit, verbose) {
 
                           # split rule
@@ -65,7 +66,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           if (self$refEQNew) {
                             learnData <- self$learning[, variables]
                           } else {
-                            learnData <- rbind(self$learning[, variables], self$newData[, variables])
+                            learnData <- rbind(self$learning[, variables], self$verumData[, variables])
                           }
 
                           # impute
@@ -87,6 +88,14 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                                        importance = "none",
                                        do.trace   = verbose)
                           plot(rsf)
+                          
+                          # if imputation is activated, then save it
+                          if (self$impute) {
+                            self$impData <- rsf$imputed.data
+                          } else {
+                            self$impData <- NA
+                          }
+                          
                           # get distance matrix: rsf$proximity has dimension n x n.
                           # n = nRef + nNew
                           # Dimension distance matrix:
@@ -131,7 +140,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           # catch floating numbers
                           nCases <- as.integer(nCases)
                           sc <- simCases$new(distMat=self$distMat, method="rfProxy")
-                          sc$getSimilarCases(self$newData, self$learning, self$learnVars, nCases=nCases)
+                          sc$getSimilarCases(self$verumData, self$learning, self$learnVars, nCases=nCases)
                           self$orderMat <- sc$order
                           self$simCases <- sc$similarCases
 
@@ -143,6 +152,6 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           if (is.null(nrow(self$simCases)))
                             stop("no similar cases")
                           valSC <- cbrValidate$new()
-                          return(valSC$validate(self$newData, self$simCases, self$learnVars, plot))
+                          return(valSC$validate(self$verumData, self$simCases, self$learnVars, plot))
                         }
                       ))

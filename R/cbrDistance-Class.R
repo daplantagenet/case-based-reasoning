@@ -6,13 +6,13 @@
 #' @keywords Cox Model
 cbrDistance <- R6Class("cbrDistance",
                        public=list(# calculate distance matrix for new data
-                         getFullDistanceMatrix = function(newData) {
-                           if (missing(newData)) {
+                         getFullDistanceMatrix = function(verumData) {
+                           if (missing(verumData)) {
                              cat("No new data: use reference data for distance calculation!\n")
-                             self$newData <- self$refData
+                             self$verumData <- self$learning
                            } else {
                              # validation check new data
-                             self$newData <- private$check_data(newData, isReference=F)
+                             self$verumData <- private$check_data(verumData, isReference=F)
                            }
 
                            # learn if weights are empty
@@ -23,35 +23,35 @@ cbrDistance <- R6Class("cbrDistance",
                            start <- Sys.time()
                            cat("Start calculating distance matrix...\n")
                            # subsetting new data
-                           newData <- self$newData[, self$learnVars]
-                           self$distMat <- private$calcDist(newData, self$refData, self$learnVars, self$Weights)
+                           verumData <- self$verumData[, self$learnVars]
+                           self$distMat <- private$calcDist(verumData, self$learning, self$learnVars, self$Weights)
                            end <- Sys.time()
                            duration <- round(as.numeric(end - start), 2)
                            cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
                          }),
                        private=list(
                          # calculate distance matrix
-                         calcDist = function (newCases, refData, learnVars, Weights) {
-                           trfData <- private$transform_data(newCases, refData, learnVars, Weights)
+                         calcDist = function (newCases, learning, learnVars, Weights) {
+                           trfData <- private$transform_data(newCases, learning, learnVars, Weights)
                            # drop endpoints from reference
-                           # now all columns of refData and newData are numeric,
+                           # now all columns of learning and verumData are numeric,
                            # s.t. we can now apply our rcpp function
                            return(.Call("get_Distance_Matrix",
                                         trfData$newCases,
-                                        trfData$refData,
+                                        trfData$learning,
                                         trfData$trafoWeights,  PACKAGE = "cbr"))
                          },
                          # calculate distance and return n nearest distance and
                          # row id of n nearest cases from reference data
-                         calcNDist = function(newCases, refData, learnVars, Weights, nCases) {
-                           trfData <- private$transform_data(newCases, refData, learnVars, Weights)
+                         calcNDist = function(newCases, learning, learnVars, Weights, nCases) {
+                           trfData <- private$transform_data(newCases, learning, learnVars, Weights)
                            return(.Call("get_nearest_Elements",
                                         trfData$newCases,
-                                        trfData$refData,
+                                        trfData$learning,
                                         trfData$trafoWeights,
                                         nCases,  PACKAGE = "cbr"))
                          },
-                         transform_data = function(newCases, refData, learnVars, Weights) {
+                         transform_data = function(newCases, learning, learnVars, Weights) {
                            # data preparation:
                            # we transform all factor to their corresponding
                            # weights and set weight equal to 1 for factor
@@ -59,9 +59,9 @@ cbrDistance <- R6Class("cbrDistance",
                            nVars <- length(learnVars)
                            trafoWeights <- rep(0, nVars)
                            for (j in 1:nVars) {
-                             if (is.factor(refData[, learnVars[j]])) {
+                             if (is.factor(learning[, learnVars[j]])) {
                                newCases[, learnVars[j]] <- Weights[[learnVars[j]]][newCases[, learnVars[j]]]
-                               refData[, learnVars[j]] <- Weights[[learnVars[j]]][refData[, learnVars[j]]]
+                               learning[, learnVars[j]] <- Weights[[learnVars[j]]][learning[, learnVars[j]]]
                                trafoWeights[j] <- 1
                              } else { # else keep weights
                                trafoWeights[j] <- Weights[[learnVars[j]]]
@@ -69,7 +69,7 @@ cbrDistance <- R6Class("cbrDistance",
                            }
                            names(trafoWeights) <- NULL
                            return(list(newCases     = unname(as.matrix(newCases[,learnVars])),
-                                       refData      = unname(as.matrix(refData[,learnVars])),
+                                       learning      = unname(as.matrix(learning[,learnVars])),
                                        trafoWeights = trafoWeights))
                          })
 )

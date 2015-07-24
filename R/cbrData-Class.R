@@ -1,13 +1,13 @@
 cbrData <- R6Class("cbrData",
                    public = list(
                      learning  = NA,
-                     newData   = NA,
+                     verumData = NA,
                      learnVars = NA,
                      endPoint  = NA,
                      refEQNew  = FALSE,
                      impute    = FALSE,
                      # initialize class
-                     initialize = function(learning, newData, learnVars, endPoint, impute=FALSE) {
+                     initialize = function(learning, verumData, learnVars, endPoint, impute=FALSE) {
                        # check for missing input
                        if (missing(learning)) {
                          stop("Please add data for learning the algorithm!")
@@ -27,7 +27,7 @@ cbrData <- R6Class("cbrData",
 
                        # are there variables for learning
                        if (missing(learnVars)) {
-                         cat("All variables of the newData data will be used for learning!\n")
+                         cat("All variables of the verumData data will be used for learning!\n")
                          idEP <- which(names(learning) %in% self$endPoint)
                          self$learnVars <- names(learning)[-idEP]
                        } else {
@@ -41,13 +41,13 @@ cbrData <- R6Class("cbrData",
                        self$learning <- private$check_data(learning, impute)
 
                        # validation check new data
-                       if (missing(newData)) {
+                       if (missing(verumData)) {
                          cat("No new data: use reference data for distance calculation!\n")
-                         self$newData <- self$learning
+                         self$verumData <- self$learning
                          self$refEQNew <- TRUE
                        } else {
                          # validation check new data
-                         self$newData <- private$check_data(newData, impute, isLearning=F)
+                         self$verumData <- private$check_data(verumData, impute, isLearning=F)
                        }
 
                        # impute data; just RSF
@@ -56,7 +56,7 @@ cbrData <- R6Class("cbrData",
                    ),
                    private = list(
                      learningValid = FALSE,
-                     newDataValid = FALSE,
+                     verumDataValid = FALSE,
                      # check data sets
                      check_data = function(x, impute=F, isLearning=T) {
                        # check variable names new data are in data
@@ -65,7 +65,7 @@ cbrData <- R6Class("cbrData",
                          if (isLearning) {
                            private$learningValid <- FALSE
                          } else {
-                           private$newDataValid <- FALSE
+                           private$verumDataValid <- FALSE
                          }
                          missingVars <- self$learnVars[which(inData)]
                          stop(paste0("Following learning variables are missing: ", paste(missingVars, collapse=",")))
@@ -73,7 +73,7 @@ cbrData <- R6Class("cbrData",
                          if (isLearning) {
                            private$learningValid <- TRUE
                          } else {
-                           private$newDataValid <- TRUE
+                           private$verumDataValid <- TRUE
                          }
                        }
 

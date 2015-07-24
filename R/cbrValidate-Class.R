@@ -6,14 +6,14 @@
 #' @keywords validation
 cbrValidate <- R6Class("cbrValidate",
                        public=list(
-                         validate=function(newData, simCases, learnVars, plots=FALSE) {
+                         validate=function(verumData, simCases, learnVars, plots=FALSE) {
                            # get data.frame
                            idVars <- which(names(simCases) %in% learnVars)
                            sc <- simCases %>%
                              select(idVars)
                            sc$simCases <- "Similar\nCases"
-                           idVars <- which(names(newData) %in% learnVars)
-                           nc <- newData %>%
+                           idVars <- which(names(verumData) %in% learnVars)
+                           nc <- verumData %>%
                              select(idVars)
                            nc$simCases <- "Reference\nCases"
                            sc <- rbind(sc, nc)
@@ -45,6 +45,6 @@ cbrValidate <- R6Class("cbrValidate",
                              theme_set(theme_cowplot())
                              return(plot_grid(plotlist = ggPlot, labels=learnVars, ncol=2))
                            }
-                           return(NULL)
+                           return()
                          }
                        ))

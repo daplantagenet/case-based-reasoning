@@ -22,24 +22,24 @@ simCases <- R6Class("simCases",
                         self$method <- method
                       },
                       # calculate distance matrix for new data
-                      getFullDistanceMatrix = function(newData, refData, learnVars, Weights) {
+                      getFullDistanceMatrix = function(verumData, learning, learnVars, Weights) {
                         # Start calculation
-                        return(private$calcDist(newData, refData, learnVars, Weights))
+                        return(private$calcDist(verumData, learning, learnVars, Weights))
                       },
                       # get similar cases from reference data
-                      getSimilarCases = function(newData, refData, learnVars, Weights, nCases) {
+                      getSimilarCases = function(verumData, learning, learnVars, Weights, nCases) {
                         if (self$method == "cox") {
                           # calculate distance and order of cases based on distance calculation
-                          ordDist <- private$calcNDist(newData, refData, learnVars, Weights, nCases)
+                          ordDist <- private$calcNDist(verumData, learning, learnVars, Weights, nCases)
                           # get most similar cases
                           similarCases <- do.call(rbind, apply(ordDist$order, 2,
-                                                               function(x, data=refData) {
+                                                               function(x, data=learning) {
                                                                  data[x, ]
                                                                }
                           )
                           )
                           # mark similar cases: 1:n ids
-                          similarCases$caseId <- rep(1:nrow(newData), each=nCases)
+                          similarCases$caseId <- rep(1:nrow(verumData), each=nCases)
                           # get distances
                           # distList <- apply(ordDist$distance, 2, list)
                           # similarCases$distance <- unlist(lapply(distList, function(x, n=nCases) {or <- order(x[[1]]);x[[1]][or[1:n]]}))
@@ -51,36 +51,36 @@ simCases <- R6Class("simCases",
                           ordDist <- private$getOrder(nCases)
                           # get most similar cases
                           similarCases <- do.call(rbind, apply(ordDist, 1,
-                                                               function(x, data=refData) {
+                                                               function(x, data=learning) {
                                                                  data[x, ]
                                                                }
                           )
                           )
                           # mark similar cases: 1:n ids
-                          similarCases$caseId <- rep(1:nrow(newData), each=nCases)
+                          similarCases$caseId <- rep(1:nrow(verumData), each=nCases)
                           self$distOrder <- ordDist
                           self$similarCases <- similarCases
                         }
                       }),
                     private=list(
                       # calculate distance matrix
-                      calcDist = function (newCases, refData, learnVars, Weights) {
-                        trfData <- private$transform_data(newCases, refData, learnVars, Weights)
+                      calcDist = function (newCases, learning, learnVars, Weights) {
+                        trfData <- private$transform_data(newCases, learning, learnVars, Weights)
                         # drop endpoints from reference
-                        # now all columns of refData and newData are numeric,
+                        # now all columns of learning and verumData are numeric,
                         # s.t. we can now apply our rcpp function
                         return(.Call("cbr_get_Distance_Matrix",
                                      trfData$newCases,
-                                     trfData$refData,
+                                     trfData$learning,
                                      trfData$trafoWeights, PACKAGE = "cbr"))
                       },
                       # calculate distance and return n nearest distance and
                       # row id of n nearest cases from reference data
-                      calcNDist = function(newCases, refData, learnVars, Weights, nCases) {
-                        trfData <- private$transform_data(newCases, refData, learnVars, Weights)
+                      calcNDist = function(newCases, learning, learnVars, Weights, nCases) {
+                        trfData <- private$transform_data(newCases, learning, learnVars, Weights)
                         return(.Call("cbr_get_nearest_Elements",
                                      trfData$newCases,
-                                     trfData$refData,
+                                     trfData$learning,
                                      trfData$trafoWeights,
                                      nCases, PACKAGE = "cbr"))
                       },
@@ -89,7 +89,7 @@ simCases <- R6Class("simCases",
                                      self$distMat,
                                      nCases, PACKAGE = "cbr"))
                       },
-                      transform_data = function(newCases, refData, learnVars, Weights) {
+                      transform_data = function(newCases, learning, learnVars, Weights) {
                         # data preparation:
                         # we transform all factor to their corresponding
                         # weights and set weight equal to 1 for factor
@@ -97,9 +97,9 @@ simCases <- R6Class("simCases",
                         nVars <- length(learnVars)
                         trafoWeights <- rep(0, nVars)
                         for (j in 1:nVars) {
-                          if (is.factor(refData[, learnVars[j]])) {
+                          if (is.factor(learning[, learnVars[j]])) {
                             newCases[, learnVars[j]] <- Weights[[learnVars[j]]][newCases[, learnVars[j]]]
-                            refData[, learnVars[j]] <- Weights[[learnVars[j]]][refData[, learnVars[j]]]
+                            learning[, learnVars[j]] <- Weights[[learnVars[j]]][learning[, learnVars[j]]]
                             trafoWeights[j] <- 1
                           } else { # else keep weights
                             trafoWeights[j] <- Weights[[learnVars[j]]]
@@ -107,7 +107,7 @@ simCases <- R6Class("simCases",
                         }
                         names(trafoWeights) <- NULL
                         return(list(newCases     = unname(as.matrix(newCases[, learnVars])),
-                                    refData      = unname(as.matrix(refData[, learnVars])),
+                                    learning      = unname(as.matrix(learning[, learnVars])),
                                     trafoWeights = trafoWeights))
                       }
                     ))
