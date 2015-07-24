@@ -35,3 +35,10 @@ heatmap(cbr.RF$distMat)
 [1] http://www.biostat.jhsph.edu/~estuart/StuRub_MatchingChapter_07.pdf
 
 [2] http://www.biomedcentral.com/1472-6947/14/24
+
+## License
+
+```{r child='sub/license.md'}
+```
+
+&copy; Simon Müller (2015) <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"></a>
