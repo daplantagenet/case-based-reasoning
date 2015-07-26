@@ -5,7 +5,8 @@
 #' @format An \code{\link{R6Class}} generator object
 #' @keywords Cox Model
 manifoldLearning <- R6Class("manifoldLearning",
-                            method = NA,
-                            initialize = function(method="tsne") {
-                              
-                            })
+                            public=list(method = NA,
+                                        initialize = function(method="tsne") {
+                                          
+                                        })
+                            )

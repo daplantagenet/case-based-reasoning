@@ -14,7 +14,6 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                         impData    = NA,
                         impInd     = NA,
                         learn=function(nCores, ntree, mtry, splitrule, ntime, nsplit, verbose) {
-
                           # split rule
                           if (missing(splitrule)) {
                             splitrule <- "logrank"
@@ -105,10 +104,10 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           # rows: reference cases
                           # columns: new cases
                           if (self$refEQNew) {
-                            self$distMat <- 1 - rsf$proximity
+                            self$distMat <- rsf$proximity
                           } else {
                             nRef <- nrow(self$learning)
-                            self$distMat <- 1 - rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)]
+                            self$distMat <- rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)]
                           }
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
@@ -130,7 +129,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           } else {
                             idMissing <- idMissing - n
                             verumData <- self$verumData
-                            verumData[idMissing, variables] <- self$impData
+                            verumData[idMissing, variables] <- self$impData[self$impInd > n, ]
                             return(verumData)
                           }
                         },
@@ -143,15 +142,12 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                             return(self$learning)
                           } else {
                             learning <- self$learning
-                            learning[idMissing, variables] <- self$impData
+                            learning[idMissing, variables] <- self$impData[self$impInd <= n, ]
                             return(learning)
                           }
                         },
-                        getSimilarCases = function (nCases) {
-                          return(self$simCases)
-                        },
                         # calculate similar cases
-                        calcSimilarCases = function(nCases) {
+                        getSimilarCases = function(nCases) {
                           if (self$refEQNew) {
                             stop("no new data!")
                           }

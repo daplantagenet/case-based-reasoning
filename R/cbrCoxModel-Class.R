@@ -88,7 +88,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                                            labels   = names(self$learning)[idNum], 
                                            ncol     = 2))
                         },
-                        # calculate distance matrix for new data
+                        # calculate distance matrix for verum data
                         getFullDistanceMatrix = function() {
                           # learn if weights are empty
                           if (class(self$Weights) != "list") {

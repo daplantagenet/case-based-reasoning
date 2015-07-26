@@ -40,13 +40,13 @@ cbrData <- R6Class("cbrData",
                        # check data & add data to internal frame
                        self$learning <- private$check_data(learning, impute)
 
-                       # validation check new data
+                       # validation check verum data
                        if (missing(verumData)) {
-                         cat("No new data: use reference data for distance calculation!\n")
+                         cat("No verum data: use reference data for distance calculation!\n")
                          self$verumData <- self$learning
                          self$refEQNew <- TRUE
                        } else {
-                         # validation check new data
+                         # validation check verum data
                          self$verumData <- private$check_data(verumData, impute, isLearning=F)
                        }
 
@@ -59,7 +59,7 @@ cbrData <- R6Class("cbrData",
                      verumDataValid = FALSE,
                      # check data sets
                      check_data = function(x, impute=F, isLearning=T) {
-                       # check variable names new data are in data
+                       # check variable names verum data are in data
                        inData <- !(self$learnVars %in% names(x))
                        if (any(inData)) {
                          if (isLearning) {
