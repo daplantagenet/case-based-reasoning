@@ -105,6 +105,16 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
                         },
+                        # get verum data, if there are missing values, return 
+                        # imputed data
+                        getVerumData = function () {
+                          return(self$verumData)
+                        },
+                        # get learning data, if it is imputed return imputed data
+                        # else data.frame without missing cases
+                        getLearningData = function () {
+                          return(self$learning)
+                        },
                         # get similar cases from reference data
                         getSimilarCases = function(nCases) {
                           if (self$refEQNew) {

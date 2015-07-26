@@ -12,6 +12,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                         orderMat   = NA,
                         simCases   = NA,
                         impData    = NA,
+                        impInd     = NA,
                         learn=function(nCores, ntree, mtry, splitrule, ntime, nsplit, verbose) {
 
                           # split rule
@@ -92,8 +93,10 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           # if imputation is activated, then save it
                           if (self$impute) {
                             self$impData <- rsf$imputed.data
+                            self$impInd <- rsf$imputed.indv
                           } else {
                             self$impData <- NA
+                            self$impInd <- NA
                           }
                           
                           # get distance matrix: rsf$proximity has dimension n x n.
@@ -102,10 +105,10 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           # rows: reference cases
                           # columns: new cases
                           if (self$refEQNew) {
-                            self$distMat <- rsf$proximity
+                            self$distMat <- 1 - rsf$proximity
                           } else {
                             nRef <- nrow(self$learning)
-                            self$distMat <- rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)]
+                            self$distMat <- 1 - rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)]
                           }
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
@@ -116,7 +119,39 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                             self$learn()
                           }
                         },
-                        getSimilarCases = function(nCases) {
+                        # get verum data, if there are missing values, return 
+                        # imputed data
+                        getVerumData = function () {
+                          n <- nrow(self$learning)
+                          idMissing <- self$impInd[self$impInd > n]
+                          variables <- c(self$endPoint, self$learnVars)
+                          if (length(idMissing) == 0) {
+                            return(self$verumData)
+                          } else {
+                            idMissing <- idMissing - n
+                            verumData <- self$verumData
+                            verumData[idMissing, variables] <- self$impData
+                            return(verumData)
+                          }
+                        },
+                        # get learning data, if it is imputed return imputed data
+                        getLearningData = function () {
+                          n <- nrow(self$learning)
+                          idMissing <- self$impInd[self$impInd <= n]
+                          variables <- c(self$endPoint, self$learnVars)
+                          if (length(idMissing) == 0) {
+                            return(self$learning)
+                          } else {
+                            learning <- self$learning
+                            learning[idMissing, variables] <- self$impData
+                            return(learning)
+                          }
+                        },
+                        getSimilarCases = function (nCases) {
+                          return(self$simCases)
+                        },
+                        # calculate similar cases
+                        calcSimilarCases = function(nCases) {
                           if (self$refEQNew) {
                             stop("no new data!")
                           }
@@ -138,6 +173,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
 
                           # catch floating numbers
                           nCases <- as.integer(nCases)
+                          #create new object & calculate similar cases
                           sc <- simCases$new(distMat=self$distMat, method="rfProxy")
                           sc$getSimilarCases(self$verumData, self$learning, self$learnVars, nCases=nCases)
                           self$orderMat <- sc$order

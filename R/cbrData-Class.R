@@ -82,7 +82,7 @@ cbrData <- R6Class("cbrData",
                          if(any(!self$endPoint %in% names(x))) {
                            self$endPoint <- NA
                            private$learningValid <- FALSE
-                           stop("Endpoint variables are not in reference data")
+                           stop("Endpoint variables are not in learning data")
                          }
                        }
 
@@ -91,9 +91,9 @@ cbrData <- R6Class("cbrData",
                          x <- private$drop_missing(x)
                          if (nrow(x) == 0) {
                            if (isLearning) {
-                             stop("Reference data is empty after NA elimination")
+                             stop("Learning data is empty after NA elimination")
                            } else {
-                             stop("Data is empty after NA elimination")
+                             stop("Verum data is empty after NA elimination")
                            }
                          }
                        }
