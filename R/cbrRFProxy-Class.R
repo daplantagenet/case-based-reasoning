@@ -115,7 +115,6 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           if (class(self$distMat) != "matrix") {
                             self$learn()
                           }
-
                         },
                         getSimilarCases = function(nCases) {
                           if (self$refEQNew) {
