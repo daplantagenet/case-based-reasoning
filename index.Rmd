@@ -85,13 +85,13 @@ You may extract then the similar cases and the verum data and put them together:
 verum <- sc$getVerumData()
 verum$group <- "Verum"
 simCases <- sc$simCases
-simCases$id <- NULL
+simCases$caseId <- NULL
 simCases$group <- "Similar Cases"
 df <- rbind(verum, simCases)
 ```
 **Note 1:** In the initialization step, we dropped all cases with missing values in the variables of ` learnVars` and ` endPoint`. The function ` sc$getVerumData()` returns the data set without the missing values if ` impute` is set to ` FALSE` else you get full verum data with imputed values (just for RSF model).
 
-**Note 2:** The ` data.frame` returned from ` sc$simCases` has an additional column ` id`. By this column you may map the similar cases to cases in verum data, e.g. if you had chosen ` nCases = 3`, then the first three elements in the column ` id` will be ` 1` (following three ` 2` and so on). This means that this three cases are the three most similar cases to case ` 1` in verum data.
+**Note 2:** The ` data.frame` returned from ` sc$simCases` has an additional column `caseId`. By this column you may map the similar cases to cases in verum data, e.g. if you had chosen ` nCases = 3`, then the first three elements in the column `caseId` will be ` 1` (following three ` 2` and so on). This means that this three cases are the three most similar cases to case ` 1` in verum data.
 
 You may want to check the distibution of the ` learnVars` variables of the verum and similar cases data set:
 ```{r}

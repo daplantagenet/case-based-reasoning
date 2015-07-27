@@ -176,11 +176,11 @@ sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span c
 <pre class="sourceCode r"><code class="sourceCode r">verum &lt;-<span class="st"> </span>sc$<span class="kw">getVerumData</span>()
 verum$group &lt;-<span class="st"> &quot;Verum&quot;</span>
 simCases &lt;-<span class="st"> </span>sc$simCases
-simCases$id &lt;-<span class="st"> </span><span class="ot">NULL</span>
+simCases$caseId &lt;-<span class="st"> </span><span class="ot">NULL</span>
 simCases$group &lt;-<span class="st"> &quot;Similar Cases&quot;</span>
 df &lt;-<span class="st"> </span><span class="kw">rbind</span>(verum, simCases)</code></pre>
 <p><strong>Note 1:</strong> In the initialization step, we dropped all cases with missing values in the variables of <code>learnVars</code> and <code>endPoint</code>. The function <code>sc$getVerumData()</code> returns the data set without the missing values if <code>impute</code> is set to <code>FALSE</code> else you get full verum data with imputed values (just for RSF model).</p>
-<p><strong>Note 2:</strong> The <code>data.frame</code> returned from <code>sc$simCases</code> has an additional column <code>id</code>. By this column you may map the similar cases to cases in verum data, e.g. if you had chosen <code>nCases = 3</code>, then the first three elements in the column <code>id</code> will be <code>1</code> (following three <code>2</code> and so on). This means that this three cases are the three most similar cases to case <code>1</code> in verum data.</p>
+<p><strong>Note 2:</strong> The <code>data.frame</code> returned from <code>sc$simCases</code> has an additional column <code>caseId</code>. By this column you may map the similar cases to cases in verum data, e.g. if you had chosen <code>nCases = 3</code>, then the first three elements in the column <code>caseId</code> will be <code>1</code> (following three <code>2</code> and so on). This means that this three cases are the three most similar cases to case <code>1</code> in verum data.</p>
 <p>You may want to check the distibution of the <code>learnVars</code> variables of the verum and similar cases data set:</p>
 <pre class="sourceCode r"><code class="sourceCode r">pp &lt;-<span class="st"> </span>sc$<span class="kw">validate</span>()</code></pre>
 <pre><code>## Two-sample Wilcoxon test for variable: age; p = 1
