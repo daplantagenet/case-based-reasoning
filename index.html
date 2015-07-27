@@ -98,7 +98,7 @@ img {
                   <ul class="nav navbar-nav">
                     <li><a href="cbrCox.html">Cox-Regression</a></li>
                       <li><a href="cbrRFProxy.html">Random Survival Forest (Proxy)</a></li>
-                        <li><a href="tSNE.html"></a>tSNE</li>
+                        <li><a href="tSNE.html">t-SNE</a></li>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right">
                                   <li><a href="https://github.com/sipemu/case-based-reasoning" title="View Source on Github"><i class="fa fa-github fa-lg"></i></a></li>
@@ -115,13 +115,97 @@ img {
 <hr />
 <p>The R package <strong>case-based-reasoning</strong> provides an R interface case based reasoning on survival data.</p>
 <p>You may install the development version using</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">1</span>, <span class="dt">digits =</span> <span class="dv">2</span>)
+
+<span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)
 devtools::<span class="kw">install_github</span>(<span class="st">&quot;sipemu/case-based-reasoning&quot;</span>)</code></pre>
 <p>If you want multicore support for RandomForest package, please follow the instruction of the following link:</p>
 <p><a href="http://www.ccs.miami.edu/~hishwaran/rfsrc.html" class="uri">http://www.ccs.miami.edu/~hishwaran/rfsrc.html</a></p>
 <p>Please use <a href="https://github.com/sipemu/case-based-reasoning/issues">Github issues</a> if you want to file bug reports or feature requests.</p>
-<div id="usage" class="section level1">
-<h1><span class="header-section-number">1</span> Usage</h1>
+<div id="key-features" class="section level1">
+<h1><span class="header-section-number">1</span> Key Features</h1>
+<p>This R package provides until now two methods case based reasoning for survival data:</p>
+<ul>
+<li><p>Cox-Regression</p></li>
+<li><p>Random Survival Forest (Proximity Measure)</p></li>
+</ul>
+<p>Besides the functionality of searching similar cases, some additional features are included:</p>
+<ul>
+<li><p>missing value imputation (ath the moment just: RSF)</p></li>
+<li><p>Shiny App for visualization of manifold learning (e.g. tSNE) based on the distance matrix of our two methods (this app needs a R6 class as input, namely: cbrCoxModel, cbrRFProxy)</p></li>
+<li><p>automatic validation of the key variables between verum and similar cases data set</p></li>
+<li><p>checking linearity (soon: PH) assumption of the cox regression. This point needs ome further investigation, e.g. how the distance is biased when linearity and PH assumption do not hold.</p></li>
+<li><p>C++-functions for fast (weighted) distance and order matrix calculations</p></li>
+</ul>
+<p>Near future implementations:</p>
+<ul>
+<li><p>analysis of missing values and imputation for the Cox model</p></li>
+<li><p>more methods for manifold learning, e.g. Spectral Embedding, LLE, LTSA, Hessian LLE, MDS, and ISOMAP</p></li>
+<li><p>automatic searching for clusters after manifold learning based on included categorial variables, e.g. silhouette coefficient</p></li>
+<li><p>maybe other cluster algorithms (not sure)</p></li>
+</ul>
+</div>
+<div id="example-cox-model" class="section level1">
+<h1><span class="header-section-number">2</span> Example: Cox-Model</h1>
+<p>A function reference will be added soon.</p>
+<p>In the first example, we use the Cox-Model and the <code>ovarian</code> data set from the <code>survival</code> package. In the first step we initialize the R6 data object. The initialization needs several inputs:</p>
+<ul>
+<li>learning: data set for learning the Cox model</li>
+<li>verumData: Verum data set. For each case in the verum data, we are looking for the m (=1,…,k) similar cases. Learning and verum data set need the same structure (variable names and scala)</li>
+<li>learnVars (optional): a character vector variable names. This variables are used for learning the model. Do not include time2event and event variable here.</li>
+<li>endPoint: a character vector of length two. The first elements contains the variable name of the time 2 event variable and the second the name of the event variable. Default: <code>c(&quot;Time2Event&quot;, &quot;Event&quot;)</code></li>
+<li>impute: TRUE/FALSE: Missing value imputation. Actually, not implemented for the Cox Model.</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survival)
+<span class="kw">library</span>(cbr)
+ovarian$resid.ds &lt;-<span class="st"> </span><span class="kw">factor</span>(ovarian$resid.ds)
+ovarian$rx &lt;-<span class="st"> </span><span class="kw">factor</span>(ovarian$rx)
+ovarian$ecog.ps &lt;-<span class="st"> </span><span class="kw">factor</span>(ovarian$ecog.ps)
+
+<span class="co"># initialize R6 object</span>
+sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span class="dt">learning=</span>ovarian, <span class="dt">verumData=</span>ovarian, <span class="dt">learnVars=</span><span class="kw">names</span>(ovarian)[-<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)], <span class="dt">endPoint=</span><span class="kw">c</span>(<span class="st">&quot;futime&quot;</span>, <span class="st">&quot;fustat&quot;</span>), <span class="dt">impute=</span>F)</code></pre>
+<pre><code>## Dropped cases with missing values: 0
+## Dropped cases with missing values: 0</code></pre>
+<p>After the initialization, we may get for each case in verum data the most similar case from the learning data.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">getSimilarCases</span>(<span class="dt">nCases =</span> <span class="dv">1</span>)</code></pre>
+<pre><code>## Start caclulating similar cases...
+## Start learning...
+## Learning finished in: 0.01 seconds.
+## Similar cases calculation finished in: 0.01 seconds.</code></pre>
+<p>You may extract then the similar cases and the verum data and put them together:</p>
+<pre class="sourceCode r"><code class="sourceCode r">verum &lt;-<span class="st"> </span>sc$<span class="kw">getVerumData</span>()
+verum$group &lt;-<span class="st"> &quot;Verum&quot;</span>
+simCases &lt;-<span class="st"> </span>sc$simCases
+simCases$id &lt;-<span class="st"> </span><span class="ot">NULL</span>
+simCases$group &lt;-<span class="st"> &quot;Similar Cases&quot;</span>
+df &lt;-<span class="st"> </span><span class="kw">rbind</span>(verum, simCases)</code></pre>
+<p><strong>Note 1:</strong> In the initialization step, we dropped all cases with missing values in the variables of <code>learnVars</code> and <code>endPoint</code>. The function <code>sc$getVerumData()</code> returns the data set without the missing values if <code>impute</code> is set to <code>FALSE</code> else you get full verum data with imputed values (just for RSF model).</p>
+<p><strong>Note 2:</strong> The <code>data.frame</code> returned from <code>sc$simCases</code> has an additional column <code>id</code>. By this column you may map the similar cases to cases in verum data, e.g. if you had chosen <code>nCases = 3</code>, then the first three elements in the column <code>id</code> will be <code>1</code> (following three <code>2</code> and so on). This means that this three cases are the three most similar cases to case <code>1</code> in verum data.</p>
+<p>You may want to check the distibution of the <code>learnVars</code> variables of the verum and similar cases data set:</p>
+<pre class="sourceCode r"><code class="sourceCode r">pp &lt;-<span class="st"> </span>sc$<span class="kw">validate</span>()</code></pre>
+<pre><code>## Two-sample Wilcoxon test for variable: age; p = 1
+## Chi-Square test for variable: resid.ds; p = 1
+## Chi-Square test for variable: rx; p = 1
+## Chi-Square test for variable: ecog.ps; p = 1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">pp</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /> The function <code>sc$validate()</code> returns an <code>gg</code> and <code>ggplot</code> object.</p>
+<p>Alternatively, you may just be interested in the distance matrix, then you go this way:</p>
+<pre class="sourceCode r"><code class="sourceCode r">sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span class="dt">learning=</span>ovarian, <span class="dt">verumData=</span>ovarian, <span class="dt">learnVars=</span><span class="kw">names</span>(ovarian)[-<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)], <span class="dt">endPoint=</span><span class="kw">c</span>(<span class="st">&quot;futime&quot;</span>, <span class="st">&quot;fustat&quot;</span>), <span class="dt">impute=</span>F)</code></pre>
+<pre><code>## Dropped cases with missing values: 0
+## Dropped cases with missing values: 0</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">getFullDistanceMatrix</span>()</code></pre>
+<pre><code>## Start learning...
+## Learning finished in: 0 seconds.
+## Start calculating distance matrix...
+## Distance matrix calculation finished in: 0 seconds.</code></pre>
+<p><code>sc$getFullDistanceMatrix()</code> calculates the full distance matrix. This matrix the dimension: cases of learning data versus cases of verum data. In the above example we used the same data set for learning and as verum data. Such case can also be achieved by:</p>
+<pre class="sourceCode r"><code class="sourceCode r">sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span class="dt">learning=</span>ovarian, <span class="dt">learnVars=</span><span class="kw">names</span>(ovarian)[-<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)], <span class="dt">endPoint=</span><span class="kw">c</span>(<span class="st">&quot;futime&quot;</span>, <span class="st">&quot;fustat&quot;</span>), <span class="dt">impute=</span>F)
+
+sc$<span class="kw">getFullDistanceMatrix</span>()</code></pre>
+<p>The distance matrix is saved internally in the sc object: <code>sc$distMat</code>.</p>
+<p>You may now want to analyse your data with t-SNE:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbrDistViz</span>(sc)</code></pre>
+<p>This opens a shiny app and you may then search for clusters in the by t-SNE reduced data set. Attention: on big data sets, the t-SNE may need some time. Do not close the shiny window.</p>
 </div>
 
 <script>
