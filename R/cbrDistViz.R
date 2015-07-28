@@ -1,3 +1,4 @@
+#' @export cbrDistViz
 cbrDistViz <- function(cbrObject) {
   require(shiny)
   vClass <- unlist(lapply(cbrObject$learning, class))
