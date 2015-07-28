@@ -12,6 +12,8 @@ cbrDistViz <- function(cbrObject) {
         sidebarPanel(width = 2,
                      selectInput(inputId = "method", label = "Method", choices = c("tSNE"), selected = "tSNE"),
                      hr(),
+                     helpText("Changing following parameters will restart algorithm. This may need some time for large data sets."),
+                     hr(),
                       conditionalPanel("input.method == 'tSNE'",
                                        tagList(
                                          numericInput("tSNEDim", "Dimension", value = 2, min = 2),
