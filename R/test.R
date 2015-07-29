@@ -7,7 +7,7 @@
 # ovarian$rx <- factor(ovarian$rx)
 # ovarian$ecog.ps <- factor(ovarian$ecog.ps)
 # 
-# sc <- cbrCoxModel$new(learning=ovarian, verumData=ovarian, learnVars=names(ovarian)[-c(1, 2)], endPoint=c("futime", "fustat"))
+# sc <- cbrCoxModel$new(learning=ovarian, verumData=ovarian[1:10, ], learnVars=names(ovarian)[-c(1, 2)], endPoint=c("futime", "fustat"))
 # sc$learn()
 # sc$getSimilarCases(1)
 # sc$getVerumData()
