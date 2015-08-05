@@ -2,14 +2,14 @@
 library(DiagrammeR)
 ```
 
-# Functional Workflow
+# Class Structure
 
 **Note:** Package is in active development. Structure, workflow, and sytax may change dramatically.
 
 Following diagramm describes the workflow of the case-based reasoning R package. Box colour has different meanings:
 
 - <span style="color:#2773ae">Useable:</span> this features can be used
-- <span style="color:#990000">Nor useable: </span> planned features
+- <span style="color:#990000">Not useable: </span> planned features
 - <span style="color:#507E4E">Optional:</span> this function will be called by subsequent features and can be called optionally
 
 
@@ -36,7 +36,7 @@ DiagrammeR("
     style D fill:#fff, stroke:#2773ae, stroke-width:2px;
     style E fill:#fff, stroke:#2773ae, stroke-width:2px;
     style F fill:#fff, stroke:#2773ae, stroke-width:2px;
-    style G fill:#fff, stroke:#990000, stroke-width:2px;
+    style G fill:#fff, stroke:#2773ae, stroke-width:2px;
     style H fill:#fff, stroke:#507E4E, stroke-width:2px;
     style I fill:#fff, stroke:#990000, stroke-width:2px;
 ")
