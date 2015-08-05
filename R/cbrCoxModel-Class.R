@@ -13,6 +13,8 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                         distMat    = NA,
                         orderMat   = NA,
                         simCases   = NA,
+                        coxFit     = NA,
+                        cph        = NA,
                         learn = function() {
                           if (!private$learningValid)
                             stop("Reference data is not valid!")
@@ -20,9 +22,18 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           # Timing
                           start <- Sys.time()
                           cat("Start learning...\n")
+                          #  datadist scoping
+                          on.exit(detach("design.options"))
+                          attach(list(), name="design.options")
+                          assign('dd', datadist(self$learning), pos='design.options')
+                          options(datadist="dd")
+                          
                           # formula and Cox-Model
                           formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
-                          coxFit <- coxph(formel, data=self$learning)
+                          coxFit <- cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
+                          self$coxFit <- coxFit
+                          self$cph <- cox.zph(f, "rank")
+                          
                           nVars <- length(self$learnVars)
                           Weights <- vector("list", nVars)
                           names(Weights) <- self$learnVars
@@ -47,14 +58,20 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                             }
                           }
                           self$Weights <- Weights
-
+                          
                           # end timing
+                          options(datadist=NULL)
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Learning finished in: ", duration, " seconds.\n"))
                         },
                         # checking linearity of numeric variables
                         check_linearity = function() {
+                          # learn if weights are empty
+                          if (class(self$Weights) != "list") {
+                            self$learn()
+                          }
+                          
                           # which variables are numeric
                           varClass <- unlist(lapply(self$learning[self$learnVars], class))
                           idNum <- which(varClass %in% "numeric")
@@ -88,6 +105,30 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                                            labels   = names(self$learning)[idNum], 
                                            ncol     = 2))
                         },
+                        # check proportional hazard
+                        check_ph=function() {
+                          # learn if weights are empty
+                          if (class(self$Weights) != "list") {
+                            self$learn()
+                          }
+                          
+                          self$cph
+                          n <- length(self$learnVars)
+                          ggPlot <- list()
+                          for (i in 1:n) {
+                            df <- data.frame(x=self$cph$x, y=self$cph$y[, i])
+                            g <- ggplot(df, aes(x=x, y=y)) +
+                              geom_hline(yintercept=0, colour="grey") +
+                              geom_point() +
+                              geom_smooth(color="steelblue", fill="steelblue") +
+                              ylab(paste0("Beta(t) of ", self$learnVars)) + xlab("Time")
+                            ggPlot <- c(ggPlot, list(g))
+                          }
+                          
+                          return(plot_grid(plotlist = ggPlot, 
+                                           labels   = self$learnVars, 
+                                           ncol     = 2))
+                        }
                         # calculate distance matrix for verum data
                         getFullDistanceMatrix = function() {
                           # learn if weights are empty
