@@ -4,7 +4,7 @@ library(DiagrammeR)
 
 # Class Structure
 
-**Note:** Package is in active development. Structure, workflow, and sytax may change dramatically.
+**Note:** Package is in active development. Structure, workflow, and syntax may change dramatically.
 
 Following diagramm describes the workflow of the case-based reasoning R package. Box colour has different meanings:
 
