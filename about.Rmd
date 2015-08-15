@@ -1,12 +1,18 @@
 **The model development is based on:**
+
 - [Dippon et al.](http://dl.acm.org/citation.cfm?id=608456) (2002),
-- [Klenk et al.](http://www.vis.uni-stuttgart.de/~klenksn/paper/medicaldb.pdf) (2009) und
+
+- [Klenk et al.](http://www.vis.uni-stuttgart.de/~klenksn/paper/medicaldb.pdf) (2009), and
+
 - [Friedel et al.](http://ar.iiarjournals.org/content/33/4/1609.short) (2012).
+
 <br><br>
 
 
 **Responsible for Mathematical Model Development and Programming:**
+
 - [PD Dr. J&uuml;rgen Dippon](http://www.isa.uni-stuttgart.de/LstStoch/Dippon/), Institut f&uuml;r Stochastik und Anwendungen, Universit&auml;t Stuttgart
+
 - [Dr. Simon M&uuml;ller](http://muon-stat.com/), TTI GmbH - MUON-STAT
 
 
