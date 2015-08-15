@@ -6,7 +6,7 @@
 
 * [Friedel et al.](http://ar.iiarjournals.org/content/33/4/1609.short) (2012).
 
-<br><br>
+<br>
 
 
 **Responsible for Mathematical Model Development and Programming:**
@@ -15,6 +15,17 @@
 
 * [Dr. Simon M&uuml;ller](http://muon-stat.com/), TTI GmbH - MUON-STAT
 
+<br>
+
+**Medical Advisor**
+
+* Dr. Peter Fritz
+
+<br>
+
+**Funding**
+
+![Robert-Bosch-Stifung](img/RBS_Logo.png)
 
 The work was funded by the Robert Bosch Foundation. Special thanks go to Professor Dr. Friedel ([Thoraxchirugie - Klinik Schillerhöhe](http://www.rbk.de/standorte/klinik-schillerhoehe/abteilungen/thoraxchirurgie/team.html)).
 
