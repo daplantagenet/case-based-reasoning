@@ -18,14 +18,6 @@
 <script src="libs/bootstrap/js/bootstrap.min.js"></script>
 <script src="libs/bootstrap/shim/html5shiv.min.js"></script>
 <script src="libs/bootstrap/shim/respond.min.js"></script>
-<script src="libs/htmlwidgets/htmlwidgets.js"></script>
-<script src="libs/d3/d3.min.js"></script>
-<script src="libs/dagre/dagre-d3.min.js"></script>
-<link href="libs/mermaid/dist/mermaid.css" rel="stylesheet" />
-<script src="libs/mermaid/dist/mermaid.slim.min.js"></script>
-<link href="libs/DiagrammeR-styles/styles.css" rel="stylesheet" />
-<script src="libs/chromatography/chromatography.js"></script>
-<script src="libs/DiagrammeR-binding/DiagrammeR.js"></script>
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
@@ -93,23 +85,9 @@ img {
 
 
 
-<div id="class-structure" class="section level1">
-<h1><span class="header-section-number">1</span> Class Structure</h1>
-<p><strong>Note:</strong> Package is in active development. Structure, workflow, and syntax may change dramatically.</p>
-<p>Following diagramm describes the workflow of the case-based reasoning R package. Box colour has different meanings:</p>
-<ul>
-<li><span style="color:#2773ae">Useable:</span> this features can be used</li>
-<li><span style="color:#990000">Not useable: </span> planned features</li>
-<li><span style="color:#507E4E">Optional:</span> this function will be called by subsequent features and can be called optionally</li>
-</ul>
-<p><div id="htmlwidget-5716" style="width:672px;height:480px;" class="DiagrammeR"></div>
-<script type="application/json" data-for="htmlwidget-5716">{
-  "x": {
-    "diagram": "\n  graph TB;\n    B-->C[Validate]\n    B-->D[Extract Data]\n    E[Calculate Full Distance Matrix]\n    E-->F[Manifold Learning]\n    H-->|Cox-Model<br>-optional-|G[Check Linearity & Proportional Hazard]\n    G-->B[Calculate Similar Cases]\n    G-->E\n    B-->|<strong><span style='color:#990000'> not working</span></strong>|F\n    A[Initialize CBR Object]-->I[Variable Selection]\n    A-->H\n    I-->H[Learn Final Model]\n    H-->B\n    H-->E;\n    \n    style A fill:#fff, stroke:#2773ae, stroke-width:2px, color:#ffffff;\n    style B fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style C fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style D fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style E fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style F fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style G fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style H fill:#fff, stroke:#507E4E, stroke-width:2px;\n    style I fill:#fff, stroke:#990000, stroke-width:2px;\n"
-  },
-  "evals": []
-}</script></p>
-</div>
+<p><strong>The model development is based on:</strong> - <a href="http://dl.acm.org/citation.cfm?id=608456">Dippon et al.</a> (2002), - <a href="http://www.vis.uni-stuttgart.de/~klenksn/paper/medicaldb.pdf">Klenk et al.</a> (2009) und - <a href="http://ar.iiarjournals.org/content/33/4/1609.short">Friedel et al.</a> (2012). <br><br></p>
+<p><strong>Responsible for Mathematical Model Development and Programming:</strong> - <a href="http://www.isa.uni-stuttgart.de/LstStoch/Dippon/">PD Dr. Jürgen Dippon</a>, Institut für Stochastik und Anwendungen, Universität Stuttgart - <a href="http://muon-stat.com/">Dr. Simon Müller</a>, TTI GmbH - MUON-STAT</p>
+<p>The work was funded by the Robert Bosch Foundation. Special thanks go to Professor Dr. Friedel (<a href="http://www.rbk.de/standorte/klinik-schillerhoehe/abteilungen/thoraxchirurgie/team.html">Thoraxchirugie - Klinik Schillerhöhe</a>).</p>
 
 <script>
 // manage active state of menu based on current page
