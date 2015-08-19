@@ -104,10 +104,10 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           # rows: reference cases
                           # columns: new cases
                           if (self$refEQNew) {
-                            self$distMat <- rsf$proximity
+                            self$distMat <- sqrt(1 - rsf$proximity)
                           } else {
                             nRef <- nrow(self$learning)
-                            self$distMat <- rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)]
+                            self$distMat <- sqrt(1 - rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)])
                           }
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)

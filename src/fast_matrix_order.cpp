@@ -15,7 +15,7 @@ Rcpp::NumericMatrix fast_Matrix_Order(arma::mat mDist, int nCases) {
 
     // loop over new cases
     for (int i=0;i<nNewCases; ++i) {
-      order = arma::sort_index(mDist.col(i), "descend");
+      order = arma::sort_index(mDist.col(i), "ascend");
       for (int k=0;k<nCases; ++k) {
         // write order to final matrix
         retOrder(i, k) = order(k) + 1;
