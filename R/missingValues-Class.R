@@ -1,5 +1,5 @@
 missingValues <- R6Class("missingValues",
-                         public=list(),
+                         public=list(
                          dependent   = NA,
                          independent = NA,
                          initialize=function() {
@@ -8,3 +8,4 @@ missingValues <- R6Class("missingValues",
                          describe=function(dtData) {
                            
                          })
+)
