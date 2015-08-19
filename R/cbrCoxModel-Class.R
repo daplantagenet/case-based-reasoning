@@ -32,7 +32,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
                           coxFit <- cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
                           self$coxFit <- coxFit
-                          self$cph <- cox.zph(f, "rank")
+                          self$cph <- cox.zph(self$coxFit, "rank")
                           
                           nVars <- length(self$learnVars)
                           Weights <- vector("list", nVars)
@@ -128,7 +128,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           return(plot_grid(plotlist = ggPlot, 
                                            labels   = self$learnVars, 
                                            ncol     = 2))
-                        }
+                        },
                         # calculate distance matrix for verum data
                         getFullDistanceMatrix = function() {
                           # learn if weights are empty
