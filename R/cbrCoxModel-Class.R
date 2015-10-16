@@ -44,7 +44,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                               weights <- rep(NA, times = nLev)
                               names(weights) <- levels(self$learning[, self$learnVars[i]])
                               for (j in 1:nLev) {
-                                myLevel <- paste(self$learnVars[i], levels(self$learning[, self$learnVars[i]])[j], sep="")
+                                myLevel <- paste(self$learnVars[i], "=", levels(self$learning[, self$learnVars[i]])[j], sep="")
                                 if (j==1) {
                                   weights[j] <- 0
                                 } else {
@@ -91,18 +91,18 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                             formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", self$learnVars[i]))
                             fit <- cph(formel, data=self$learning, x=T, y=T)
                             self$learning$res <- residuals(fit, "martingale")
-                            var <- names(self$learning)[i]
+                            var <- self$learnVars[i]
                             g <- ggplot(self$learning, aes_string(x=var, y="res")) +
                               geom_hline(yintercept=0, colour="grey") +
                               geom_point() +
-                              geom_smooth(color="steelblue", fill="steelblue") +
-                              ylab("Martingal Residuen") + xlab(var)
+                              geom_smooth(color="#2773ae", fill="#2773ae") +
+                              ylab("Martingal Residuen") + xlab(var) +
+                              background_grid(major="xy", minor="xy")
                             ggPlot <- c(ggPlot, list(g))
                           }
                           self$learning$res <- NULL
                           options(datadist=NULL)
                           return(plot_grid(plotlist = ggPlot, 
-                                           labels   = names(self$learning)[idNum], 
                                            ncol     = 2))
                         },
                         # check proportional hazard
@@ -112,7 +112,6 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                             self$learn()
                           }
                           
-                          self$cph
                           n <- length(self$learnVars)
                           ggPlot <- list()
                           for (i in 1:n) {
@@ -120,13 +119,13 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                             g <- ggplot(df, aes(x=x, y=y)) +
                               geom_hline(yintercept=0, colour="grey") +
                               geom_point() +
-                              geom_smooth(color="steelblue", fill="steelblue") +
-                              ylab(paste0("Beta(t) of ", self$learnVars)) + xlab("Time")
+                              geom_smooth(color="#2773ae", fill="#2773ae") +
+                              ylab(paste0("Beta(t) of ", self$learnVars[i])) + xlab("Time to Event") +
+                              background_grid(major="xy", minor="xy")
                             ggPlot <- c(ggPlot, list(g))
                           }
                           
                           return(plot_grid(plotlist = ggPlot, 
-                                           labels   = self$learnVars, 
                                            ncol     = 2))
                         },
                         # calculate distance matrix for verum data

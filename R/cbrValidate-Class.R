@@ -30,7 +30,8 @@ cbrValidate <- R6Class("cbrValidate",
                                if (plots)
                                  ggPlot <-  c(ggPlot, list(ggplot(sc) +
                                                              geom_boxplot(aes_string(x="simCases", y=var), alpha=0) +
-                                                             xlab("") + ylab("")))
+                                                             xlab("") + ylab("") + 
+                                                             background_grid(major="y", minor="y")))
                              } else if (is.factor(simCases[, var])) {
                                w <- chisq.test(sc$simCases, sc[, var])
                                tit <- c(tit, paste0(var, " (p = ", round(w$p.value, 3), ")"))
@@ -40,7 +41,8 @@ cbrValidate <- R6Class("cbrValidate",
                                  ggPlot <- c(ggPlot, list(ggplot(df) +
                                                             geom_bar(aes_string(x="Var2", y="Freq", fill="Var1"), stat = "identity", position="dodge", alpha=.7) +
                                                             scale_fill_manual(name="", values = stat.color) +
-                                                            xlab("") + ylab("") + theme(legend.position="top")))
+                                                            xlab("") + ylab("") + theme(legend.position="top") + 
+                                                            background_grid(major="y", minor="y")))
                              }
                            }
                            if (plots) {

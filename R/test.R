@@ -7,13 +7,21 @@
 # ovarian$rx <- factor(ovarian$rx)
 # ovarian$ecog.ps <- factor(ovarian$ecog.ps)
 # 
-# sc <- cbrCoxModel$new(learning=ovarian, verumData=ovarian[1:10, ], learnVars=names(ovarian)[-c(1, 2)], endPoint=c("futime", "fustat"))
+# sc <- cbrCoxModel$new(learning=ovarian, 
+#                       verumData=ovarian[1:10, ], 
+#                       learnVars=names(ovarian)[-c(1, 2)], 
+#                       endPoint=c("futime", "fustat"))
 # sc$learn()
+# sc$Weights
 # sc$getSimilarCases(1)
 # sc$getVerumData()
 # sc$simCases
 # pp <- sc$validate()
+# pp
 # pp <- sc$check_linearity()
+# pp
+# pp <- sc$check_ph()
+# pp
 # 
 # sc$getFullDistanceMatrix()
 # p <- cmdscale(sc$distMat, k = 2)
