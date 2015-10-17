@@ -19,7 +19,7 @@ If you want multicore support for RandomForest package, please follow the instru
 
 Please use [Github issues](https://github.com/sipemu/case-based-reasoning/issues) if you want to file bug reports or feature requests.
 
-**Features**
+### Features
 
 This R package provides until now two methods case based reasoning for survival data:
 
@@ -47,9 +47,4 @@ Near future implementations:
 - more methods for manifold learning, e.g. Spectral Embedding, LLE, LTSA, Hessian LLE, MDS, and ISOMAP
 
 - automatic searching for clusters after manifold learning based on included categorial variables, e.g. silhouette coefficient
-
-- maybe other cluster algorithms (not sure)
-
-**Contributions**
-
 

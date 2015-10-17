@@ -98,9 +98,7 @@ img {
                   <ul class="nav navbar-nav">
                     <li><a href="example-cox-model.html">Example</a></li>
                     <li><a href="Workflow.html">Documentation</a></li>
-                          <li><a href="manifold_learning.html">Manifold Learning</a></li>
-                          <li><a href="Quasi-Randomization.html">Quasi-Randomization</a></li>
-                          <li><a href="Shared-Decision.html">Shared-Decison Making</a></li>
+                          <li><a href="distance-measures.html">Distance Measures</a></li>
                           <li><a href="about.html">About</a></li>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right">
@@ -161,8 +159,8 @@ sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span c
 <pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">getSimilarCases</span>(<span class="dt">nCases =</span> <span class="dv">1</span>)</code></pre>
 <pre><code>## Start caclulating similar cases...
 ## Start learning...
-## Learning finished in: 0.01 seconds.
-## Similar cases calculation finished in: 0.01 seconds.</code></pre>
+## Learning finished in: 0.03 seconds.
+## Similar cases calculation finished in: 0.04 seconds.</code></pre>
 <p>You may extract then the similar cases and the verum data and put them together:</p>
 <pre class="sourceCode r"><code class="sourceCode r">verum &lt;-<span class="st"> </span>sc$<span class="kw">getVerumData</span>()
 verum$group &lt;-<span class="st"> &quot;Verum&quot;</span>
@@ -176,7 +174,7 @@ df &lt;-<span class="st"> </span><span class="kw">rbind</span>(verum, simCases)<
 <h3><span class="header-section-number">1.2.1</span> Validate</h3>
 <p>You may want to check the distibution of the <code>learnVars</code> variables of the verum and similar cases data set:</p>
 <pre class="sourceCode r"><code class="sourceCode r">pp &lt;-<span class="st"> </span>sc$<span class="kw">validate</span>()</code></pre>
-<pre><code>## Two-sample Wilcoxon test for variable: age; p = 0.694
+<pre><code>## Two-sample Wilcoxon test for variable: age; p = 0.978
 ## Chi-Square test for variable: resid.ds; p = 1
 ## Chi-Square test for variable: rx; p = 1
 ## Chi-Square test for variable: ecog.ps; p = 1</code></pre>
@@ -192,7 +190,7 @@ df &lt;-<span class="st"> </span><span class="kw">rbind</span>(verum, simCases)<
 ## Dropped cases with missing values: 0</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">getFullDistanceMatrix</span>()</code></pre>
 <pre><code>## Start learning...
-## Learning finished in: 0 seconds.
+## Learning finished in: 0.02 seconds.
 ## Start calculating distance matrix...
 ## Distance matrix calculation finished in: 0 seconds.</code></pre>
 <p><code>sc$getFullDistanceMatrix()</code> calculates the full distance matrix. This matrix the dimension: cases of learning data versus cases of verum data. In the above example we used the same data set for learning and as verum data. Such case can also be achieved by:</p>

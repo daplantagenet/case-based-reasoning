@@ -14,22 +14,22 @@ Following diagramm describes the workflow of the case-based reasoning R package.
 
 
 ```{r, eval=TRUE, echo=FALSE}
-DiagrammeR("
-  graph TB;
-    B-->C[Validate]
-    B-->D[Extract Data]
-    E[Calculate Full Distance Matrix]
-    E-->F[Manifold Learning]
-    H-->|Cox-Model<br>-optional-|G[Check Linearity & Proportional Hazard]
-    G-->B[Calculate Similar Cases]
-    G-->E
+mermaid("
+  graph TB
+    B-->C[Validate];
+    B-->D[Extract Data];
+    E[Calculate Full Distance Matrix];
+    E-->F[Manifold Learning];
+    H-->|Cox-Model<br>-optional-|G[Check Linearity & Proportional Hazard];
+    G-->B[Calculate Similar Cases];
+    G-->E;
     B-->|<strong><span style='color:#990000'> not working</span></strong>|F
-    A[Initialize CBR Object]-->I[Variable Selection]
-    A-->H
-    I-->H[Learn Final Model]
-    H-->B
+    A[Initialize CBR Object]-->I[Variable Selection];
+    A-->H;
+    I-->H[Learn Final Model];
+    H-->B;
     H-->E;
-    
+
     style A fill:#fff, stroke:#2773ae, stroke-width:2px, color:#ffffff;
     style B fill:#fff, stroke:#2773ae, stroke-width:2px;
     style C fill:#fff, stroke:#2773ae, stroke-width:2px;

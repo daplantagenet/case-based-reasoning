@@ -79,9 +79,7 @@ img {
                   <ul class="nav navbar-nav">
                     <li><a href="example-cox-model.html">Example</a></li>
                     <li><a href="Workflow.html">Documentation</a></li>
-                          <li><a href="manifold_learning.html">Manifold Learning</a></li>
-                          <li><a href="Quasi-Randomization.html">Quasi-Randomization</a></li>
-                          <li><a href="Shared-Decision.html">Shared-Decison Making</a></li>
+                          <li><a href="distance-measures.html">Distance Measures</a></li>
                           <li><a href="about.html">About</a></li>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right">
@@ -105,7 +103,7 @@ img {
 <p><div id="htmlwidget-5716" style="width:672px;height:480px;" class="DiagrammeR"></div>
 <script type="application/json" data-for="htmlwidget-5716">{
   "x": {
-    "diagram": "\n  graph TB;\n    B-->C[Validate]\n    B-->D[Extract Data]\n    E[Calculate Full Distance Matrix]\n    E-->F[Manifold Learning]\n    H-->|Cox-Model<br>-optional-|G[Check Linearity & Proportional Hazard]\n    G-->B[Calculate Similar Cases]\n    G-->E\n    B-->|<strong><span style='color:#990000'> not working</span></strong>|F\n    A[Initialize CBR Object]-->I[Variable Selection]\n    A-->H\n    I-->H[Learn Final Model]\n    H-->B\n    H-->E;\n    \n    style A fill:#fff, stroke:#2773ae, stroke-width:2px, color:#ffffff;\n    style B fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style C fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style D fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style E fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style F fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style G fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style H fill:#fff, stroke:#507E4E, stroke-width:2px;\n    style I fill:#fff, stroke:#990000, stroke-width:2px;\n"
+    "diagram": "\n  graph TB\n    B-->C[Validate];\n    B-->D[Extract Data];\n    E[Calculate Full Distance Matrix];\n    E-->F[Manifold Learning];\n    H-->|Cox-Model<br>-optional-|G[Check Linearity & Proportional Hazard];\n    G-->B[Calculate Similar Cases];\n    G-->E;\n    B-->|<strong><span style='color:#990000'> not working</span></strong>|F\n    A[Initialize CBR Object]-->I[Variable Selection];\n    A-->H;\n    I-->H[Learn Final Model];\n    H-->B;\n    H-->E;\n\n    style A fill:#fff, stroke:#2773ae, stroke-width:2px, color:#ffffff;\n    style B fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style C fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style D fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style E fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style F fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style G fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style H fill:#fff, stroke:#507E4E, stroke-width:2px;\n    style I fill:#fff, stroke:#990000, stroke-width:2px;\n"
   },
   "evals": []
 }</script></p>
