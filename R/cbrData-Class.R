@@ -104,6 +104,8 @@ cbrData <- R6Class("cbrData",
                        # check levels of factor variables
 
                        # more tests
+                       
+                       return(x)
                      },
                      # drop missing values from data
                      drop_missing = function(x) {
