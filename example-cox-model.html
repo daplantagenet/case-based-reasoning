@@ -107,12 +107,11 @@ img {
                     </li>
                     <li class="dropdown">
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
-                      <ul class="dropdown-menu">
+                    <!--  <ul class="dropdown-menu">
                         <li><a href="class-structure.html">Class Structure</a></li>
                         <li><a href="distance-measures.html">Distance Measures</a></li>
-                      </ul>
+                      </ul>-->
                     </li>
-                    <li class="dropdown"><a href="#">Documentation</a></li>
                     <li><a href="about.html">About</a></li>
                   </ul>
                                 <ul class="nav navbar-nav navbar-right">
@@ -172,7 +171,7 @@ sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span c
 <pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">getSimilarCases</span>(<span class="dt">nCases =</span> <span class="dv">1</span>)</code></pre>
 <pre><code>## Start caclulating similar cases...
 ## Start learning...
-## Learning finished in: 0.03 seconds.
+## Learning finished in: 0.04 seconds.
 ## Similar cases calculation finished in: 0.04 seconds.</code></pre>
 <p>You may extract then the similar cases and the verum data and put them together:</p>
 <pre class="sourceCode r"><code class="sourceCode r">verum &lt;-<span class="st"> </span>sc$<span class="kw">getVerumData</span>()
@@ -187,7 +186,7 @@ df &lt;-<span class="st"> </span><span class="kw">rbind</span>(verum, simCases)<
 <h3><span class="header-section-number">0.2.1</span> Validate</h3>
 <p>You may want to check the distibution of the <code>learnVars</code> variables of the verum and similar cases data set:</p>
 <pre class="sourceCode r"><code class="sourceCode r">pp &lt;-<span class="st"> </span>sc$<span class="kw">validate</span>()</code></pre>
-<pre><code>## Two-sample Wilcoxon test for variable: age; p = 0.993
+<pre><code>## Two-sample Wilcoxon test for variable: age; p = 1
 ## Chi-Square test for variable: resid.ds; p = 1
 ## Chi-Square test for variable: rx; p = 1
 ## Chi-Square test for variable: ecog.ps; p = 1</code></pre>
