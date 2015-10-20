@@ -10,7 +10,7 @@
 
 
 
-<title>Shiny App for Manifold Learning</title>
+<title></title>
 
 <script src="libs/jquery/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -122,17 +122,16 @@ img {
                                     </div><!--/.container -->
                                     </nav><!--/.navbar -->
 
-<div id="header">
-<h1 class="title">Shiny App for Manifold Learning</h1>
-</div>
 
 
-<hr />
-<p>Beside of searching for similar cases and matching datasets, you may do a dimension reduction on the distance matrix. Actually, just t-SNE (t-distributed Stochastic Neighbor Embedding using Barnes-Hut Implementation (see <code>Rtsne</code> R package)) is activated. More are comming. For this task you may call a shiny app for interactive analysis. As input you need a <code>cbrCoxModel</code> or a <code>cbrRFProxy</code> object.</p>
+<div id="shiny-app-for-manifold-learning" class="section level1">
+<h1><span class="header-section-number">1</span> Shiny App for Manifold Learning</h1>
+<p>Beside of searching for similar cases and matching datasets, you may do a dimension reduction on the distance matrix. Actually, just t-SNE (t-distributed Stochastic Neighbor Embedding using Barnes-Hut Implementation (see <code>Rtsne</code> R package) is activated. More are comming. For this task you may call a shiny app for interactive analysis. As input you need a <code>cbrCoxModel</code> or a <code>cbrRFProxy</code> object.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbrDistViz</span>(sc)</code></pre>
 <p>This opens a shiny app and you may then search for clusters in the by t-SNE reduced data set.</p>
 <p><img src="img/shiny-cbr.png" style="width: 1024px"></p>
 <p><strong>Note</strong>: On big data sets, the t-SNE may need some time. Do not close the shiny window.</p>
+</div>
 
 <script>
 // manage active state of menu based on current page

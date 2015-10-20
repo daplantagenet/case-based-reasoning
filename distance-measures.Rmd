@@ -20,7 +20,6 @@ $$\sum_{i=1}^{n} X^3_i$$
 
 ## RandomForest Proximity
 
-dsf
 
 ## RandomForest Deep Model
 

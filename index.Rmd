@@ -19,7 +19,7 @@ If you want multicore support for RandomForest package, please follow the instru
 
 Please use [Github issues](https://github.com/sipemu/case-based-reasoning/issues) if you want to file bug reports or feature requests.
 
-### Features
+# Features
 
 This R package provides until now two methods case based reasoning for survival data:
 
@@ -40,7 +40,9 @@ Besides the functionality of searching similar cases, some additional features a
 - C++-functions for fast (weighted) distance and order matrix calculations
 
 
-Near future implementations:
+# Near future implementations:
+
+- RandomForest depth distance calculation
 
 - analysis of missing values and imputation for the Cox model
 
@@ -48,3 +50,4 @@ Near future implementations:
 
 - automatic searching for clusters after manifold learning based on included categorial variables, e.g. silhouette coefficient
 
+<br>

@@ -92,15 +92,29 @@ img {
           <span class="icon-bar"></span>
             <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="./">CBR</a>
+              <a class="navbar-brand" href="./index.html">CBR</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                   <ul class="nav navbar-nav">
-                    <li><a href="example-cox-model.html">Example</a></li>
-                    <li><a href="Workflow.html">Documentation</a></li>
-                          <li><a href="distance-measures.html">Distance Measures</a></li>
-                          <li><a href="about.html">About</a></li>
-                                </ul>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples<b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="cox-beta.html">Cox-Beta</a></li>
+                        <li><a href="rf-proximity.html">RF-Proximity</a></li>
+                        <li><a href="rf-depth.html">RF-Depth</a></li>
+                        <li><a href="manifold-learning.html">Manifold Learning</a></li>
+                      </ul>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="class-structure.html">Class Structure</a></li>
+                        <li><a href="distance-measures.html">Distance Measures</a></li>
+                      </ul>
+                    </li>
+                    <li class="dropdown"><a href="#">Documentation</a></li>
+                    <li><a href="about.html">About</a></li>
+                  </ul>
                                 <ul class="nav navbar-nav navbar-right">
                                   <li><a href="https://github.com/sipemu/case-based-reasoning" title="View Source on Github"><i class="fa fa-github fa-lg"></i></a></li>
                                     </ul>
@@ -121,8 +135,8 @@ devtools::<span class="kw">install_github</span>(<span class="st">&quot;sipemu/c
 <p>If you want multicore support for RandomForest package, please follow the instruction of the following link:</p>
 <p><a href="http://www.ccs.miami.edu/~hishwaran/rfsrc.html" class="uri">http://www.ccs.miami.edu/~hishwaran/rfsrc.html</a></p>
 <p>Please use <a href="https://github.com/sipemu/case-based-reasoning/issues">Github issues</a> if you want to file bug reports or feature requests.</p>
-<div id="features" class="section level3">
-<h3><span class="header-section-number">0.0.1</span> Features</h3>
+<div id="features" class="section level1">
+<h1><span class="header-section-number">1</span> Features</h1>
 <p>This R package provides until now two methods case based reasoning for survival data:</p>
 <ul>
 <li><p>Cox-Regression</p></li>
@@ -136,12 +150,16 @@ devtools::<span class="kw">install_github</span>(<span class="st">&quot;sipemu/c
 <li><p>checking linearity and proportional hazard assumption for the cox regression. This point needs ome further investigation, e.g. how the distance is biased when linearity and PH assumption do not hold.</p></li>
 <li><p>C++-functions for fast (weighted) distance and order matrix calculations</p></li>
 </ul>
-<p>Near future implementations:</p>
+</div>
+<div id="near-future-implementations" class="section level1">
+<h1><span class="header-section-number">2</span> Near future implementations:</h1>
 <ul>
+<li><p>RandomForest depth distance calculation</p></li>
 <li><p>analysis of missing values and imputation for the Cox model</p></li>
 <li><p>more methods for manifold learning, e.g. Spectral Embedding, LLE, LTSA, Hessian LLE, MDS, and ISOMAP</p></li>
 <li><p>automatic searching for clusters after manifold learning based on included categorial variables, e.g. silhouette coefficient</p></li>
 </ul>
+<p><br></p>
 </div>
 
 <script>

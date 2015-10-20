@@ -10,7 +10,7 @@
 
 
 
-<title>Distance Measures used in this Package</title>
+<title>Distance Measures</title>
 
 <script src="libs/jquery/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -65,15 +65,29 @@ img {
           <span class="icon-bar"></span>
             <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="./">CBR</a>
+              <a class="navbar-brand" href="./index.html">CBR</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                   <ul class="nav navbar-nav">
-                    <li><a href="example-cox-model.html">Example</a></li>
-                    <li><a href="Workflow.html">Documentation</a></li>
-                          <li><a href="distance-measures.html">Distance Measures</a></li>
-                          <li><a href="about.html">About</a></li>
-                                </ul>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples<b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="cox-beta.html">Cox-Beta</a></li>
+                        <li><a href="rf-proximity.html">RF-Proximity</a></li>
+                        <li><a href="rf-depth.html">RF-Depth</a></li>
+                        <li><a href="manifold-learning.html">Manifold Learning</a></li>
+                      </ul>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="class-structure.html">Class Structure</a></li>
+                        <li><a href="distance-measures.html">Distance Measures</a></li>
+                      </ul>
+                    </li>
+                    <li class="dropdown"><a href="#">Documentation</a></li>
+                    <li><a href="about.html">About</a></li>
+                  </ul>
                                 <ul class="nav navbar-nav navbar-right">
                                   <li><a href="https://github.com/sipemu/case-based-reasoning" title="View Source on Github"><i class="fa fa-github fa-lg"></i></a></li>
                                     </ul>
@@ -82,7 +96,7 @@ img {
                                     </nav><!--/.navbar -->
 
 <div id="header">
-<h1 class="title">Distance Measures used in this Package</h1>
+<h1 class="title">Distance Measures</h1>
 </div>
 
 
@@ -90,19 +104,18 @@ img {
 <div id="similarity-measure" class="section level1">
 <h1><span class="header-section-number">1</span> Similarity Measure</h1>
 <p>This summation expression <span class="math">$\sum_{i=1}^n X_i$</span> appears inline.</p>
-<div id="cox-beta" class="section level3">
-<h3><span class="header-section-number">1.0.1</span> Cox-Beta</h3>
+<div id="cox-beta" class="section level2">
+<h2><span class="header-section-number">1.1</span> Cox-Beta</h2>
 <p>Let <span class="math"><strong>x</strong> = (<em>x</em><sub>1</sub>, …, <em>x</em><sub><em>m</em></sub>)</span> and <span class="math"><strong>y</strong> = (<em>y</em><sub>1</sub>, …, <em>y</em><sub><em>m</em></sub>)</span> be the features vectors of two patients.</p>
 <p><br /><span class="math">$$d(\mathbf{x}, \mathbf{y}) = \sum_{i=1}^p |\alpha(x_i, y_i)\cdot d(x_i, y_i)|$$</span><br /></p>
 <p><br /><span class="math">$$\sum_{i=1}^{n} X^3_i$$</span><br /></p>
 </div>
-<div id="randomforest-proximity" class="section level3">
-<h3><span class="header-section-number">1.0.2</span> RandomForest Proximity</h3>
-<p>dsf</p>
+<div id="randomforest-proximity" class="section level2">
+<h2><span class="header-section-number">1.2</span> RandomForest Proximity</h2>
 </div>
-<div id="randomforest-deep-model" class="section level3">
-<h3><span class="header-section-number">1.0.3</span> RandomForest Deep Model</h3>
-<p>sdf</p>
+<div id="randomforest-deep-model" class="section level2">
+<h2><span class="header-section-number">1.3</span> RandomForest Deep Model</h2>
+<p><a href="https://www.researchgate.net/profile/Antanas_Verikas/publication/257404436_A_novel_approach_to_estimate_proximity_in_a_random_forest_An_exploratory_study/links/53e8f90c0cf2fb1b9b6438c4.pdf">A novel approach to estimate proximity in a random forest: An exploratory study</a></p>
 </div>
 </div>
 

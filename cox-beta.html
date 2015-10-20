@@ -10,7 +10,7 @@
 
 
 
-<title></title>
+<title>Cox-Beta Model</title>
 
 <script src="libs/jquery/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -122,11 +122,14 @@ img {
                                     </div><!--/.container -->
                                     </nav><!--/.navbar -->
 
+<div id="header">
+<h1 class="title">Cox-Beta Model</h1>
+</div>
 
 
-<p>Cox-Beta</p>
-<div id="initialization" class="section level2">
-<h2><span class="header-section-number">0.1</span> Initialization</h2>
+<hr />
+<div id="initialization" class="section level1">
+<h1><span class="header-section-number">1</span> Initialization</h1>
 <p>In the first example, we use the Cox-Model and the <code>ovarian</code> data set from the <code>survival</code> package. In the first step we initialize the R6 data object. The initialization needs several inputs:</p>
 <p><strong>Arguments:</strong></p>
 <table>
@@ -156,6 +159,8 @@ img {
 <p><br></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survival)
 <span class="kw">library</span>(cbr)
+
+<span class="co"># all variables should be numeric or factor</span>
 ovarian$resid.ds &lt;-<span class="st"> </span><span class="kw">factor</span>(ovarian$resid.ds)
 ovarian$rx &lt;-<span class="st"> </span><span class="kw">factor</span>(ovarian$rx)
 ovarian$ecog.ps &lt;-<span class="st"> </span><span class="kw">factor</span>(ovarian$ecog.ps)
@@ -164,10 +169,10 @@ ovarian$ecog.ps &lt;-<span class="st"> </span><span class="kw">factor</span>(ova
 sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span class="dt">learning=</span>ovarian, <span class="dt">verumData=</span>ovarian, <span class="dt">learnVars=</span><span class="kw">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;resid.ds&quot;</span>, <span class="st">&quot;rx&quot;</span>, <span class="st">&quot;ecog.ps&quot;</span>), <span class="dt">endPoint=</span><span class="kw">c</span>(<span class="st">&quot;futime&quot;</span>, <span class="st">&quot;fustat&quot;</span>), <span class="dt">impute=</span>F)</code></pre>
 <pre><code>## Dropped cases with missing values: 0
 ## Dropped cases with missing values: 0</code></pre>
-<p>If <code>impute</code> is set to <code>FALSE</code> (for the Cox model the <code>ìmpute</code> variable is always set to <code>FALSE</code>) then all cases with missing values in the learning and end point variables are dropped (similar to <code>na.omit</code>) and the reduced data set without missing values is saved internally. You get an information on how many cases were dropped.</p>
+<p>If <code>impute</code> is set to <code>FALSE</code> (for the Cox model the <code>ìmpute</code> variable is always set to <code>FALSE</code>) then all cases with missing values in the learning and end point variables are dropped (<code>na.omit</code>) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. The variables should be <code>numeric</code> or <code>factor</code>.</p>
 </div>
-<div id="similar-cases" class="section level2">
-<h2><span class="header-section-number">0.2</span> Similar Cases</h2>
+<div id="similar-cases" class="section level1">
+<h1><span class="header-section-number">2</span> Similar Cases</h1>
 <p>After the initialization, we may get for each case in verum data the most similar case from the learning data.</p>
 <pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">getSimilarCases</span>(<span class="dt">nCases =</span> <span class="dv">1</span>)</code></pre>
 <pre><code>## Start caclulating similar cases...
@@ -181,22 +186,32 @@ simCases &lt;-<span class="st"> </span>sc$simCases
 simCases$caseId &lt;-<span class="st"> </span><span class="ot">NULL</span>
 simCases$group &lt;-<span class="st"> &quot;Similar Cases&quot;</span>
 df &lt;-<span class="st"> </span><span class="kw">rbind</span>(verum, simCases)</code></pre>
-<p><strong>Note 1:</strong> In the initialization step, we dropped all cases with missing values in the variables of <code>learnVars</code> and <code>endPoint</code>. The function <code>sc$getVerumData()</code> returns the data set without the missing values if <code>impute</code> is set to <code>FALSE</code> else you get full verum data with imputed values (just for RSF model).</p>
+<p><strong>Note 1:</strong> In the initialization step, we dropped all cases with missing values in the variables of <code>learnVars</code> and <code>endPoint</code>. The function <code>sc$getVerumData()</code> returns the data set without the cases with missing values in the learning vars, except in the randomForest model where you have the option to impute missing values.</p>
 <p><strong>Note 2:</strong> The <code>data.frame</code> returned from <code>sc$simCases</code> has an additional column <code>caseId</code>. By this column you may map the similar cases to cases in verum data, e.g. if you had chosen <code>nCases = 3</code>, then the first three elements in the column <code>caseId</code> will be <code>1</code> (following three <code>2</code> and so on). This means that this three cases are the three most similar cases to case <code>1</code> in verum data.</p>
-<div id="validate" class="section level3">
-<h3><span class="header-section-number">0.2.1</span> Validate</h3>
+<div id="check-linearity-and-proportional-hazard-assumption" class="section level2">
+<h2><span class="header-section-number">2.1</span> Check Linearity and Proportional Hazard Assumption</h2>
+<p>There are two functions for checking on the linearity of any independent <code>numeric</code> variable and the proportional hazard assumption for all dependent variables. Actually, it is not able to correct for non-linearity in the distance calculation.</p>
+<pre class="sourceCode r"><code class="sourceCode r">pp &lt;-<span class="st"> </span>sc$<span class="kw">check_linearity</span>()
+pp</code></pre>
+<p><img src="cox-beta_files/figure-html/unnamed-chunk-4-1.png" title="" alt="" width="672" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">pp &lt;-<span class="st"> </span>sc$<span class="kw">check_ph</span>()
+pp</code></pre>
+<p><img src="cox-beta_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>
+</div>
+<div id="validation-of-the-matching-variables" class="section level2">
+<h2><span class="header-section-number">2.2</span> Validation of the matching Variables</h2>
 <p>You may want to check the distibution of the <code>learnVars</code> variables of the verum and similar cases data set:</p>
 <pre class="sourceCode r"><code class="sourceCode r">pp &lt;-<span class="st"> </span>sc$<span class="kw">validate</span>()</code></pre>
-<pre><code>## Two-sample Wilcoxon test for variable: age; p = 0.993
+<pre><code>## Two-sample Wilcoxon test for variable: age; p = 0.978
 ## Chi-Square test for variable: resid.ds; p = 1
 ## Chi-Square test for variable: rx; p = 1
 ## Chi-Square test for variable: ecog.ps; p = 1</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">pp</code></pre>
-<p><img src="example-cox-model_files/figure-html/unnamed-chunk-4-1.png" title="" alt="" width="672" /> The function <code>sc$validate()</code> returns an <code>gg</code> and <code>ggplot</code> object.</p>
+<p><img src="cox-beta_files/figure-html/unnamed-chunk-6-1.png" title="" alt="" width="672" /> <br> The function <code>sc$validate()</code> returns an <code>gg</code> and <code>ggplot</code> object.</p>
 </div>
 </div>
-<div id="distance-matrix" class="section level2">
-<h2><span class="header-section-number">0.3</span> Distance Matrix</h2>
+<div id="distance-matrix" class="section level1">
+<h1><span class="header-section-number">3</span> Distance Matrix</h1>
 <p>Alternatively, you may just be interested in the distance matrix, then you go this way:</p>
 <pre class="sourceCode r"><code class="sourceCode r">sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span class="dt">learning=</span>ovarian, <span class="dt">verumData=</span>ovarian, <span class="dt">learnVars=</span><span class="kw">names</span>(ovarian)[-<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)], <span class="dt">endPoint=</span><span class="kw">c</span>(<span class="st">&quot;futime&quot;</span>, <span class="st">&quot;fustat&quot;</span>), <span class="dt">impute=</span>F)</code></pre>
 <pre><code>## Dropped cases with missing values: 0
@@ -211,13 +226,7 @@ df &lt;-<span class="st"> </span><span class="kw">rbind</span>(verum, simCases)<
 
 sc$<span class="kw">getFullDistanceMatrix</span>()</code></pre>
 <p>The distance matrix is saved internally in the sc object: <code>sc$distMat</code>.</p>
-</div>
-<div id="shiny-app-for-manifold-learning" class="section level2">
-<h2><span class="header-section-number">0.4</span> Shiny App for manifold learning</h2>
-<p>You may now want to analyse your data with t-SNE:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbrDistViz</span>(sc)</code></pre>
-<p>This opens a shiny app and you may then search for clusters in the by t-SNE reduced data set.</p>
-<p><strong>Note</strong>: On big data sets, the t-SNE may need some time. Do not close the shiny window.</p>
+<p><br></p>
 </div>
 
 <script>
