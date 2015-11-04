@@ -3,13 +3,39 @@
 \docType{class}
 \name{cbrCoxModel}
 \alias{cbrCoxModel}
-\title{Case Based Reasoning with Cox Model for distance calculation}
+\title{Cox Beta}
 \format{An \code{\link{R6Class}} generator object}
 \usage{
 cbrCoxModel
 }
+\arguments{
+\item{learning:}{data set for learning the Cox model}
+
+\item{verumData}{(optional): Verum data set. For each case in the verum data,
+we are looking for the k (=1,…,l) similar cases. Learning and verum data set
+need the same structure (variable names and scales)}
+
+\item{learnVars}{(Default: all variables except endPoint): A character vector
+variable names. This variables are used for learning the model. Do not
+include time2event and event variable here.
+fitting.}
+
+\item{endPoint}{(Default: c("Time2Event", "Event")): A character vector of
+length two. The first elements contains the variable name of the time 2 event
+variable and the second the name of the event variable.}
+
+\item{impute}{(Default: FALSE): Missing value imputation. Actually, not
+implemented for the Cox Model.}
+}
 \description{
-Case Based Reasoning with Cox Model for distance calculation
+Cox beta coefficients are use for building a weighted distance measure between
+the learning and verum data set. The learning data set is used for learning the
+Cox model and use the obtained weights for calculating a (n x m)-distance
+matrix, where n is the number of cases in the learning data set and m is the
+number of cases of the verum data. This distance matrix can then be used for
+cluster analysis or for getting for each case in the verum data k (=1,...,l)
+smilar cases from the learning data.
+If verum data is ommitted, a n x n- distance matrix is returned.
 }
 \keyword{Cox}
 \keyword{Model}

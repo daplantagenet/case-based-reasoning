@@ -1,4 +1,27 @@
-#' Case Based Reasoning with Cox Model for distance calculation
+#' Cox Beta
+#' 
+#' Cox beta coefficients are use for building a weighted distance measure between 
+#' the learning and verum data set. The learning data set is used for learning the
+#' Cox model and use the obtained weights for calculating a (n x m)-distance 
+#' matrix, where n is the number of cases in the learning data set and m is the 
+#' number of cases of the verum data. This distance matrix can then be used for 
+#' cluster analysis or for getting for each case in the verum data k (=1,...,l)
+#' smilar cases from the learning data.
+#' If verum data is ommitted, a n x n- distance matrix is returned.
+#'
+#' @param learning: data set for learning the Cox model
+#' @param verumData (optional): Verum data set. For each case in the verum data, 
+#'  we are looking for the k (=1,…,l) similar cases. Learning and verum data set 
+#'  need the same structure (variable names and scales)
+#' @param learnVars (Default: all variables except endPoint): A character vector 
+#' variable names. This variables are used for learning the model. Do not 
+#' include time2event and event variable here. 
+#' fitting.
+#' @param endPoint (Default: c("Time2Event", "Event")): A character vector of 
+#' length two. The first elements contains the variable name of the time 2 event 
+#' variable and the second the name of the event variable. 
+#' @param impute (Default: FALSE): Missing value imputation. Actually, not 
+#' implemented for the Cox Model.
 #'
 #' @useDynLib cbr
 #' @docType class

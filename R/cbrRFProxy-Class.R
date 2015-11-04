@@ -1,5 +1,22 @@
-#' R6 class
+#' RandomForest Proximity
+#' 
+#' This class uses the proximity matrix of the random survival forest algorithm 
+#' as a similarity matrix (sqrt(1 - proximity matrix)) of learning and verum 
+#' cases. By default all cases with at least one missing values are dropped 
+#' from learning, calculating the distance matrix, and searching for similar
+#' cases. 
 #'
+#' @param learning: data set for learning the RF model
+#' @param verumData: Verum data set. For each case in the verum data, we are 
+#' looking for the k (=1,…,l) similar cases. Learning and verum data set need 
+#' the same structure (variable names and scales)
+#' @param learnVars (Default: all variables except endPoint): A character vector 
+#' variable names. This variables are used for learning the model. Do not 
+#' include time2event and event variable here. 
+#' @param endPoint (Default: c("Time2Event", "Event")): A character vector of 
+#' length two. The first elements contains the variable name of the time 2 event 
+#' variable and the second the name of the event variable. 
+#' @param impute (Default: FALSE): Missing value imputation.
 #' @docType class
 #' @importFrom R6 R6Class
 #' @export
