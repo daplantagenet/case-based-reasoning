@@ -1,4 +1,4 @@
-#' Cox Beta
+#' Cox Beta Model
 #' 
 #' Cox beta coefficients are use for building a weighted distance measure between 
 #' the learning and verum data set. The learning data set is used for learning the
@@ -9,7 +9,7 @@
 #' smilar cases from the learning data.
 #' If verum data is ommitted, a n x n- distance matrix is returned.
 #'
-#' @param learning: data set for learning the Cox model
+#' @param learning data set for learning the Cox model
 #' @param verumData (optional): Verum data set. For each case in the verum data, 
 #'  we are looking for the k (=1,…,l) similar cases. Learning and verum data set 
 #'  need the same structure (variable names and scales)
@@ -23,12 +23,23 @@
 #' @param impute (Default: FALSE): Missing value imputation. Actually, not 
 #' implemented for the Cox Model.
 #'
+#' @field new Initialization of the cbrCoxModel
+#' 
+#' @field learn Fit Cox model on the learning data set
+#' 
+#' @field getFullDistanceMatrix Calculates full n x m (n x n)-distance matrix 
+#' 
+#' @field getSimilarCases get for each case in verum data nCases (=1,...,l < n) 
+#' similar cases from the learning data; (1:nCases matching)
+#' 
+#' @usage cbrCoxModel$new
+#' 
 #' @useDynLib cbr
 #' @docType class
 #' @importFrom R6 R6Class
 #' @export
 #' @format An \code{\link{R6Class}} generator object
-#' @keywords Cox Model
+#' @keywords Cox-Beta
 cbrCoxModel <- R6Class("cbrCoxModel",
                       inherit = cbrData,
                       public=list(
@@ -38,6 +49,35 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                         simCases   = NA,
                         coxFit     = NA,
                         cph        = NA,
+                        # fast backward variable selection with penalization
+                        variable_selection = function() {
+                          if (!private$learningValid)
+                            stop("Reference data is not valid!")
+                          
+                          # Timing
+                          start <- Sys.time()
+                          cat("Start learning...\n")
+                          #  datadist scoping
+                          on.exit(detach("design.options"))
+                          attach(list(), name="design.options")
+                          assign('dd', datadist(self$learning), pos='design.options')
+                          options(datadist="dd")
+                          
+                          # formula and Cox-Model
+                          formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
+                          coxFit <- cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
+                          vars <- fastbw(coxFit, type = "i")
+                          cat(paste0("Initial variable set: ", paste(self$learnVars, collapse = ", "), "\n"))
+                          cat(paste0("Selected variable set: ", paste(vars$names.kept, collapse = ", "), "\n"))
+                          self$learnVars <- vars$names.kept
+                          
+                          # end timing
+                          options(datadist=NULL)
+                          end <- Sys.time()
+                          duration <- round(as.numeric(end - start), 2)
+                          cat(paste0("Learning finished in: ", duration, " seconds.\n"))
+                        },
+                        # fit cox model
                         learn = function() {
                           if (!private$learningValid)
                             stop("Reference data is not valid!")
@@ -102,7 +142,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                             return()
                           }
                           
-                          #  datadist scoping
+                          # datadist scoping
                           on.exit(detach("design.options"))
                           attach(list(), name="design.options")
                           assign('dd', datadist(self$learning), pos='design.options')
@@ -183,6 +223,10 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           if (self$refEQNew) {
                             stop("no new data!")
                           }
+                          
+                          if(private$check_weights()) {
+                            stop("NA values in Cox Beta coefficients!")
+                          }
 
                           start <- Sys.time()
                           cat("Start caclulating similar cases...\n")
@@ -217,6 +261,17 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                             stop("no similar cases")
                           valSC <- cbrValidate$new()
                           return(valSC$validate(self$verumData, self$simCases, self$learnVars, plot))
+                        }
+                      ),
+                      private = list(
+                        # check weights on NA
+                        check_weights = function() {
+                          wNA <- unlist(lapply(self$Weights, function(x) any(is.na(x))))
+                          if (any(wNA)) {
+                            cat(paste0("Variables: ", names(wNA)[which(wNA)], " have NA weights.\n"))
+                            return(TRUE)
+                          }
+                          return(FALSE)
                         }
                       )
 )

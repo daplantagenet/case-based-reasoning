@@ -11,6 +11,7 @@
 #                       verumData=ovarian[1:10, ], 
 #                       learnVars=names(ovarian)[-c(1, 2)], 
 #                       endPoint=c("futime", "fustat"))
+# sc$variable_selection()
 # sc$learn()
 # sc$Weights
 # sc$getSimilarCases(1)
@@ -23,12 +24,17 @@
 # pp <- sc$check_ph()
 # pp
 # 
+# library(Rtsne)
+# sc <- cbrCoxModel$new(learning=ovarian, 
+#                       learnVars=names(ovarian)[-c(1, 2)], 
+#                       endPoint=c("futime", "fustat"))
+# sc$variable_selection()
+# sc$learn()
 # sc$getFullDistanceMatrix()
 # p <- cmdscale(sc$distMat, k = 2)
 # plot(p, col=as.factor(ovarian$fustat))
 # p <- prcomp(sc$distMat)
 # plot(p, col=as.factor(ovarian$rx))
-# library(Rtsne)
 # p <- Rtsne(sc$distMat, is_distance = T, perplexity = 5, theta = .1)
 # plot(p$Y, col=as.factor(ovarian$rx))
 # 
@@ -48,4 +54,7 @@
 # 
 # ovarian$futime[3] <- NA
 # ovarian$age[5] <- NA
-# rf <- rfsrc(Surv(futime, fustat) ~ resid.ds + age + rx, data=ovarian, na.action = "na.impute")
+# rf <- rfsrc(Surv(futime, fustat) ~ age, data=ovarian, na.action = "na.impute", forest = T)
+# rf2rfz(rf$forest, forestName = "vet")
+# 
+# 

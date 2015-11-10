@@ -57,6 +57,7 @@ cbrData <- R6Class("cbrData",
                    private = list(
                      learningValid = FALSE,
                      verumDataValid = FALSE,
+
                      # check data sets
                      check_data = function(x, impute=F, isLearning=T) {
                        # check variable names verum data are in data

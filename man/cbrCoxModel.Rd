@@ -3,13 +3,13 @@
 \docType{class}
 \name{cbrCoxModel}
 \alias{cbrCoxModel}
-\title{Cox Beta}
+\title{Cox Beta Model}
 \format{An \code{\link{R6Class}} generator object}
 \usage{
-cbrCoxModel
+cbrCoxModel$new
 }
 \arguments{
-\item{learning:}{data set for learning the Cox model}
+\item{learning}{data set for learning the Cox model}
 
 \item{verumData}{(optional): Verum data set. For each case in the verum data,
 we are looking for the k (=1,…,l) similar cases. Learning and verum data set
@@ -37,6 +37,17 @@ cluster analysis or for getting for each case in the verum data k (=1,...,l)
 smilar cases from the learning data.
 If verum data is ommitted, a n x n- distance matrix is returned.
 }
-\keyword{Cox}
-\keyword{Model}
+\section{Fields}{
+
+\describe{
+\item{\code{new}}{Initialization of the cbrCoxModel}
+
+\item{\code{learn}}{Fit Cox model on the learning data set}
+
+\item{\code{getFullDistanceMatrix}}{Calculates full n x m (n x n)-distance matrix}
+
+\item{\code{getSimilarCases}}{get for each case in verum data nCases (=1,...,l < n)
+similar cases from the learning data; (1:nCases matching)}
+}}
+\keyword{Cox-Beta}
 
