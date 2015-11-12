@@ -49,6 +49,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                         simCases   = NA,
                         coxFit     = NA,
                         cph        = NA,
+                        valCox     = NA,
                         # fast backward variable selection with penalization
                         variable_selection = function() {
                           if (!private$learningValid)
@@ -96,6 +97,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           coxFit <- cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
                           self$coxFit <- coxFit
                           self$cph <- cox.zph(self$coxFit, "rank")
+                          self$valCox <- validate(self$coxFit, B=200)
                           
                           nVars <- length(self$learnVars)
                           Weights <- vector("list", nVars)
