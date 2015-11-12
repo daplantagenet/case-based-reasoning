@@ -1,3 +1,7 @@
+#' Shiny Application for Manifold Learning 
+#'
+#' @param cbrObject
+#'
 #' @export cbrDistViz
 cbrDistViz <- function(cbrObject) {
   require(shiny)
