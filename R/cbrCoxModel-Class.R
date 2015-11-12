@@ -89,15 +89,15 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           #  datadist scoping
                           on.exit(detach("design.options"))
                           attach(list(), name="design.options")
-                          assign('dd', datadist(self$learning), pos='design.options')
+                          assign('dd', rms::datadist(self$learning), pos='design.options')
                           options(datadist="dd")
                           
                           # formula and Cox-Model
                           formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
-                          coxFit <- cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
+                          coxFit <- rms::cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
                           self$coxFit <- coxFit
-                          self$cph <- cox.zph(self$coxFit, "rank")
-                          self$valCox <- validate(self$coxFit, B=200)
+                          self$cph <- rms::cox.zph(self$coxFit, "rank")
+                          # self$valCox <- rms::validate(self$coxFit, B=200)
                           
                           nVars <- length(self$learnVars)
                           Weights <- vector("list", nVars)
