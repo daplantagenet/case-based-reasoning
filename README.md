@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sipemu/case-based-reasoning.svg?branch=master)](https://travis-ci.org/sipemu/case-based-reasoning)
+
 # Case Based Reasoning for Survival Data
 
 http://sipemu.github.io/case-based-reasoning/
