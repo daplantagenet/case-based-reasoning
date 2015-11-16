@@ -1,22 +1,23 @@
 library(randomForestSRC)
+library(XLConnect)
 data(veteran, package = "randomForestSRC")
-v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100, membership = T,
+
+v.obj <- rfsrc(Surv(time, status) ~ age, data = veteran, 
+               ntree = 100, 
+               membership = T,
                proximity = T, forest=T)
-v.max <- max.subtree(v.obj)
-id1 <- which(v.obj$inbag[1, ] > 0)
-id2 <- which(v.obj$inbag[2, ] > 0)
-id <- intersect(id1, id2)
-v.obj$membership[1, id] - v.obj$membership[2, id]
+treeAge <- v.obj$forest$nativeArray[v.obj$forest$nativeArray$treeID == 1, ]
+writeWorksheetToFile("RFSC.xlsx", treeAge, sheet="Alter")
+# save trees
+rf2rfz(v.obj, "Alter")
 
-v.obj$proximity[1, 2]
+# all variables
+v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, 
+               ntree = 100, 
+               membership = T,
+               proximity = T, forest=T)
+treeAll <- v.obj$forest$nativeArray[v.obj$forest$nativeArray$treeID == 1, ]
+writeWorksheetToFile("RFSC.xlsx", treeAll, sheet="Alle Variablen")
+# save trees
+rf2rfz(v.obj, "All")
 
-v.obj$forest$nativeArray[v.obj$forest$nativeArray$treeID == 1, ]
-rf2rfz(v.obj, "test")
-
-
-v.obj$proximity
-plot(v.obj)
-
-library(Rtsne)
-r <- Rtsne(sqrt(1-v.obj$proximity), is_distance = T)
-plot(r$Y)
