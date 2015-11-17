@@ -226,16 +226,16 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                             stop("no new data!")
                           }
                           
-                          if(private$check_weights()) {
-                            stop("NA values in Cox Beta coefficients!")
-                          }
-
                           start <- Sys.time()
                           cat("Start caclulating similar cases...\n")
                           # learn if weights are empty
                           if (class(self$Weights) != "list")
                             self$learn()
-
+                          
+                          if(private$check_weights()) {
+                            stop("NA values in Cox Beta coefficients!")
+                          }
+                          
                           # check nCases input
                           if (missing(nCases))
                             nCases <- 1
