@@ -107,10 +107,10 @@ img {
                     </li>
                     <li class="dropdown">
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
-                    <!--  <ul class="dropdown-menu">
-                        <li><a href="class-structure.html">Class Structure</a></li>
+                      <ul class="dropdown-menu">
+                        <li><a href="Workflow.html">Class Structure</a></li>
                         <li><a href="distance-measures.html">Distance Measures</a></li>
-                      </ul>-->
+                      </ul>
                     </li>
                     <li><a href="about.html">About</a></li>
                   </ul>
@@ -177,7 +177,9 @@ sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span c
 <pre><code>## Start caclulating similar cases...
 ## Start learning...
 ## Learning finished in: 0.04 seconds.
-## Similar cases calculation finished in: 0.04 seconds.</code></pre>
+## Start calculating distance matrix...
+## Distance matrix calculation finished in: 0 seconds.
+## Similar cases calculation finished in: 0.05 seconds.</code></pre>
 <p>You may extract then the similar cases and the verum data and put them together:</p>
 <pre class="sourceCode r"><code class="sourceCode r">verum &lt;-<span class="st"> </span>sc$<span class="kw">getVerumData</span>()
 verum$group &lt;-<span class="st"> &quot;Verum&quot;</span>

@@ -7,16 +7,12 @@ TODO: Motivation
 # Similarity Measure
 
 
-This summation expression $\sum_{i=1}^n X_i$ appears inline.
-
 ## Cox-Beta
 
 Let $\mathbf{x} = (x_1, \ldots, x_m)$ and $\mathbf{y} = (y_1, \ldots, y_m)$ be the features vectors of two patients.  
 
-$$d(\mathbf{x}, \mathbf{y}) = \sum_{i=1}^p |\alpha(x_i, y_i)\cdot d(x_i, y_i)|$$
+$$d(\mathbf{x}, \mathbf{y}) = \sum_{i=1,..,p} |\alpha(x_i, y_i)\cdot d(x_i, y_i)|$$
 
-
-$$\sum_{i=1}^{n} X^3_i$$
 
 ## RandomForest Proximity
 
