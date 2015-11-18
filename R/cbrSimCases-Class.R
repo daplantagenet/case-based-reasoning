@@ -32,7 +32,7 @@ simCases <- R6Class("simCases",
                           # calculate distance and order of cases based on distance calculation
                           ordDist <- private$calcNDist(verumData, learning, learnVars, Weights, nCases)
                           # get most similar cases
-                          similarCases <- do.call(rbind, apply(ordDist$order, 2,
+                          similarCases <- do.call(rbind, apply(ordDist$order, 1,
                                                                function(x, data=learning) {
                                                                  data[x, ]
                                                                }
@@ -91,7 +91,7 @@ simCases <- R6Class("simCases",
                       },
                       transform_data = function(newCases, learning, learnVars, Weights) {
                         # data preparation:
-                        # we transform all factor to their corresponding
+                        # we transform all factors to their corresponding
                         # weights and set weight equal to 1 for factor
                         # variables
                         nVars <- length(learnVars)
@@ -107,7 +107,7 @@ simCases <- R6Class("simCases",
                         }
                         names(trafoWeights) <- NULL
                         return(list(newCases     = unname(as.matrix(newCases[, learnVars])),
-                                    learning      = unname(as.matrix(learning[, learnVars])),
+                                    learning     = unname(as.matrix(learning[, learnVars])),
                                     trafoWeights = trafoWeights))
                       }
                     ))

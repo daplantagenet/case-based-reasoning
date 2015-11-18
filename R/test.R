@@ -8,13 +8,13 @@
 # ovarian$ecog.ps <- factor(ovarian$ecog.ps)
 # 
 # sc <- cbrCoxModel$new(learning=ovarian, 
-#                       verumData=ovarian[1:10, ], 
+#                       verumData=ovarian[1, ], 
 #                       learnVars=names(ovarian)[-c(1, 2)], 
 #                       endPoint=c("futime", "fustat"))
-# sc$variable_selection()
+# # sc$variable_selection()
 # sc$learn()
 # sc$Weights
-# sc$getSimilarCases(1)
+# sc$getSimilarCases(2)
 # sc$getVerumData()
 # sc$simCases
 # pp <- sc$validate()

@@ -96,7 +96,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
                           coxFit <- rms::cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
                           self$coxFit <- coxFit
-                          self$cph <- rms::cox.zph(self$coxFit, "rank")
+                          self$cph <- cox.zph(self$coxFit, "rank")
                           # self$valCox <- rms::validate(self$coxFit, B=200)
                           
                           nVars <- length(self$learnVars)
@@ -136,7 +136,6 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           if (class(self$Weights) != "list") {
                             self$learn()
                           }
-                          
                           # which variables are numeric
                           varClass <- unlist(lapply(self$learning[self$learnVars], class))
                           idNum <- which(varClass %in% "numeric")
