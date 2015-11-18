@@ -7,16 +7,7 @@
 # Initialization 
 
 In the first example, we use the Cox-Model and the `ovarian` data set from the 
-`survival` package. In the first step we initialize the R6 data object. The initialization needs several inputs:
-
-**Arguments:**
-
------------------------- | ----
-*learning*       | data set for learning the Cox model
-*verumData* | Verum data set. For each case in the verum data, we are looking for the m (=1,...,k) similar cases. Learning and verum data set need the same structure (variable names and scales)
-*learnVars (optional)* | A character vector variable names. This variables are used for learning the model. Do not include time2event and event variable here. Default: all variables, except endPoint variables, are used for model fitting.
-*endPoint (optional)* | A character vector of length two. The first elements contains the variable name of the time 2 event variable and the second the name of the event variable. Default: ` c("Time2Event", "Event")`
-*impute (optional)* | TRUE/FALSE: Missing value imputation. Actually, not implemented for the Cox Model.
+`survival` package. In the first step we initialize the R6 data object. 
 
 <br>
 ```{r, warning=FALSE, message=FALSE}
@@ -60,7 +51,8 @@ There are two functions for checking on the linearity of any independent `numeri
 
 ```{r, warning=FALSE, message=FALSE}
 p <- sc$check_linearity()
-ggplotly(p, filename = "plotly/check_lin")
+p
+# ggplotly(p, filename = "plotly/check_lin")
 ```
 
 ```{r, warning=FALSE, message=FALSE}

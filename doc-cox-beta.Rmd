@@ -1,0 +1,48 @@
+---
+  title: 'Documentation: Cox-Beta Model'
+---
+  
+---
+
+# Object Initialization
+
+The initialization needs several inputs for object initialization:
+
+`cbrCoxModel$new(learning, verumData, learnVars, endPoint=c("Time2Event", "Event"), impute=FALSE)`
+
+```{r, warning=FALSE, message=FALSE, echo=F}
+library(DT)
+df <- data.frame(Parameters=c("learning", "verumData (optional)", "learnVars (optional)", "endPoint (optional)", "impute (optional)"), 
+           Description=c("Data set for learning the Cox model",
+                         "Verum data set. For each case in the verum data, we are looking for the m (=1,...,k) most similar cases in the learning data. Learning and verum data set need the same structure (variable names and variable scales). If this input is left empty, it is not possible to perform matching. In such case you may calculate the distance matrix of the learning data set.",
+                         "A character vector variable names. This variables are used for learning the model. Do not include time2event and event variable here. Default: all variables, except endPoint variables, are used for model fitting.",
+                         "A character vector of length two. The first elements contains the variable name of the time 2 event variable and the second the name of the event variable. Default: c(Time2Event, Event)",
+                         "TRUE/FALSE: Missing value imputation. Actually, not implemented for the Cox Model. Default: FALSE"))
+datatable(df, rownames = F, 
+          caption = "Tab. 1: Input variables for object initialization", 
+          style = "bootstrap",options = 
+                  list(paging         = F, 
+                       searching      = F, 
+                       searchable     = F, 
+                       info           = F, 
+                       ordering       = F))
+```
+
+Dependent on data input, you have two pathways for analysing your data:
+
+1. You miss verum data (field: `verumData`), you cannot perform matching, but it is possible to calculate a n x n distance matrix based on the <a href="distance-measures.html">Cox-Beta distance measure</a> (n - number of cases in `learning`)
+
+2. If you add a verum data set (field: `verumData`)
+
+# Model Fitting
+
+# Variable Selection
+
+# Calculate Distance Matrix
+
+# Get Similar Cases
+
+# Extract Data
+
+
+<br><br>

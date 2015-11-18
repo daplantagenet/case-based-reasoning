@@ -10,7 +10,7 @@
 
 
 
-<title>Distance Measures</title>
+<title>Documentation: Cox-Beta Model</title>
 
 <script src="libs/jquery/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -18,6 +18,12 @@
 <script src="libs/bootstrap/js/bootstrap.min.js"></script>
 <script src="libs/bootstrap/shim/html5shiv.min.js"></script>
 <script src="libs/bootstrap/shim/respond.min.js"></script>
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="libs/datatables-binding/datatables.js"></script>
+<script src="libs/datatables/jquery.dataTables.min.js"></script>
+<link href="libs/datatables-bootstrap/dataTables.bootstrap.css" rel="stylesheet" />
+<link href="libs/datatables-bootstrap/dataTables.extra.css" rel="stylesheet" />
+<script src="libs/datatables-bootstrap/dataTables.bootstrap.min.js"></script>
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
@@ -96,25 +102,61 @@ img {
                                     </nav><!--/.navbar -->
 
 <div id="header">
-<h1 class="title">Distance Measures</h1>
+<h1 class="title">Documentation: Cox-Beta Model</h1>
 </div>
 
 
-<p>TODO: Motivation</p>
-<div id="similarity-measure" class="section level1">
-<h1><span class="header-section-number">1</span> Similarity Measure</h1>
-<div id="cox-beta" class="section level2">
-<h2><span class="header-section-number">1.1</span> Cox-Beta</h2>
-<p>Let <span class="math"><strong>x</strong> = (<em>x</em><sub>1</sub>, …, <em>x</em><sub><em>m</em></sub>)</span> and <span class="math"><strong>y</strong> = (<em>y</em><sub>1</sub>, …, <em>y</em><sub><em>m</em></sub>)</span> be the features vectors of two patients.</p>
-<p><br /><span class="math"><em>d</em>(<strong>x</strong>, <strong>y</strong>) = ∑<sub><em>i</em> = 1, .., <em>p</em></sub>|<em>α</em>(<em>x</em><sub><em>i</em></sub>, <em>y</em><sub><em>i</em></sub>) ⋅ <em>d</em>(<em>x</em><sub><em>i</em></sub>, <em>y</em><sub><em>i</em></sub>)|</span><br /></p>
+<hr />
+<div id="object-initialization" class="section level1">
+<h1><span class="header-section-number">1</span> Object Initialization</h1>
+<p>The initialization needs several inputs for object initialization:</p>
+<p><code>cbrCoxModel$new(learning, verumData, learnVars, endPoint=c(&quot;Time2Event&quot;, &quot;Event&quot;), impute=FALSE)</code></p>
+<p><div id="htmlwidget-5716" style="width:100%;height:auto;" class="datatables"></div>
+<script type="application/json" data-for="htmlwidget-5716">{
+  "x": {
+    "data": [
+      ["learning", "verumData (optional)", "learnVars (optional)", "endPoint (optional)", "impute (optional)"],
+      ["Data set for learning the Cox model", "Verum data set. For each case in the verum data, we are looking for the m (=1,...,k) most similar cases in the learning data. Learning and verum data set need the same structure (variable names and variable scales). If this input is left empty, it is not possible to perform matching. In such case you may calculate the distance matrix of the learning data set.", "A character vector variable names. This variables are used for learning the model. Do not include time2event and event variable here. Default: all variables, except endPoint variables, are used for model fitting.", "A character vector of length two. The first elements contains the variable name of the time 2 event variable and the second the name of the event variable. Default: c(Time2Event, Event)", "TRUE/FALSE: Missing value imputation. Actually, not implemented for the Cox Model. Default: FALSE"]
+    ],
+    "container": "<table class=\"table table-striped table-hover\">\n  <thead>\n    <tr>\n      <th>Parameters\u003c/th>\n      <th>Description\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>",
+    "options": {
+      "paging": false,
+      "searching": false,
+      "searchable": false,
+      "info": false,
+      "ordering": false,
+      "order": [],
+      "autoWidth": false,
+      "orderClasses": false
+    },
+    "callback": null,
+    "caption": "<caption>Tab. 1: Input variables for object initialization\u003c/caption>",
+    "filter": "none",
+    "style": "bootstrap"
+  },
+  "evals": []
+}</script></p>
+<p>Dependent on data input, you have two pathways for analysing your data:</p>
+<ol style="list-style-type: decimal">
+<li><p>You miss verum data (field: <code>verumData</code>), you cannot perform matching, but it is possible to calculate a n x n distance matrix based on the <a href="distance-measures.html">Cox-Beta distance measure</a> (n - number of cases in <code>learning</code>)</p></li>
+<li><p>If you add a verum data set (field: <code>verumData</code>)</p></li>
+</ol>
 </div>
-<div id="randomforest-proximity" class="section level2">
-<h2><span class="header-section-number">1.2</span> RandomForest Proximity</h2>
+<div id="model-fitting" class="section level1">
+<h1><span class="header-section-number">2</span> Model Fitting</h1>
 </div>
-<div id="randomforest-deep-model" class="section level2">
-<h2><span class="header-section-number">1.3</span> RandomForest Deep Model</h2>
-<p><a href="https://www.researchgate.net/profile/Antanas_Verikas/publication/257404436_A_novel_approach_to_estimate_proximity_in_a_random_forest_An_exploratory_study/links/53e8f90c0cf2fb1b9b6438c4.pdf">A novel approach to estimate proximity in a random forest: An exploratory study</a></p>
+<div id="variable-selection" class="section level1">
+<h1><span class="header-section-number">3</span> Variable Selection</h1>
 </div>
+<div id="calculate-distance-matrix" class="section level1">
+<h1><span class="header-section-number">4</span> Calculate Distance Matrix</h1>
+</div>
+<div id="get-similar-cases" class="section level1">
+<h1><span class="header-section-number">5</span> Get Similar Cases</h1>
+</div>
+<div id="extract-data" class="section level1">
+<h1><span class="header-section-number">6</span> Extract Data</h1>
+<p><br><br></p>
 </div>
 
 <script>

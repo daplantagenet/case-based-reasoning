@@ -110,6 +110,7 @@ img {
                       <ul class="dropdown-menu">
                         <li><a href="Workflow.html">Class Structure</a></li>
                         <li><a href="distance-measures.html">Distance Measures</a></li>
+                        <li><a href="doc-cox-beta.html">Documentation Cox-Beta Model</a></li>
                       </ul>
                     </li>
                     <li><a href="about.html">About</a></li>
@@ -129,35 +130,11 @@ img {
 <hr />
 <div id="initialization" class="section level1">
 <h1><span class="header-section-number">1</span> Initialization</h1>
-<p>In the first example, we use the Cox-Model and the <code>ovarian</code> data set from the <code>survival</code> package. In the first step we initialize the R6 data object. The initialization needs several inputs:</p>
-<p><strong>Arguments:</strong></p>
-<table>
-<tbody>
-<tr class="odd">
-<td align="left"><em>learning</em></td>
-<td align="left">data set for learning the Cox model</td>
-</tr>
-<tr class="even">
-<td align="left"><em>verumData</em></td>
-<td align="left">Verum data set. For each case in the verum data, we are looking for the m (=1,…,k) similar cases. Learning and verum data set need the same structure (variable names and scales)</td>
-</tr>
-<tr class="odd">
-<td align="left"><em>learnVars (optional)</em></td>
-<td align="left">A character vector variable names. This variables are used for learning the model. Do not include time2event and event variable here. Default: all variables, except endPoint variables, are used for model fitting.</td>
-</tr>
-<tr class="even">
-<td align="left"><em>endPoint (optional)</em></td>
-<td align="left">A character vector of length two. The first elements contains the variable name of the time 2 event variable and the second the name of the event variable. Default: <code>c(&quot;Time2Event&quot;, &quot;Event&quot;)</code></td>
-</tr>
-<tr class="odd">
-<td align="left"><em>impute (optional)</em></td>
-<td align="left">TRUE/FALSE: Missing value imputation. Actually, not implemented for the Cox Model.</td>
-</tr>
-</tbody>
-</table>
+<p>In the first example, we use the Cox-Model and the <code>ovarian</code> data set from the <code>survival</code> package. In the first step we initialize the R6 data object.</p>
 <p><br></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survival)
 <span class="kw">library</span>(cbr)
+<span class="kw">library</span>(plotly)
 
 <span class="co"># all variables should be numeric or factor</span>
 ovarian$resid.ds &lt;-<span class="st"> </span><span class="kw">factor</span>(ovarian$resid.ds)
@@ -176,10 +153,10 @@ sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span c
 <pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">getSimilarCases</span>(<span class="dt">nCases =</span> <span class="dv">1</span>)</code></pre>
 <pre><code>## Start caclulating similar cases...
 ## Start learning...
-## Learning finished in: 0.04 seconds.
+## Learning finished in: 0.03 seconds.
 ## Start calculating distance matrix...
 ## Distance matrix calculation finished in: 0 seconds.
-## Similar cases calculation finished in: 0.05 seconds.</code></pre>
+## Similar cases calculation finished in: 0.04 seconds.</code></pre>
 <p>You may extract then the similar cases and the verum data and put them together:</p>
 <pre class="sourceCode r"><code class="sourceCode r">verum &lt;-<span class="st"> </span>sc$<span class="kw">getVerumData</span>()
 verum$group &lt;-<span class="st"> &quot;Verum&quot;</span>
@@ -192,9 +169,10 @@ df &lt;-<span class="st"> </span><span class="kw">rbind</span>(verum, simCases)<
 <div id="check-linearity-and-proportional-hazard-assumption" class="section level2">
 <h2><span class="header-section-number">2.1</span> Check Linearity and Proportional Hazard Assumption</h2>
 <p>There are two functions for checking on the linearity of any independent <code>numeric</code> variable and the proportional hazard assumption for all dependent variables. Actually, it is not able to correct for non-linearity in the distance calculation.</p>
-<pre class="sourceCode r"><code class="sourceCode r">pp &lt;-<span class="st"> </span>sc$<span class="kw">check_linearity</span>()
-pp</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span>sc$<span class="kw">check_linearity</span>()
+p</code></pre>
 <p><img src="cox-beta_files/figure-html/unnamed-chunk-4-1.png" title="" alt="" width="672" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ggplotly(p, filename = &quot;plotly/check_lin&quot;)</span></code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">pp &lt;-<span class="st"> </span>sc$<span class="kw">check_ph</span>()
 pp</code></pre>
 <p><img src="cox-beta_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>

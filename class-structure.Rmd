@@ -1,8 +1,8 @@
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-library(DiagrammeR)
-```
-
-# Class Structure
+---
+  title: 'Workflow'
+---
+  
+---
 
 **Note:** Package is in active development. Structure, workflow, and syntax may change dramatically.
 
@@ -10,38 +10,41 @@ Following diagramm describes the workflow of the case-based reasoning R package.
 
 - <span style="color:#2773ae">Useable:</span> this features can be used
 - <span style="color:#990000">Not useable: </span> planned features
-- <span style="color:#507E4E">Optional:</span> this function will be called by subsequent features and can be called optionally
+- <span style="color:#507E4E">Optional:</span> this function will be called by subsequent features and can be called optionally; this means, if you call e.g. call 'Calculate Distance Matrix' automatically the node 'Modell Fitting' will be called (if not already done!)
 
-
-```{r, eval=TRUE, echo=FALSE}
-mermaid("
-  graph TB
-    B-->C[Validate];
-    B-->D[Extract Data];
-    E[Calculate Full Distance Matrix];
-    E-->F[Manifold Learning];
-    H-->|Cox-Model<br>-optional-|G[Check Linearity & Proportional Hazard];
-    G-->B[Calculate Similar Cases];
-    G-->E;
-    B-->|<strong><span style='color:#990000'> not working</span></strong>|F
-    A[Initialize CBR Object]-->I[Variable Selection];
-    A-->H;
-    I-->H[Learn Final Model];
-    H-->B;
-    H-->E;
-
-    style A fill:#fff, stroke:#2773ae, stroke-width:2px, color:#ffffff;
-    style B fill:#fff, stroke:#2773ae, stroke-width:2px;
-    style C fill:#fff, stroke:#2773ae, stroke-width:2px;
-    style D fill:#fff, stroke:#2773ae, stroke-width:2px;
-    style E fill:#fff, stroke:#2773ae, stroke-width:2px;
-    style F fill:#fff, stroke:#2773ae, stroke-width:2px;
-    style G fill:#fff, stroke:#2773ae, stroke-width:2px;
-    style H fill:#fff, stroke:#507E4E, stroke-width:2px;
-    style I fill:#fff, stroke:#990000, stroke-width:2px;
-")
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(DiagrammeR)
 ```
 
+```{r, eval=TRUE, echo=FALSE}
+DiagrammeR("
+  graph TB
+    A[Initialize CBR Object]
+    B[Variable Selection]
+    C[Model Fitting]
+    D[Check Linearity & Proportional Hazard]
+    E[Calculate Distance Matrix];
+    F[Get Similar Cases];
+    G[Manifold Learning];
+    H[Extract Data]
+    
+    A-->|Cox-Model<br>-optional-|B;
+    A-->C;
+    B-->C;
+    C-->|Cox-Model<br>-optional-|D;
+    C-->E;
+    E-->F;
+    E-->G;
+    F-->G;
+    F-->H;
 
-
-
+    style A fill:#fff, stroke:#2773ae, stroke-width:2px;
+    style B fill:#fff, stroke:#2773ae, stroke-width:2px;
+    style C fill:#fff, stroke:#507E4E, stroke-width:2px;
+    style D fill:#fff, stroke:#2773ae, stroke-width:2px;
+    style E fill:#fff, stroke:#507E4E, stroke-width:2px;
+    style F fill:#fff, stroke:#2773ae, stroke-width:2px;
+    style G fill:#fff, stroke:#2773ae, stroke-width:2px;
+    style H fill:#fff, stroke:#2773ae, stroke-width:2px;
+")
+```

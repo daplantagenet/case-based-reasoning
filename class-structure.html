@@ -10,7 +10,7 @@
 
 
 
-<title></title>
+<title>Workflow</title>
 
 <script src="libs/jquery/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -91,6 +91,7 @@ img {
                       <ul class="dropdown-menu">
                         <li><a href="Workflow.html">Class Structure</a></li>
                         <li><a href="distance-measures.html">Distance Measures</a></li>
+                        <li><a href="doc-cox-beta.html">Documentation Cox-Beta Model</a></li>
                       </ul>
                     </li>
                     <li><a href="about.html">About</a></li>
@@ -102,25 +103,26 @@ img {
                                     </div><!--/.container -->
                                     </nav><!--/.navbar -->
 
+<div id="header">
+<h1 class="title">Workflow</h1>
+</div>
 
 
-<div id="class-structure" class="section level1">
-<h1><span class="header-section-number">1</span> Class Structure</h1>
+<hr />
 <p><strong>Note:</strong> Package is in active development. Structure, workflow, and syntax may change dramatically.</p>
 <p>Following diagramm describes the workflow of the case-based reasoning R package. Box colour has different meanings:</p>
 <ul>
 <li><span style="color:#2773ae">Useable:</span> this features can be used</li>
 <li><span style="color:#990000">Not useable: </span> planned features</li>
-<li><span style="color:#507E4E">Optional:</span> this function will be called by subsequent features and can be called optionally</li>
+<li><span style="color:#507E4E">Optional:</span> this function will be called by subsequent features and can be called optionally; this means, if you call e.g. call ‘Calculate Distance Matrix’ automatically the node ‘Modell Fitting’ will be called (if not already done!)</li>
 </ul>
 <p><div id="htmlwidget-5716" style="width:672px;height:480px;" class="DiagrammeR"></div>
 <script type="application/json" data-for="htmlwidget-5716">{
   "x": {
-    "diagram": "\n  graph TB\n    B-->C[Validate];\n    B-->D[Extract Data];\n    E[Calculate Full Distance Matrix];\n    E-->F[Manifold Learning];\n    H-->|Cox-Model<br>-optional-|G[Check Linearity & Proportional Hazard];\n    G-->B[Calculate Similar Cases];\n    G-->E;\n    B-->|<strong><span style='color:#990000'> not working\u003c/span>\u003c/strong>|F\n    A[Initialize CBR Object]-->I[Variable Selection];\n    A-->H;\n    I-->H[Learn Final Model];\n    H-->B;\n    H-->E;\n\n    style A fill:#fff, stroke:#2773ae, stroke-width:2px, color:#ffffff;\n    style B fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style C fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style D fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style E fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style F fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style G fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style H fill:#fff, stroke:#507E4E, stroke-width:2px;\n    style I fill:#fff, stroke:#990000, stroke-width:2px;\n"
+    "diagram": "\n  graph TB\n    A[Initialize CBR Object]\n    B[Variable Selection]\n    C[Model Fitting]\n    D[Check Linearity & Proportional Hazard]\n    E[Calculate Distance Matrix];\n    F[Get Similar Cases];\n    G[Manifold Learning];\n    H[Extract Data]\n    \n    A-->|Cox-Model<br>-optional-|B;\n    A-->C;\n    B-->C;\n    C-->|Cox-Model<br>-optional-|D;\n    C-->E;\n    E-->F;\n    E-->G;\n    F-->G;\n    F-->H;\n\n    style A fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style B fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style C fill:#fff, stroke:#507E4E, stroke-width:2px;\n    style D fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style E fill:#fff, stroke:#507E4E, stroke-width:2px;\n    style F fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style G fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style H fill:#fff, stroke:#2773ae, stroke-width:2px;\n"
   },
   "evals": []
 }</script></p>
-</div>
 
 <script>
 // manage active state of menu based on current page
