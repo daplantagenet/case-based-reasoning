@@ -9,17 +9,11 @@ simCases <- R6Class("simCases",
                       distMat      = NA,
                       distOrder    = NA,
                       similarCases = NA,
-                      method       = NA,
-                      initialize = function(distMat, method="cox") {
-                        # for RF
-                        if (!missing(distMat)) {
-                          self$distMat <- distMat
+                      initialize = function(distMat) {
+                        if (missing(distMat)) {
+                          stop("A distance matrix as input is required!")
                         }
-
-                        if (method == "rfProxy" & missing(distMat)) {
-                          stop("For Random Forest a distance matrix is needed!")
-                        }
-                        self$method <- method
+                        self$distMat <- distMat
                       },
                       # calculate distance matrix for new data
                       getFullDistanceMatrix = function(verumData, learning, learnVars, Weights) {
@@ -27,43 +21,23 @@ simCases <- R6Class("simCases",
                         return(private$calcDist(verumData, learning, learnVars, Weights))
                       },
                       # get similar cases from reference data
-                      getSimilarCases = function(verumData, learning, learnVars, Weights, nCases) {
-                        if (self$method == "cox") {
-                          # calculate distance and order of cases based on distance calculation
-                          ordDist <- private$calcNDist(verumData, learning, learnVars, Weights, nCases)
-                          # get most similar cases
-                          similarCases <- do.call(rbind, apply(ordDist$order, 1,
-                                                               function(x, data=learning) {
-                                                                 data[x, ]
-                                                               }
-                          )
-                          )
-                          # mark similar cases: 1:n ids
-                          similarCases$caseId <- rep(1:nrow(verumData), each=nCases)
-                          # get distances
-                          # distList <- apply(ordDist$distance, 2, list)
-                          # similarCases$distance <- unlist(lapply(distList, function(x, n=nCases) {or <- order(x[[1]]);x[[1]][or[1:n]]}))
-                          self$distMat <- ordDist$distance
-                          self$distOrder <- ordDist$order
-                          self$similarCases <- similarCases
-                        } else if (self$method == "rfProxy") {
-                          # fast ordering of similar cases
-                          ordDist <- private$getOrder(nCases)
-                          # get most similar cases
-                          similarCases <- do.call(rbind, apply(ordDist, 1,
-                                                               function(x, data=learning) {
-                                                                 data[x, ]
-                                                               }
-                          )
-                          )
-                          # mark similar cases: 1:n ids
-                          similarCases$caseId <- rep(1:nrow(verumData), each=nCases)
-                          self$distOrder <- ordDist
-                          self$similarCases <- similarCases
-                        }
+                      getSimilarCases = function(verumData, learning, nCases) {
+                        # fast ordering of similar cases
+                        ordDist <- private$getOrder(nCases)
+                        # get most similar cases
+                        similarCases <- do.call(rbind, apply(ordDist, 1,
+                                                             function(x, data=learning) {
+                                                               data[x, ]
+                                                             }
+                        )
+                        )
+                        # mark similar cases: 1:n ids
+                        similarCases$caseId <- rep(1:nrow(verumData), each=nCases)
+                        self$distOrder <- ordDist
+                        self$similarCases <- similarCases
                       }),
                     private=list(
-                      # calculate distance matrix
+                      # calculate distance matrix; deprecated
                       calcDist = function (newCases, learning, learnVars, Weights) {
                         trfData <- private$transform_data(newCases, learning, learnVars, Weights)
                         # drop endpoints from reference
@@ -75,7 +49,7 @@ simCases <- R6Class("simCases",
                                      trfData$trafoWeights, PACKAGE = "cbr"))
                       },
                       # calculate distance and return n nearest distance and
-                      # row id of n nearest cases from reference data
+                      # row id of n nearest cases from reference data; deprecated
                       calcNDist = function(newCases, learning, learnVars, Weights, nCases) {
                         trfData <- private$transform_data(newCases, learning, learnVars, Weights)
                         return(.Call("cbr_get_nearest_Elements",

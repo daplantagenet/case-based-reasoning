@@ -245,13 +245,16 @@ cbrCoxModel <- R6Class("cbrCoxModel",
 
                           # catch floating numbers
                           nCases <- as.integer(nCases)
-
+                          
+                          self$getFullDistanceMatrix()
+                          
                           # calculate distance and order of cases based on distance calculation
-                          sc <- simCases$new()
-                          sc$getSimilarCases(self$verumData, self$learning, self$learnVars, self$Weights, nCases)
-                          self$distMat <- sc$distMat
+                          sc <- simCases$new(distMat=self$distMat, method="rfProxy")
+                          sc$getSimilarCases(verumData=self$verumData, learning=self$learning, nCases=nCases)
                           self$orderMat <- sc$order
                           self$simCases <- sc$similarCases
+                          # sc$getSimilarCases(self$verumData, self$learning, self$learnVars, self$Weights, nCases)
+                          # self$distMat <- sc$distMat
 
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)

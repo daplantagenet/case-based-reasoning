@@ -188,7 +188,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           nCases <- as.integer(nCases)
                           #create new object & calculate similar cases
                           sc <- simCases$new(distMat=self$distMat, method="rfProxy")
-                          sc$getSimilarCases(self$verumData, self$learning, self$learnVars, nCases=nCases)
+                          sc$getSimilarCases(verumData=self$verumData, learning=self$learning, nCases=nCases)
                           self$orderMat <- sc$order
                           self$simCases <- sc$similarCases
 

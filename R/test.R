@@ -14,7 +14,7 @@
 # # sc$variable_selection()
 # sc$learn()
 # sc$Weights
-# sc$getSimilarCases(2)
+# sc$getSimilarCases(1)
 # sc$getVerumData()
 # sc$simCases
 # pp <- sc$validate()
