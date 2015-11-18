@@ -22,6 +22,7 @@ In the first example, we use the Cox-Model and the `ovarian` data set from the
 ```{r, warning=FALSE, message=FALSE}
 library(survival)
 library(cbr)
+library(plotly)
 
 # all variables should be numeric or factor
 ovarian$resid.ds <- factor(ovarian$resid.ds)
@@ -58,8 +59,8 @@ df <- rbind(verum, simCases)
 There are two functions for checking on the linearity of any independent `numeric` variable and the proportional hazard assumption for all dependent variables. Actually, it is not able to correct for non-linearity in the distance calculation.
 
 ```{r, warning=FALSE, message=FALSE}
-pp <- sc$check_linearity()
-pp
+p <- sc$check_linearity()
+ggplotly(p, filename = "plotly/check_lin")
 ```
 
 ```{r, warning=FALSE, message=FALSE}
