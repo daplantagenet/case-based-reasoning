@@ -44,7 +44,7 @@ If verum data is ommitted, a n x n- distance matrix is returned.
 
 \item{\code{learn}}{Fit Cox model on the learning data set}
 
-\item{\code{getFullDistanceMatrix}}{Calculates full n x m (n x n)-distance matrix}
+\item{\code{getDistanceMatrix}}{Calculates full n x m (n x n)-distance matrix}
 
 \item{\code{getSimilarCases}}{get for each case in verum data nCases (=1,...,l < n)
 similar cases from the learning data; (1:nCases matching)}

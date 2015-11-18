@@ -16,7 +16,7 @@ simCases <- R6Class("simCases",
                         self$distMat <- distMat
                       },
                       # calculate distance matrix for new data
-                      getFullDistanceMatrix = function(verumData, learning, learnVars, Weights) {
+                      getDistanceMatrix = function(verumData, learning, learnVars, Weights) {
                         # Start calculation
                         return(private$calcDist(verumData, learning, learnVars, Weights))
                       },

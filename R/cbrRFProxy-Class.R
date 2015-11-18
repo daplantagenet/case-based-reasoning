@@ -130,7 +130,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Random Forest for Survival calculation finished in: ", duration, " seconds.\n"))
                         },
-                        getFullDistanceMatrix = function() {
+                        getDistanceMatrix = function() {
                           if (class(self$distMat) != "matrix") {
                             self$learn()
                           }

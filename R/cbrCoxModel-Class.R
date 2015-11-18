@@ -27,7 +27,7 @@
 #' 
 #' @field learn Fit Cox model on the learning data set
 #' 
-#' @field getFullDistanceMatrix Calculates full n x m (n x n)-distance matrix 
+#' @field getDistanceMatrix Calculates full n x m (n x n)-distance matrix 
 #' 
 #' @field getSimilarCases get for each case in verum data nCases (=1,...,l < n) 
 #' similar cases from the learning data; (1:nCases matching)
@@ -160,8 +160,8 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                               geom_hline(yintercept=0, colour="grey") +
                               geom_point() +
                               geom_smooth(color="#2773ae", fill="#2773ae") +
-                              ylab("Martingal Residuen") + xlab(var) +
-                              background_grid(major="xy", minor="xy")
+                              ylab("Martingal Residuen") + xlab(var)# +
+                              # background_grid(major="xy", minor="xy")
                             ggPlot <- c(ggPlot, list(g))
                           }
                           self$learning$res <- NULL
@@ -193,7 +193,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                                            ncol     = 2))
                         },
                         # calculate distance matrix for verum data
-                        getFullDistanceMatrix = function() {
+                        getDistanceMatrix = function() {
                           # learn if weights are empty
                           if (class(self$Weights) != "list") {
                             self$learn()
@@ -204,7 +204,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           cat("Start calculating distance matrix...\n")
                           # get distance matrix
                           sc <- simCases$new(method="cox")
-                          self$distMat <- sc$getFullDistanceMatrix(self$verumData, self$learning, self$learnVars, self$Weights)
+                          self$distMat <- sc$getDistanceMatrix(self$verumData, self$learning, self$learnVars, self$Weights)
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
@@ -246,7 +246,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           # catch floating numbers
                           nCases <- as.integer(nCases)
                           
-                          self$getFullDistanceMatrix()
+                          self$getDistanceMatrix()
                           
                           # calculate distance and order of cases based on distance calculation
                           sc <- simCases$new(distMat=self$distMat, method="rfProxy")

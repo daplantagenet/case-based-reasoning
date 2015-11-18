@@ -30,7 +30,7 @@
 #                       endPoint=c("futime", "fustat"))
 # sc$variable_selection()
 # sc$learn()
-# sc$getFullDistanceMatrix()
+# sc$getDistanceMatrix()
 # p <- cmdscale(sc$distMat, k = 2)
 # plot(p, col=as.factor(ovarian$fustat))
 # p <- prcomp(sc$distMat)
@@ -48,7 +48,7 @@
 # pp <- sc$validate()
 # sc$getVerumData()
 # sc$getLearningData()
-# sc$getFullDistanceMatrix()
+# sc$getDistanceMatrix()
 # res <- Rtsne(X = sc$distMat, dims=2, perplexity = 5, is_distance = T)
 # plot(res$Y, col=as.factor(ovarian$ecog.ps))
 # 

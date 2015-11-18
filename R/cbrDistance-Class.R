@@ -6,7 +6,7 @@
 #' @keywords Cox Model
 cbrDistance <- R6Class("cbrDistance",
                        public=list(# calculate distance matrix for new data
-                         getFullDistanceMatrix = function(verumData) {
+                         getDistanceMatrix = function(verumData) {
                            if (missing(verumData)) {
                              cat("No new data: use reference data for distance calculation!\n")
                              self$verumData <- self$learning
