@@ -187,7 +187,7 @@ cbrRFProxy <- R6Class("cbrRFProxy",
                           # catch floating numbers
                           nCases <- as.integer(nCases)
                           #create new object & calculate similar cases
-                          sc <- simCases$new(distMat=self$distMat, method="rfProxy")
+                          sc <- simCases$new(distMat=self$distMat)
                           sc$getSimilarCases(verumData=self$verumData, learning=self$learning, nCases=nCases)
                           self$orderMat <- sc$order
                           self$simCases <- sc$similarCases

@@ -203,7 +203,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           start <- Sys.time()
                           cat("Start calculating distance matrix...\n")
                           # get distance matrix
-                          sc <- simCases$new(method="cox")
+                          sc <- simCases$new()
                           self$distMat <- sc$getDistanceMatrix(self$verumData, self$learning, self$learnVars, self$Weights)
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
@@ -249,7 +249,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           self$getDistanceMatrix()
                           
                           # calculate distance and order of cases based on distance calculation
-                          sc <- simCases$new(distMat=self$distMat, method="rfProxy")
+                          sc <- simCases$new(distMat=self$distMat)
                           sc$getSimilarCases(verumData=self$verumData, learning=self$learning, nCases=nCases)
                           self$orderMat <- sc$order
                           self$simCases <- sc$similarCases

@@ -13,6 +13,7 @@
 #                       endPoint=c("futime", "fustat"))
 # # sc$variable_selection()
 # sc$learn()
+# sc$getDistanceMatrix()
 # sc$Weights
 # sc$getSimilarCases(1)
 # sc$getVerumData()
