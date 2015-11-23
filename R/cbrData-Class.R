@@ -6,12 +6,13 @@ cbrData <- R6Class("cbrData",
                      endPoint  = NA,
                      refEQNew  = FALSE,
                      impute    = FALSE,
+                     warnings  = "",
                      info      = data.frame(x=c("Dropped cases with missing values in learning set:",
                                                 "Dropped cases with missing values in verum set:",
                                                 "Imputation:",
                                                 "Variablen:",
                                                 "Variablen nach Selektion:"), 
-                                            y=NA)
+                                            y=NA),
                      # initialize class
                      initialize = function(learning, verumData, learnVars, endPoint, impute=FALSE) {
                        # check for missing input
@@ -135,7 +136,7 @@ cbrData <- R6Class("cbrData",
                      # transform character variables to factor
                      check_factor = function(x) {
                        trf <- c()
-                       for (var in self$learningVars) {
+                       for (var in self$learnVars) {
                          if (is.character(x[, var])) {
                            trf <- c(trf, var)
                            x[, var] <- factor(x[, var])
