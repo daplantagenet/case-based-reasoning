@@ -6,6 +6,12 @@ cbrData <- R6Class("cbrData",
                      endPoint  = NA,
                      refEQNew  = FALSE,
                      impute    = FALSE,
+                     info      = data.frame(x=c("Dropped cases with missing values in learning set:",
+                                                "Dropped cases with missing values in verum set:",
+                                                "Imputation:",
+                                                "Variablen:",
+                                                "Variablen nach Selektion:"), 
+                                            y=NA)
                      # initialize class
                      initialize = function(learning, verumData, learnVars, endPoint, impute=FALSE) {
                        # check for missing input
@@ -33,9 +39,11 @@ cbrData <- R6Class("cbrData",
                        } else {
                          self$learnVars <- learnVars
                        }
-
+          
                        if (missing(impute))
-                         impute <- FALSE
+                         self$impute <- FALSE
+                       
+                       self$info$y[3] <- as.character(self$impute)
 
                        # check data & add data to internal frame
                        self$learning <- private$check_data(learning, impute)
@@ -89,7 +97,7 @@ cbrData <- R6Class("cbrData",
 
                        # drop cases with missing values in the relevant variables
                        if (!impute) {
-                         x <- private$drop_missing(x)
+                         x <- private$drop_missing(x, isLearning)
                          if (nrow(x) == 0) {
                            if (isLearning) {
                              stop("Learning data is empty after NA elimination")
@@ -109,10 +117,16 @@ cbrData <- R6Class("cbrData",
                        return(x)
                      },
                      # drop missing values from data
-                     drop_missing = function(x) {
+                     drop_missing = function(x, isLearning=F) {
                        rs <- rowSums(is.na(x[, self$learnVars]))
                        idDrop <- which(rs > 0)
                        cat(paste0("Dropped cases with missing values: ", length(idDrop), "\n"))
+                       if (isLearning) {
+                         self$info$y[1] <- as.character(length(idDrop))
+                       } else {
+                         self$info$y[2] <- as.character(length(idDrop))
+                       }
+                       
                        if (length(idDrop) > 0)
                          x <- x[-idDrop, ]
 
