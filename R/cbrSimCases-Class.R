@@ -14,7 +14,7 @@ simCases <- R6Class("simCases",
                           self$distMat <- NA
                         } else {
                           self$distMat <- distMat
-                          diag(self$distMat) <- Inf
+                          # diag(self$distMat) <- Inf
                         }
                       },
                       # calculate distance matrix for new data
@@ -47,7 +47,7 @@ simCases <- R6Class("simCases",
                         ordDist <- cbind(1:nrow(ordDist), ordDist)
                         distance <-  as.numeric(apply(ordDist, 1,
                               function(x, data=self$distMat) {
-                                data[x[1], x[2:length(x)]]
+                                data[x[2:length(x)], x[1]]
                               }
                         ))
                         
