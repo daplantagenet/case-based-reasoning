@@ -19,7 +19,7 @@ simCases <- R6Class("simCases",
                       # calculate distance matrix for new data
                       getDistanceMatrix = function(verumData, learning, learnVars, Weights) {
                         # Start calculation
-                        if (is.na(self$distMat)) {
+                        if (class(self$distMat) != "matrix") {
                           return(private$calcDist(verumData, learning, learnVars, Weights))
                         } else {
                           self$distMat
@@ -27,7 +27,7 @@ simCases <- R6Class("simCases",
                       },
                       # get similar cases from reference data
                       getSimilarCases = function(verumData, learning, nCases) {
-                        if (is.na(self$distMat)) {
+                        if (class(self$distMat) != "matrix") {
                           stop("Need distance Matrix!")
                         }
                         
