@@ -46,7 +46,7 @@ cbrData <- R6Class("cbrData",
                        self$info$y[3] <- as.character(self$impute)
 
                        # check data & add data to internal frame
-                       self$learning <- private$check_data(learning, impute)
+                       self$learning <- private$check_data(as.data.frame(learning), impute)
 
                        # validation check verum data
                        if (missing(verumData)) {
@@ -55,7 +55,7 @@ cbrData <- R6Class("cbrData",
                          self$refEQNew <- TRUE
                        } else {
                          # validation check verum data
-                         self$verumData <- private$check_data(verumData, impute, isLearning=F)
+                         self$verumData <- private$check_data(as.data.frame(verumData), impute, isLearning=F)
                        }
 
                        # impute data; just RSF
