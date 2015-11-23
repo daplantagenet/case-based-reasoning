@@ -14,6 +14,7 @@ simCases <- R6Class("simCases",
                           self$distMat <- NA
                         } else {
                           self$distMat <- distMat
+                          diag(self$distMat) <- Inf
                         }
                       },
                       # calculate distance matrix for new data
@@ -40,9 +41,19 @@ simCases <- R6Class("simCases",
                                                              }
                         )
                         )
+                        self$distOrder <- ordDist
+                        
+                        # get distances
+                        ordDist <- cbind(1:nrow(ordDist), ordDist)
+                        distance <-  as.numeric(apply(ordDist, 1,
+                              function(x, data=self$distMat) {
+                                data[x[1], x[2:length(x)]]
+                              }
+                        ))
+                        
                         # mark similar cases: 1:n ids
                         similarCases$caseId <- rep(1:nrow(verumData), each=nCases)
-                        self$distOrder <- ordDist
+                        similarCases$scDist <- distance
                         self$similarCases <- similarCases
                       }),
                     private=list(
