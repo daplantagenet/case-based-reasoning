@@ -68,9 +68,9 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
                           coxFit <- cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
                           vars <- fastbw(coxFit, type = "i")
-                          self$info$y[5] <- paste(vars$names.kept, collapse = ", ")
                           cat(paste0("Initial variable set: ", paste(self$learnVars, collapse = ", "), "\n"))
                           cat(paste0("Selected variable set: ", paste(vars$names.kept, collapse = ", "), "\n"))
+                          self$info$y[5] <- paste(vars$names.kept, collapse = ", ")
                           self$learnVars <- vars$names.kept
                           
                           # end timing
@@ -85,7 +85,6 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                             stop("Reference data is not valid!")
 
                           self$info$y[4] <- paste(self$learnVars, collapse = ", ")
-                          self$info$y[5] <- "keine Variablenselektion durchgeführt!"
                           
                           # Timing
                           start <- Sys.time()

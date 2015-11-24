@@ -45,7 +45,8 @@ cbrData <- R6Class("cbrData",
                          self$impute <- FALSE
                        
                        self$info$y[3] <- as.character(self$impute)
-
+                       self$info$y[5] <- "keine Variablenselektion durchgeführt!"
+                       
                        # check data & add data to internal frame
                        self$learning <- private$check_data(as.data.frame(learning), impute)
 

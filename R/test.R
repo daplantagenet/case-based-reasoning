@@ -2,13 +2,13 @@
 # library(cbr)
 # 
 # # Cox model
-# ovarian$tt <- factor(sample(1:3, 26, replace=T))
+# ovarian$tt <- as.character(sample(1:3, 26, replace=T))
 # ovarian$resid.ds <- factor(ovarian$resid.ds)
 # ovarian$rx <- factor(ovarian$rx)
 # ovarian$ecog.ps <- factor(ovarian$ecog.ps)
 # 
 # sc <- cbrCoxModel$new(learning=ovarian, 
-#                       verumData=ovarian[1, ], 
+#                       verumData=ovarian[1:5, ], 
 #                       learnVars=names(ovarian)[-c(1, 2)], 
 #                       endPoint=c("futime", "fustat"))
 # # sc$variable_selection()
