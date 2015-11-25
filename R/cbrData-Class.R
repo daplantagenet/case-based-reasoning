@@ -120,7 +120,7 @@ cbrData <- R6Class("cbrData",
                      },
                      # drop missing values from data
                      drop_missing = function(x, isLearning=F) {
-                       rs <- rowSums(is.na(x[, self$learnVars]))
+                       rs <- rowSums(as.data.frame(is.na(x[, self$learnVars])))
                        idDrop <- which(rs > 0)
                        cat(paste0("Dropped cases with missing values: ", length(idDrop), "\n"))
                        if (isLearning) {
