@@ -133,45 +133,6 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Learning finished in: ", duration, " seconds.\n"))
                         },
-                        # checking linearity of numeric variables
-                        check_linearity = function() {
-                          # learn if weights are empty
-                          if (class(self$Weights) != "list") {
-                            self$learn()
-                          }
-                          # which variables are numeric
-                          varClass <- unlist(lapply(self$learning[self$learnVars], class))
-                          idNum <- which(varClass %in% "numeric")
-                          if (length(idNum) == 0) {
-                            return()
-                          }
-                          
-                          # datadist scoping
-                          on.exit(detach("design.options"))
-                          attach(list(), name="design.options")
-                          assign('dd', datadist(self$learning), pos='design.options')
-                          options(datadist="dd")
-                          
-                          # residual plots
-                          ggPlot <- list()
-                          for (i in idNum) {
-                            formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", self$learnVars[i]))
-                            fit <- cph(formel, data=self$learning, x=T, y=T)
-                            self$learning$res <- residuals(fit, "martingale")
-                            var <- self$learnVars[i]
-                            g <- ggplot(self$learning, aes_string(x=var, y="res")) +
-                              geom_hline(yintercept=0, colour="grey") +
-                              geom_point() +
-                              geom_smooth(color="#2773ae", fill="#2773ae") +
-                              ylab("Martingal Residuen") + xlab(var)# +
-                              # background_grid(major="xy", minor="xy")
-                            ggPlot <- c(ggPlot, list(g))
-                          }
-                          self$learning$res <- NULL
-                          options(datadist=NULL)
-                          return(plot_grid(plotlist = ggPlot, 
-                                           ncol     = 2))
-                        },
                         # check proportional hazard
                         check_ph=function() {
                           # learn if weights are empty
