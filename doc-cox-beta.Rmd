@@ -4,7 +4,30 @@
   
 ---
 
-# Object Initialization
+# Functions and Objects
+
+`cbrCoxModel`-R6 class has several public accessable functions and data objects.
+
+```{r, warning=FALSE, message=FALSE, echo=F}
+library(DT)
+df <- data.frame(Parameters=c("new", "variable_selection", "learn", "check_ph", "getDistanceMatrix"), 
+           Description=c("Initialize R6 class",
+                         "Performs a fast backward variable selection (AIC)",
+                         "Fits the Cox Proportional Hazard model",
+                         "Performs a formal and visual test for the proportional hazard assumption",
+                         "calculates the n x m distance matrix. If learn was not applied, this function will automatically fit the Cox PH model"))
+datatable(df, rownames = F, 
+          caption = "Tab. 1: cbrCoxModel functions", 
+          style = "bootstrap",options = 
+                  list(paging         = F, 
+                       searching      = F, 
+                       searchable     = F, 
+                       info           = F, 
+                       ordering       = F))
+```
+
+
+## Object Initialization
 
 The initialization needs several inputs for object initialization:
 

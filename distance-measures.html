@@ -103,13 +103,29 @@ img {
 <p>TODO: Motivation</p>
 <div id="similarity-measure" class="section level1">
 <h1><span class="header-section-number">1</span> Similarity Measure</h1>
-<div id="cox-beta" class="section level2">
-<h2><span class="header-section-number">1.1</span> Cox-Beta</h2>
-<p>Let <span class="math"><strong>x</strong> = (<em>x</em><sub>1</sub>, …, <em>x</em><sub><em>m</em></sub>)</span> and <span class="math"><strong>y</strong> = (<em>y</em><sub>1</sub>, …, <em>y</em><sub><em>m</em></sub>)</span> be the features vectors of two patients.</p>
-<p><br /><span class="math"><em>d</em>(<strong>x</strong>, <strong>y</strong>) = ∑<sub><em>i</em> = 1, .., <em>p</em></sub>|<em>α</em>(<em>x</em><sub><em>i</em></sub>, <em>y</em><sub><em>i</em></sub>) ⋅ <em>d</em>(<em>x</em><sub><em>i</em></sub>, <em>y</em><sub><em>i</em></sub>)|</span><br /></p>
+<div id="cox-beta-model" class="section level2">
+<h2><span class="header-section-number">1.1</span> Cox Beta Model</h2>
+<p>Let <span class="math"><strong>x</strong> = (<em>x</em><sub>1</sub>, …, <em>x</em><sub><em>m</em></sub>)</span> and <span class="math"><strong>y</strong> = (<em>y</em><sub>1</sub>, …, <em>y</em><sub><em>m</em></sub>)</span> be the features vectors of two patients <span class="math"><strong>x</strong></span> and <span class="math"><strong>y</strong></span>. A first rough idea may be to calculate the L1-distance of each feature and sum them up: <br /><span class="math">∥<strong>x</strong> − <strong>y</strong>∥<sub><em>L</em><sub>1</sub></sub><sup>2</sup> = ∑<sub><em>i</em> = 1, .., <em>p</em></sub>|<em>x</em><sub><em>i</em></sub> − <em>y</em><sub><em>i</em></sub>|</span><br /></p>
+<p><strong>Problems with this naive distance measure:</strong></p>
+<ol style="list-style-type: decimal">
+<li><span class="math">|<em>x</em><sub><em>i</em></sub> − <em>y</em><sub><em>i</em></sub>|</span> is well defined for numerical features, but what’s about the definition of the distance measure for categorical features, e.g. pathological N with levels N0,…, N4, gender with levels male/female or even histologies? Is the distance between N0 to N1 the same as for N1 to N2?</li>
+<li><span class="math">|<em>x</em><sub><em>i</em></sub> − <em>y</em><sub><em>i</em></sub>|</span> is not scale invariant, e.g. if you change the unit of a feature from meters to centimetres, the contribution of this feature on the distance measure would explode by a factor of 100.</li>
+<li>All variables are treated the same way, idependent if they have an influence on the outcome. Smoking seems to have an influence on lung cancer, but what’s about the city you live in? Is it reasonable to give the feature city the same influence on the distance as smoker?</li>
+</ol>
+<p>Two steps have to be done to overcome above problems:</p>
+<ol style="list-style-type: decimal">
+<li>Generalize the L1-distance on the feature scale, such that it can deal with different variable types</li>
+<li>Each feature needs to be weighted suitable
+<ul>
+<li>to rule out dependency on the scale</li>
+<li>account for varying importance across features and impact size</li>
+</ul></li>
+</ol>
+<p>This leads to following weighted distance measure: <br /><span class="math"><em>d</em>(<strong>x</strong>, <strong>y</strong>) = ∑<sub><em>i</em> = 1, .., <em>p</em></sub>|<em>α</em>(<em>x</em><sub><em>i</em></sub>, <em>y</em><sub><em>i</em></sub>) ⋅ <em>d</em>(<em>x</em><sub><em>i</em></sub>, <em>y</em><sub><em>i</em></sub>)|</span><br /></p>
+<p>ds</p>
 </div>
-<div id="randomforest-proximity" class="section level2">
-<h2><span class="header-section-number">1.2</span> RandomForest Proximity</h2>
+<div id="randomforest-proximity-model" class="section level2">
+<h2><span class="header-section-number">1.2</span> RandomForest Proximity Model</h2>
 </div>
 <div id="randomforest-deep-model" class="section level2">
 <h2><span class="header-section-number">1.3</span> RandomForest Deep Model</h2>
