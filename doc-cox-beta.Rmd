@@ -10,7 +10,7 @@
 
 ```{r, warning=FALSE, message=FALSE, echo=F}
 library(DT)
-df <- data.frame(Parameters=c("new", "variable_selection", "learn", "check_ph", "getDistanceMatrix"), 
+df <- data.frame(Functions=c("new", "variable_selection", "learn", "check_ph", "getDistanceMatrix"), 
            Description=c("Initialize R6 class",
                          "Performs a fast backward variable selection (AIC)",
                          "Fits the Cox Proportional Hazard model",
@@ -42,7 +42,7 @@ df <- data.frame(Parameters=c("learning", "verumData (optional)", "learnVars (op
                          "A character vector of length two. The first elements contains the variable name of the time 2 event variable and the second the name of the event variable. Default: c(Time2Event, Event)",
                          "TRUE/FALSE: Missing value imputation. Actually, not implemented for the Cox Model. Default: FALSE"))
 datatable(df, rownames = F, 
-          caption = "Tab. 1: Input variables for object initialization", 
+          caption = "Tab. 3: Input variables for object initialization", 
           style = "bootstrap",options = 
                   list(paging         = F, 
                        searching      = F, 
