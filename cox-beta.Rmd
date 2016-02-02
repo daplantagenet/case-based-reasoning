@@ -13,7 +13,6 @@ In the first example, we use the Cox-Model and the `ovarian` data set from the
 ```{r, warning=FALSE, message=FALSE}
 library(survival)
 library(cbr)
-library(plotly)
 
 # all variables should be numeric or factor
 ovarian$resid.ds <- factor(ovarian$resid.ds)
@@ -23,8 +22,8 @@ ovarian$ecog.ps <- factor(ovarian$ecog.ps)
 # initialize R6 object
 sc <- cbrCoxModel$new(learning=ovarian, verumData=ovarian, learnVars=c("age", "resid.ds", "rx", "ecog.ps"), endPoint=c("futime", "fustat"), impute=F)
 ```
-If `impute` is set to `FALSE` (for the Cox model the `ìmpute` variable is always set to `FALSE`) then all cases with missing values in the learning and end point variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. The variables should be `numeric`
- or `factor`.
+If `impute` is set to `FALSE` (for the Cox model the `ìmpute` variable is always set to `FALSE`) then all cases with missing values in the learning and end point variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. The variables should be `numeric` or `factor`. `character` variables will be transformed to `factor`.
+
 
 # Similar Cases 
 
@@ -38,6 +37,7 @@ verum <- sc$getVerumData()
 verum$group <- "Verum"
 simCases <- sc$simCases
 simCases$caseId <- NULL
+simCases$scDist <- NULL
 simCases$group <- "Similar Cases"
 df <- rbind(verum, simCases)
 ```
@@ -47,13 +47,7 @@ df <- rbind(verum, simCases)
 
 ## Check Linearity and Proportional Hazard Assumption
 
-There are two functions for checking on the linearity of any independent `numeric` variable and the proportional hazard assumption for all dependent variables. Actually, it is not able to correct for non-linearity in the distance calculation.
-
-```{r, warning=FALSE, message=FALSE}
-p <- sc$check_linearity()
-p
-# ggplotly(p, filename = "plotly/check_lin")
-```
+There is one function for checking the proportional hazard assumption for all dependent variables. Actually, it is not able to correct for non-linearity in the distance calculation.
 
 ```{r, warning=FALSE, message=FALSE}
 pp <- sc$check_ph()
@@ -78,13 +72,13 @@ Alternatively, you may just be interested in the distance matrix, then you go th
 ```{r}
 sc <- cbrCoxModel$new(learning=ovarian, verumData=ovarian, learnVars=names(ovarian)[-c(1, 2)], endPoint=c("futime", "fustat"), impute=F)
 
-sc$getFullDistanceMatrix()
+sc$getDistanceMatrix()
 ```
 ` sc$getFullDistanceMatrix()` calculates the full distance matrix. This matrix the dimension: cases of learning data versus cases of verum data. In the above example we used the same data set for learning and as verum data. Such case can also be achieved by:
 ```{r, eval=FALSE}
 sc <- cbrCoxModel$new(learning=ovarian, learnVars=names(ovarian)[-c(1, 2)], endPoint=c("futime", "fustat"), impute=F)
 
-sc$getFullDistanceMatrix()
+sc$getDistanceMatrix()
 ```
 The distance matrix is saved internally in the sc object: ` sc$distMat`.
 

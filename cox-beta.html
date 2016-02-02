@@ -100,9 +100,7 @@ img {
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples<b class="caret"></b></a>
                       <ul class="dropdown-menu">
                         <li><a href="cox-beta.html">Cox-Beta</a></li>
-                        <li><a href="rf-proximity.html">RF-Proximity</a></li>
-                        <li><a href="rf-depth.html">RF-Depth</a></li>
-                        <li><a href="manifold-learning.html">Manifold Learning</a></li>
+                        <li><a href="randomforest.html">RandomForest</a></li>
                       </ul>
                     </li>
                     <li class="dropdown">
@@ -111,6 +109,7 @@ img {
                         <li><a href="Workflow.html">Class Structure</a></li>
                         <li><a href="distance-measures.html">Distance Measures</a></li>
                         <li><a href="doc-cox-beta.html">Documentation Cox-Beta Model</a></li>
+                        <li><a href="doc-rf.html">Documentation Random Forest Model</a></li>
                       </ul>
                     </li>
                     <li><a href="about.html">About</a></li>
@@ -134,7 +133,6 @@ img {
 <p><br></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survival)
 <span class="kw">library</span>(cbr)
-<span class="kw">library</span>(plotly)
 
 <span class="co"># all variables should be numeric or factor</span>
 ovarian$resid.ds &lt;-<span class="st"> </span><span class="kw">factor</span>(ovarian$resid.ds)
@@ -145,7 +143,7 @@ ovarian$ecog.ps &lt;-<span class="st"> </span><span class="kw">factor</span>(ova
 sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span class="dt">learning=</span>ovarian, <span class="dt">verumData=</span>ovarian, <span class="dt">learnVars=</span><span class="kw">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;resid.ds&quot;</span>, <span class="st">&quot;rx&quot;</span>, <span class="st">&quot;ecog.ps&quot;</span>), <span class="dt">endPoint=</span><span class="kw">c</span>(<span class="st">&quot;futime&quot;</span>, <span class="st">&quot;fustat&quot;</span>), <span class="dt">impute=</span>F)</code></pre>
 <pre><code>## Dropped cases with missing values: 0
 ## Dropped cases with missing values: 0</code></pre>
-<p>If <code>impute</code> is set to <code>FALSE</code> (for the Cox model the <code>ìmpute</code> variable is always set to <code>FALSE</code>) then all cases with missing values in the learning and end point variables are dropped (<code>na.omit</code>) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. The variables should be <code>numeric</code> or <code>factor</code>.</p>
+<p>If <code>impute</code> is set to <code>FALSE</code> (for the Cox model the <code>ìmpute</code> variable is always set to <code>FALSE</code>) then all cases with missing values in the learning and end point variables are dropped (<code>na.omit</code>) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. The variables should be <code>numeric</code> or <code>factor</code>. <code>character</code> variables will be transformed to <code>factor</code>.</p>
 </div>
 <div id="similar-cases" class="section level1">
 <h1><span class="header-section-number">2</span> Similar Cases</h1>
@@ -156,26 +154,23 @@ sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span c
 ## Learning finished in: 0.03 seconds.
 ## Start calculating distance matrix...
 ## Distance matrix calculation finished in: 0 seconds.
-## Similar cases calculation finished in: 0.04 seconds.</code></pre>
+## Similar cases calculation finished in: 0.05 seconds.</code></pre>
 <p>You may extract then the similar cases and the verum data and put them together:</p>
 <pre class="sourceCode r"><code class="sourceCode r">verum &lt;-<span class="st"> </span>sc$<span class="kw">getVerumData</span>()
 verum$group &lt;-<span class="st"> &quot;Verum&quot;</span>
 simCases &lt;-<span class="st"> </span>sc$simCases
 simCases$caseId &lt;-<span class="st"> </span><span class="ot">NULL</span>
+simCases$scDist &lt;-<span class="st"> </span><span class="ot">NULL</span>
 simCases$group &lt;-<span class="st"> &quot;Similar Cases&quot;</span>
 df &lt;-<span class="st"> </span><span class="kw">rbind</span>(verum, simCases)</code></pre>
 <p><strong>Note 1:</strong> In the initialization step, we dropped all cases with missing values in the variables of <code>learnVars</code> and <code>endPoint</code>. The function <code>sc$getVerumData()</code> returns the data set without the cases with missing values in the learning vars, except in the randomForest model where you have the option to impute missing values.</p>
 <p><strong>Note 2:</strong> The <code>data.frame</code> returned from <code>sc$simCases</code> has an additional column <code>caseId</code>. By this column you may map the similar cases to cases in verum data, e.g. if you had chosen <code>nCases = 3</code>, then the first three elements in the column <code>caseId</code> will be <code>1</code> (following three <code>2</code> and so on). This means that this three cases are the three most similar cases to case <code>1</code> in verum data.</p>
 <div id="check-linearity-and-proportional-hazard-assumption" class="section level2">
 <h2><span class="header-section-number">2.1</span> Check Linearity and Proportional Hazard Assumption</h2>
-<p>There are two functions for checking on the linearity of any independent <code>numeric</code> variable and the proportional hazard assumption for all dependent variables. Actually, it is not able to correct for non-linearity in the distance calculation.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span>sc$<span class="kw">check_linearity</span>()
-p</code></pre>
-<p><img src="cox-beta_files/figure-html/unnamed-chunk-4-1.png" title="" alt="" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ggplotly(p, filename = &quot;plotly/check_lin&quot;)</span></code></pre>
+<p>There is one function for checking the proportional hazard assumption for all dependent variables. Actually, it is not able to correct for non-linearity in the distance calculation.</p>
 <pre class="sourceCode r"><code class="sourceCode r">pp &lt;-<span class="st"> </span>sc$<span class="kw">check_ph</span>()
 pp</code></pre>
-<p><img src="cox-beta_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>
+<p><img src="cox-beta_files/figure-html/unnamed-chunk-4-1.png" title="" alt="" width="672" /></p>
 </div>
 <div id="validation-of-the-matching-variables" class="section level2">
 <h2><span class="header-section-number">2.2</span> Validation of the matching Variables</h2>
@@ -186,7 +181,7 @@ pp</code></pre>
 ## Chi-Square test for variable: rx; p = 1
 ## Chi-Square test for variable: ecog.ps; p = 1</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">pp</code></pre>
-<p><img src="cox-beta_files/figure-html/unnamed-chunk-6-1.png" title="" alt="" width="672" /> <br> The function <code>sc$validate()</code> returns an <code>gg</code> and <code>ggplot</code> object.</p>
+<p><img src="cox-beta_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /> <br> The function <code>sc$validate()</code> returns an <code>gg</code> and <code>ggplot</code> object.</p>
 </div>
 </div>
 <div id="distance-matrix" class="section level1">
@@ -195,7 +190,7 @@ pp</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span class="dt">learning=</span>ovarian, <span class="dt">verumData=</span>ovarian, <span class="dt">learnVars=</span><span class="kw">names</span>(ovarian)[-<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)], <span class="dt">endPoint=</span><span class="kw">c</span>(<span class="st">&quot;futime&quot;</span>, <span class="st">&quot;fustat&quot;</span>), <span class="dt">impute=</span>F)</code></pre>
 <pre><code>## Dropped cases with missing values: 0
 ## Dropped cases with missing values: 0</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">getFullDistanceMatrix</span>()</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">getDistanceMatrix</span>()</code></pre>
 <pre><code>## Start learning...
 ## Learning finished in: 0.02 seconds.
 ## Start calculating distance matrix...
@@ -203,7 +198,7 @@ pp</code></pre>
 <p><code>sc$getFullDistanceMatrix()</code> calculates the full distance matrix. This matrix the dimension: cases of learning data versus cases of verum data. In the above example we used the same data set for learning and as verum data. Such case can also be achieved by:</p>
 <pre class="sourceCode r"><code class="sourceCode r">sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span class="dt">learning=</span>ovarian, <span class="dt">learnVars=</span><span class="kw">names</span>(ovarian)[-<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)], <span class="dt">endPoint=</span><span class="kw">c</span>(<span class="st">&quot;futime&quot;</span>, <span class="st">&quot;fustat&quot;</span>), <span class="dt">impute=</span>F)
 
-sc$<span class="kw">getFullDistanceMatrix</span>()</code></pre>
+sc$<span class="kw">getDistanceMatrix</span>()</code></pre>
 <p>The distance matrix is saved internally in the sc object: <code>sc$distMat</code>.</p>
 <p><br></p>
 </div>

@@ -2,39 +2,11 @@
   title: 'Distance Measures'
 ---
 
-TODO: Motivation
-
-# Similarity Measure
-
-
-## Cox Beta Model
-
-Let $\mathbf{x} = (x_1, \ldots, x_m)$ and $\mathbf{y} = (y_1, \ldots, y_m)$ be the features vectors of two patients $\mathbf{x}$ and $\mathbf{y}$. A first rough idea may be to calculate the L1-distance of each feature and sum them up:
-$$\|\mathbf{x} - \mathbf{y} \|^2_{L_1} = \sum_{i=1,..,p} |x_i - y_i|$$
+<object data="Distance_Measure.pdf" type="application/pdf" style="width:100%;height:300px">
+  <a href="object.pdf">PDF laden</a>
+</object>
 
 
-**Problems with this naive distance measure:**
-
-1. $|x_i - y_i|$ is well defined for numerical features, but what’s about the definition of the distance measure for categorical features, e.g. pathological N with levels N0,…, N4, gender with levels male/female or even histologies? Is the distance between N0 to N1 the same as for N1 to N2? 
-2. $|x_i - y_i|$ is not scale invariant, e.g. if you change the unit of a feature from meters to centimetres, the contribution of this feature on the distance measure would explode by a factor of 100.
-3. All variables are treated the same way, idependent if they have an influence on the outcome. Smoking seems to have an influence on lung cancer, but what's about the city you live in? Is it reasonable to give the feature city the same influence on the distance as smoker?
-
-Two steps have to be done to overcome above problems:
-
-1. Generalize the L1-distance on the feature scale, such that it can deal with different variable types
-2. Each feature needs to be weighted suitable 
-    + to rule out dependency on the scale
-    + account for varying importance across features and impact size
-
-This leads to following weighted distance measure:
-$$d(\mathbf{x}, \mathbf{y}) = \sum_{i=1,..,p} |\alpha(x_i, y_i)\cdot d(x_i, y_i)|$$
-
-
-ds
-
-## RandomForest Proximity Model
-
-
-## RandomForest Deep Model
+### Literatur
 
 [A novel approach to estimate proximity in a random forest: An exploratory study](https://www.researchgate.net/profile/Antanas_Verikas/publication/257404436_A_novel_approach_to_estimate_proximity_in_a_random_forest_An_exploratory_study/links/53e8f90c0cf2fb1b9b6438c4.pdf)

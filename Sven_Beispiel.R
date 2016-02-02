@@ -55,7 +55,8 @@ system.time(rfTrees %>%
   group_by(treeID) %>% 
     get_list() -> d) # ~10s
 
-get_list()
+get_list(rfTrees %>% filter(treeID == 1))
+
 
 # 100 Bäume, alle Variablen
 v.obj <- rfsrc(formula    = Surv(time, status) ~ ., 

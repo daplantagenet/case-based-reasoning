@@ -10,7 +10,7 @@
 
 
 
-<title>RandomForest Proximity Model</title>
+<title>Random Survival Forest Model</title>
 
 <script src="libs/jquery/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -100,9 +100,7 @@ img {
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples<b class="caret"></b></a>
                       <ul class="dropdown-menu">
                         <li><a href="cox-beta.html">Cox-Beta</a></li>
-                        <li><a href="rf-proximity.html">RF-Proximity</a></li>
-                        <li><a href="rf-depth.html">RF-Depth</a></li>
-                        <li><a href="manifold-learning.html">Manifold Learning</a></li>
+                        <li><a href="randomforest.html">RandomForest</a></li>
                       </ul>
                     </li>
                     <li class="dropdown">
@@ -111,6 +109,7 @@ img {
                         <li><a href="Workflow.html">Class Structure</a></li>
                         <li><a href="distance-measures.html">Distance Measures</a></li>
                         <li><a href="doc-cox-beta.html">Documentation Cox-Beta Model</a></li>
+                        <li><a href="doc-rf.html">Documentation Random Forest Model</a></li>
                       </ul>
                     </li>
                     <li><a href="about.html">About</a></li>
@@ -123,39 +122,19 @@ img {
                                     </nav><!--/.navbar -->
 
 <div id="header">
-<h1 class="title">RandomForest Proximity Model</h1>
+<h1 class="title">Random Survival Forest Model</h1>
 </div>
 
 
 <hr />
 <div id="initialization" class="section level1">
 <h1><span class="header-section-number">1</span> Initialization</h1>
-<p>In the second example, we present the RandomForest Proximity matrix as distance measure and the <code>ovarian</code> data set from the <code>survival</code> package. In the first step we initialize the R6 data object. The initialization needs several inputs:</p>
-<p><strong>Arguments:</strong></p>
-<table>
-<tbody>
-<tr class="odd">
-<td align="left"><em>learning</em></td>
-<td align="left">data set for learning the RandomForest</td>
-</tr>
-<tr class="even">
-<td align="left"><em>verumData</em></td>
-<td align="left">Verum data set. For each case in the verum data, we are looking for the m (=1,…,k) similar cases. Learning and verum data set need the same structure (variable names and scales)</td>
-</tr>
-<tr class="odd">
-<td align="left"><em>learnVars (optional)</em></td>
-<td align="left">A character vector variable names. This variables are used for learning the model. Do not include time2event and event variable here. Default: all variables, except endPoint variables, are used for model fitting.</td>
-</tr>
-<tr class="even">
-<td align="left"><em>endPoint (optional)</em></td>
-<td align="left">A character vector of length two. The first elements contains the variable name of the time 2 event variable and the second the name of the event variable. Default: <code>c(&quot;Time2Event&quot;, &quot;Event&quot;)</code></td>
-</tr>
-<tr class="odd">
-<td align="left"><em>impute (optional)</em></td>
-<td align="left">TRUE/FALSE: Missing value imputation (see randomForestSRC-Package for documentation.</td>
-</tr>
-</tbody>
-</table>
+<p>In the second example, we present the Random Forest model for a distance measure approximation applied on the <code>ovarian</code> data set from the <code>survival</code> package. This package offers two ways for distance/similarity calculation (see documentation):</p>
+<ul>
+<li><p>proximity</p></li>
+<li><p>pathway</p></li>
+</ul>
+<p>Let’s initialize the R6 data object.</p>
 <p><br></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survival)
 <span class="kw">library</span>(cbr)
@@ -165,15 +144,15 @@ ovarian$ecog.ps &lt;-<span class="st"> </span><span class="kw">factor</span>(ova
 
 <span class="co"># initialize R6 object</span>
 sc &lt;-<span class="st"> </span>cbrRFProxy$<span class="kw">new</span>(<span class="dt">learning=</span>ovarian, <span class="dt">verumData=</span>ovarian, <span class="dt">learnVars=</span><span class="kw">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;resid.ds&quot;</span>, <span class="st">&quot;rx&quot;</span>, <span class="st">&quot;ecog.ps&quot;</span>), <span class="dt">endPoint=</span><span class="kw">c</span>(<span class="st">&quot;futime&quot;</span>, <span class="st">&quot;fustat&quot;</span>), <span class="dt">impute=</span>T)</code></pre>
-<p>If <code>impute</code> is set to <code>FALSE</code> (for the Cox model the <code>ìmpute</code> variable is always set to <code>FALSE</code>) then all cases with missing values in the learning and end point variables are dropped (<code>na.omit</code>) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. The variables should be <code>numeric</code> or <code>factor</code>.</p>
+<p>If <code>impute</code> is set to <code>FALSE</code> (for the Cox model the <code>ìmpute</code> variable is always set to <code>FALSE</code>) then all cases with missing values in the learning and end point variables are dropped (<code>na.omit</code>) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. The variables should be <code>numeric</code> or <code>factor</code>. <code>character</code> variables will be transformed to <code>factor</code>.</p>
 </div>
 <div id="learning-randomforest" class="section level1">
 <h1><span class="header-section-number">2</span> Learning RandomForest</h1>
 <p>Optionally, you may want to adjust some parameters in the fitting step of the random forest algorithm. Possible arguments are: <code>nCores</code>, <code>ntree</code>, <code>mtry</code>, <code>splitrule</code>, <code>ntime</code>, <code>nsplit</code>, and <code>verbose</code>. The documentation of this parameters can be found in the randomForestSRC R-package.</p>
 <pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">learn</span>()</code></pre>
 <pre><code>## Start learning...</code></pre>
-<p><img src="rf-proximity_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
-<pre><code>## Random Forest for Survival calculation finished in: 0.13 seconds.</code></pre>
+<p><img src="randomforest_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
+<pre><code>## Random Forest for Survival calculation finished in: 0.12 seconds.</code></pre>
 <p>All other steps (excluding checking for linearity and proportional hazard assumption are the same as for the Cox-model).</p>
 <p><br></p>
 </div>
