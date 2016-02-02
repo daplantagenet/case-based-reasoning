@@ -2,11 +2,11 @@
   title: 'Distance Measures'
 ---
 
-<object data="Distance_Measure.pdf" type="application/pdf" style="width:100%;height:300px">
+<object data="Distance_Measure.pdf" type="application/pdf" style="width:100%;height:600px">
   <a href="object.pdf">PDF laden</a>
 </object>
 
 
-### Literatur
+**Literatur**
 
 [A novel approach to estimate proximity in a random forest: An exploratory study](https://www.researchgate.net/profile/Antanas_Verikas/publication/257404436_A_novel_approach_to_estimate_proximity_in_a_random_forest_An_exploratory_study/links/53e8f90c0cf2fb1b9b6438c4.pdf)
