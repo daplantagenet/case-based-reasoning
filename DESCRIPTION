@@ -10,21 +10,17 @@ License: AGPL
 LazyData: TRUE
 Depends:
     R6,
-    Rtsne,
-    ggplot2,
-    cowplot,
-    dplyr,
-    randomForestSRC,
-    survival,
-    rms,
-    Rtsne
+    dplyr (>= 0.4.1)
 Imports:
     Rcpp (>= 0.11.5),
     RcppArmadillo,
     R6 (>= 2.0.1),
-    dplyr (>= 0.4.1),
     ggplot2,
-    cowplot
+    cowplot,
+    Rtsne,
+    survival,
+    rms,
+    randomForestSRC
 LinkingTo:
     Rcpp,
     RcppArmadillo

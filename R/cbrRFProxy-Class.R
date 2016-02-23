@@ -95,15 +95,15 @@ cbrRFProxy <- R6Class("cbrRFProxy",
 
                           # Learning
                           formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
-                          rsf <- rfsrc(formel,
-                                       data       = learnData,
-                                       ntree      = ntree,
-                                       mtry       = mtry,
-                                       splitrule  = splitrule,
-                                       proximity  = "all",
-                                       na.action  = impute,
-                                       importance = "none",
-                                       do.trace   = verbose)
+                          rsf <- randomForestSRC::rfsrc(formel,
+                                                        data       = learnData,
+                                                        ntree      = ntree,
+                                                        mtry       = mtry,
+                                                        splitrule  = splitrule,
+                                                        proximity  = "all",
+                                                        na.action  = impute,
+                                                        importance = "none",
+                                                        do.trace   = verbose)
                           plot(rsf)
                           
                           # if imputation is activated, then save it

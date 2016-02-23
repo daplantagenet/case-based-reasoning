@@ -28,26 +28,29 @@ cbrValidate <- R6Class("cbrValidate",
                                tit <- c(tit, paste0(var, " (p = ", round(w$p.value, 3), ")"))
                                cat(paste0("Two-sample Wilcoxon test for variable: ", var, "; p = ", round(w$p.value, 3), "\n"))
                                if (plots)
-                                 ggPlot <-  c(ggPlot, list(ggplot(sc) +
-                                                             geom_boxplot(aes_string(x="simCases", y=var), alpha=0) +
-                                                             xlab("") + ylab("") + 
-                                                             background_grid(major="y", minor="y")))
+                                 ggPlot <-  c(ggPlot, list(ggplot2::ggplot(sc) +
+                                                             ggplot2::geom_boxplot(aes_string(x="simCases", y=var), alpha=0) +
+                                                             ggplot2::xlab("") + 
+                                                             ggplot2::ylab("") + 
+                                                             cowplot::background_grid(major="y", minor="y")))
                              } else if (is.factor(simCases[, var])) {
                                w <- chisq.test(sc$simCases, sc[, var])
                                tit <- c(tit, paste0(var, " (p = ", round(w$p.value, 3), ")"))
                                cat(paste0("Chi-Square test for variable: ", var, "; p = ", round(w$p.value, 3), "\n"))
                                df <- data.frame(prop.table(table(sc$simCases, sc[, var]), 1))
                                if (plots)
-                                 ggPlot <- c(ggPlot, list(ggplot(df) +
-                                                            geom_bar(aes_string(x="Var2", y="Freq", fill="Var1"), stat = "identity", position="dodge", alpha=.7) +
-                                                            scale_fill_manual(name="", values = stat.color) +
-                                                            xlab("") + ylab("") + theme(legend.position="top") + 
-                                                            background_grid(major="y", minor="y")))
+                                 ggPlot <- c(ggPlot, list(ggplot2::ggplot(df) +
+                                                            ggplot2::geom_bar(aes_string(x="Var2", y="Freq", fill="Var1"), stat = "identity", position="dodge", alpha=.7) +
+                                                            ggplot2::scale_fill_manual(name="", values = stat.color) +
+                                                            ggplot2::xlab("") + 
+                                                            ggplot2::ylab("") + 
+                                                            ggplot2::theme(legend.position="top") + 
+                                                            cowplot::background_grid(major="y", minor="y")))
                              }
                            }
                            if (plots) {
-                             theme_set(theme_cowplot())
-                             return(plot_grid(plotlist = ggPlot, labels=tit, ncol=2))
+                             ggplot2::theme_set(cowplot::theme_cowplot())
+                             return(cowplot::plot_grid(plotlist = ggPlot, labels=tit, ncol=2))
                            }
                            return()
                          }

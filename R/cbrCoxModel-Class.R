@@ -61,13 +61,13 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           #  datadist scoping
                           on.exit(detach("design.options"))
                           attach(list(), name="design.options")
-                          assign('dd', datadist(self$learning), pos='design.options')
+                          assign('dd', rms::datadist(self$learning), pos='design.options')
                           options(datadist="dd")
                           
                           # formula and Cox-Model
                           formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
-                          coxFit <- cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
-                          vars <- fastbw(coxFit, type = "i")
+                          coxFit <- rms::cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
+                          vars <- rms::fastbw(coxFit, type = "i")
                           cat(paste0("Initial variable set: ", paste(self$learnVars, collapse = ", "), "\n"))
                           cat(paste0("Selected variable set: ", paste(vars$names.kept, collapse = ", "), "\n"))
                           self$info$y[5] <- paste(vars$names.kept, collapse = ", ")
@@ -99,7 +99,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
                           coxFit <- rms::cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
                           self$coxFit <- coxFit
-                          self$cph <- cox.zph(self$coxFit, "rank")
+                          self$cph <- survival::cox.zph(self$coxFit, "rank")
                           # self$valCox <- rms::validate(self$coxFit, B=200)
                           
                           nVars <- length(self$learnVars)
@@ -144,17 +144,18 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           ggPlot <- list()
                           for (i in 1:n) {
                             df <- data.frame(x=self$cph$x, y=self$cph$y[, i])
-                            g <- ggplot(df, aes(x=x, y=y)) +
-                              geom_hline(yintercept=0, colour="grey") +
-                              geom_point() +
-                              geom_smooth(color="#2773ae", fill="#2773ae") +
-                              ylab(paste0("Beta(t) of ", self$learnVars[i])) + xlab("Time to Event") +
-                              background_grid(major="xy", minor="xy")
+                            g <- ggplot2::ggplot(df, aes(x=x, y=y)) +
+                              ggplot2::geom_hline(yintercept=0, colour="grey") +
+                              ggplot2::geom_point() +
+                              ggplot2::geom_smooth(color="#2773ae", fill="#2773ae") +
+                              ggplot2::ylab(paste0("Beta(t) of ", self$learnVars[i])) + 
+                              ggplot2::xlab("Time to Event") +
+                              cowplot::background_grid(major="xy", minor="xy")
                             ggPlot <- c(ggPlot, list(g))
                           }
                           
-                          return(plot_grid(plotlist = ggPlot, 
-                                           ncol     = 2))
+                          return(cowplot::plot_grid(plotlist = ggPlot, 
+                                                    ncol     = 2))
                         },
                         # calculate distance matrix for verum data
                         getDistanceMatrix = function() {
@@ -188,7 +189,6 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           if (self$refEQNew) {
                             stop("no new data!")
                           }
-                          
                           start <- Sys.time()
                           cat("Start caclulating similar cases...\n")
                           # learn if weights are empty
@@ -209,9 +209,7 @@ cbrCoxModel <- R6Class("cbrCoxModel",
 
                           # catch floating numbers
                           nCases <- as.integer(nCases)
-                          
                           self$getDistanceMatrix()
-                          
                           # calculate distance and order of cases based on distance calculation
                           sc <- simCases$new(distMat=self$distMat)
                           sc$getSimilarCases(verumData=self$verumData, learning=self$learning, nCases=nCases)
@@ -219,7 +217,6 @@ cbrCoxModel <- R6Class("cbrCoxModel",
                           self$simCases <- sc$similarCases
                           # sc$getSimilarCases(self$verumData, self$learning, self$learnVars, self$Weights, nCases)
                           # self$distMat <- sc$distMat
-
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Similar cases calculation finished in: ", duration, " seconds.\n"))
