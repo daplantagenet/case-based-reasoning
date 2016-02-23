@@ -41,16 +41,22 @@ library(data.table)
 library(dplyr)
 data(veteran, package = "randomForestSRC")
 
+# source cpp code
 sourceCpp("getDistCPP.cpp")
 nTree <- 100
+
+# fit random forrest
 rfobj <- rfsrc(Surv(time, status) ~ age, 
                data       = veteran, 
                ntree      = nTree, 
                membership = T,
                proximity  = T, 
                forest     = T)
-rfobj->v.obj
+rfobj -> v.obj
 
+# get the number of knotes for each end node and for each tree and save it in
+# a data.table; 
+# Tetyana: you may replace following loop by your C++-Code.
 treeAge <- v.obj$forest$nativeArray[v.obj$forest$nativeArray$treeID == 1, ]
 DistTreeCPP <- getDistCPP(treeAge)
 names(DistTreeCPP)[3] <- "tree_1"
@@ -64,15 +70,38 @@ for (i in 2:nTree) {
 DistTreeCPP <- as.data.table(DistTreeCPP)
 setkeyv(DistTreeCPP, cols = c("x", "y"))
 
-names <- paste0("tree_", 1:nTree)
-DistTreeCPP[, c("sum", "n") := NULL]
-DistTreeCPP[, sum := sum(2/exp(.SD), na.rm=T), by = c("x", "y"), .SDcols = names]
-DistTreeCPP[, n := nTree - sum(is.na(.SD)), by = c("x", "y"), .SDcols = names]
-DistTreeCPP$dist <- DistTreeCPP$sum / DistTreeCPP$n
-setkey(DistTreeCPP, dist)
-DistTreeCPP
-table(DistTreeCPP$n)
+# Description for Tetyana: This is the most critical performance part of the whole 
+# calculations:
+# predict; in this case, we also can use v.obj$membership
+prf <- predict(rfobj)
+# the membership matrix (n x nTree) with n = cases contains the end node 
+# membership of each case. Example output:
+#       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13] ...
+# [1,]   25   19   22   24   24   25   24   26   26    26    27    29    24   
+# [2,]   19   22    4   19   19   15   19   21   19    17    22    23    20  
+# [3,]   10    2    8    6    5    2    2    7    4     6    10     7     7    
+# 
+# Let's have a look at tree 1. Case 1 is in end node 25 and case 2 in end node 
+# 19 the number of knotes between this nodes can be extracted from DistTreeCPP 
+# by DistTreeCPP[J(19, 25), 3, with=F]. The smaller number has to be always 
+# in the first field of J(., .) as DistTreeCPP is ordered by x then by y and the
+# (x, y) pairs are unique. Say you get there the value 6. On this value apply 
+# 1 / exp(w * g_ijt) = 1 / exp(w * 6), where w is a parameter that can be
+# set as parameter (default: w = 2). Now, we have two possibilities
+# 1. loop over trees or loop over cases. As this algorithm should be applied 
+# on large data sets and n >> nTree, I would suggest to parallelize over cases 
+# with (n^2 - n) / 2 final fields or iterations). You may have to research a good 
+# matrix representation in the matrix package. 
 
+prf$membership
+
+
+
+
+
+
+
+# compare to R-Code
 system.time(
   for (i in 1:100) {
     treeAge <- v.obj $forest$nativeArray[v.obj$forest$nativeArray$treeID == i, ]
