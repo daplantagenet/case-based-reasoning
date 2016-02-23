@@ -21,6 +21,6 @@ Imports:
     survival,
     rms,
     randomForestSRC
-LinkingTo:
-    Rcpp,
+LinkingTo: Rcpp,
     RcppArmadillo
+RoxygenNote: 5.0.1
