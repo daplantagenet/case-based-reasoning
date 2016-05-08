@@ -17,3 +17,15 @@ get_nearest_Elements <- function(mNew, mRef, vWeights, nCases) {
     .Call('cbr_get_nearest_Elements', PACKAGE = 'cbr', mNew, mRef, vWeights, nCases)
 }
 
+getDistForTreesCPP <- function(df, nTree) {
+    .Call('cbr_getDistForTreesCPP', PACKAGE = 'cbr', df, nTree)
+}
+
+getMatixDistances <- function(df, member, w = 2L) {
+    .Call('cbr_getMatixDistances', PACKAGE = 'cbr', df, member, w)
+}
+
+getParallelMatixDistances <- function(df, member, w = 2L) {
+    .Call('cbr_getParallelMatixDistances', PACKAGE = 'cbr', df, member, w)
+}
+

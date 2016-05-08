@@ -20,6 +20,7 @@ Imports:
     Rtsne,
     survival,
     rms,
+    parallel,
     randomForestSRC
 LinkingTo: Rcpp,
     RcppArmadillo
