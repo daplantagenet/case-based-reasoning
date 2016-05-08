@@ -74,11 +74,11 @@ cbrRF <- R6Class("cbrRF",
                      
                      # number of cores for calculation
                      if (missing(nCores)) {
-                       options(rf.cores=detectCores() - 1, mc.cores=detectCores() - 1)
+                       options(rf.cores=parallel::detectCores() - 1, mc.cores=parallel::detectCores() - 1)
                      } else {
                        nCores <- as.integer(nCores)
-                       if (nCores >= detectCores()) {
-                         nCores <- detectCores() - 1
+                       if (nCores >= parallel::detectCores()) {
+                         nCores <- parallel::detectCores() - 1
                        }
                        options(rf.cores=nCores, mc.cores=nCores)
                      }
