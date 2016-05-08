@@ -7,6 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 
 
@@ -45,6 +46,7 @@ p code {
 
 
 
+
 </head>
 
 <body>
@@ -59,12 +61,55 @@ code {
   color: inherit;
   background-color: rgba(0, 0, 0, 0.04);
 }
-img { 
-  max-width:100%; 
-  height: auto; 
+img {
+  max-width:100%;
+  height: auto;
+}
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
 }
 </style>
+
+
 <div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="libs/navigation/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
 
 
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -83,9 +128,7 @@ img {
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples<b class="caret"></b></a>
                       <ul class="dropdown-menu">
                         <li><a href="cox-beta.html">Cox-Beta</a></li>
-                        <li><a href="rf-proximity.html">RF-Proximity</a></li>
-                        <li><a href="rf-depth.html">RF-Depth</a></li>
-                        <li><a href="manifold-learning.html">Manifold Learning</a></li>
+                        <li><a href="randomforest.html">RandomForest</a></li>
                       </ul>
                     </li>
                     <li class="dropdown">
@@ -94,6 +137,7 @@ img {
                         <li><a href="Workflow.html">Class Structure</a></li>
                         <li><a href="distance-measures.html">Distance Measures</a></li>
                         <li><a href="doc-cox-beta.html">Documentation Cox-Beta Model</a></li>
+                        <li><a href="doc-rf.html">Documentation Random Forest Model</a></li>
                       </ul>
                     </li>
                     <li><a href="about.html">About</a></li>
@@ -105,30 +149,37 @@ img {
                                     </div><!--/.container -->
                                     </nav><!--/.navbar -->
 
+<div class="fluid-row" id="header">
+
+
+
+</div>
 
 
 <div id="workflow" class="section level1">
 <h1><span class="header-section-number">1</span> Workflow</h1>
 <p>Following diagramm shows the abstract workflow.</p>
-<p><div id="htmlwidget-5716" style="width:672px;height:480px;" class="DiagrammeR"></div>
+<p><div id="htmlwidget-5716" style="width:672px;height:480px;" class="DiagrammeR html-widget"></div>
 <script type="application/json" data-for="htmlwidget-5716">{
   "x": {
     "diagram": "\n  graph TB;\n    A[Initialize CBR Object]-->B[Calculate Similar Cases]\n    B-->C[Validate]\n    B-->D[Extract Data]\n    A-->E[Calculate Distance Matrix]\n    E-->F[Manifold Learning]\n    A-->|Cox-Model|G[Check Linearity & Proportional Hazard]\n    G-->B\n    G-->E\n    B-->|NOT working|F;\n    \n    style A fill:#fff, stroke:#2773ae, stroke-width:2px, color:#ffffff;\n    style B fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style C fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style D fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style E fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style F fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style G fill:#fff, stroke:#2773ae, stroke-width:2px;\n"
   },
-  "evals": []
+  "evals": [],
+  "jsHooks": []
 }</script></p>
 <div id="overview" class="section level2">
 <h2><span class="header-section-number">1.1</span> Overview</h2>
-<p><div id="htmlwidget-4929" style="width:672px;height:480px;" class="grViz"></div>
+<p><div id="htmlwidget-4929" style="width:672px;height:480px;" class="grViz html-widget"></div>
 <script type="application/json" data-for="htmlwidget-4929">{
   "x": {
-    "diagram": "digraph {\n\n  \"cbrData\" [label = \"cbrData\", shape = \"rectangle\"] \n  \"cbrCoxModel\" [label = \"cbrCoxModel\", shape = \"rectangel\"] \n  \"cbrRFProxy\" [label = \"cbrRFProxy\", shape = \"rectangle\"] \n  \"cbrSimCases\" [label = \"cbrSimCases\", shape = \"rectangle\"] \n  \"cbrSimCases\" [label = \"cbrSimCases\", shape = \"rectangle\"] \n  \"cbrValidate\" [label = \"cbrValidate\", shape = \"rectangle\"] \n  \"cbrValidate\" [label = \"cbrValidate\", shape = \"rectangle\"] \n  \"cbrData\"->\"cbrCoxModel\" \n  \"cbrData\"->\"cbrRFProxy\" \n  \"cbrCoxModel\"->\"cbrSimCases\" \n  \"cbrRFProxy\"->\"cbrSimCases\" \n  \"cbrCoxModel\"->\"cbrValidate\" \n  \"cbrRFProxy\"->\"cbrValidate\" \n}",
+    "diagram": "digraph {\n\n  \"cbrData\" [label = \"cbrData\", shape = \"rectangle\"] \n  \"cbrCoxModel\" [label = \"cbrCoxModel\", shape = \"rectangel\"] \n  \"cbrRF\" [label = \"cbrRF\", shape = \"rectangle\"] \n  \"cbrSimCases\" [label = \"cbrSimCases\", shape = \"rectangle\"] \n  \"cbrSimCases\" [label = \"cbrSimCases\", shape = \"rectangle\"] \n  \"cbrValidate\" [label = \"cbrValidate\", shape = \"rectangle\"] \n  \"cbrValidate\" [label = \"cbrValidate\", shape = \"rectangle\"] \n  \"cbrData\"->\"cbrCoxModel\" \n  \"cbrData\"->\"cbrRF\" \n  \"cbrCoxModel\"->\"cbrSimCases\" \n  \"cbrRF\"->\"cbrSimCases\" \n  \"cbrCoxModel\"->\"cbrValidate\" \n  \"cbrRF\"->\"cbrValidate\" \n}",
     "config": {
       "engine": null,
       "options": null
     }
   },
-  "evals": []
+  "evals": [],
+  "jsHooks": []
 }</script></p>
 </div>
 <div id="cbrdata-class" class="section level2">
@@ -146,6 +197,8 @@ $(document).ready(function () {
     $('a[href="' + href + '"]').parent().addClass('active');
 });
 </script>
+
+
 
 </div>
 

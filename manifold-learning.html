@@ -7,6 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 
 
@@ -76,12 +77,55 @@ code {
   color: inherit;
   background-color: rgba(0, 0, 0, 0.04);
 }
-img { 
-  max-width:100%; 
-  height: auto; 
+img {
+  max-width:100%;
+  height: auto;
+}
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
 }
 </style>
+
+
 <div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="libs/navigation/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
 
 
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -100,9 +144,7 @@ img {
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples<b class="caret"></b></a>
                       <ul class="dropdown-menu">
                         <li><a href="cox-beta.html">Cox-Beta</a></li>
-                        <li><a href="rf-proximity.html">RF-Proximity</a></li>
-                        <li><a href="rf-depth.html">RF-Depth</a></li>
-                        <li><a href="manifold-learning.html">Manifold Learning</a></li>
+                        <li><a href="randomforest.html">RandomForest</a></li>
                       </ul>
                     </li>
                     <li class="dropdown">
@@ -111,6 +153,7 @@ img {
                         <li><a href="Workflow.html">Class Structure</a></li>
                         <li><a href="distance-measures.html">Distance Measures</a></li>
                         <li><a href="doc-cox-beta.html">Documentation Cox-Beta Model</a></li>
+                        <li><a href="doc-rf.html">Documentation Random Forest Model</a></li>
                       </ul>
                     </li>
                     <li><a href="about.html">About</a></li>
@@ -122,8 +165,11 @@ img {
                                     </div><!--/.container -->
                                     </nav><!--/.navbar -->
 
-<div id="header">
+<div class="fluid-row" id="header">
+
+
 <h1 class="title">Shiny App for Manifold Learning</h1>
+
 </div>
 
 
@@ -144,6 +190,8 @@ $(document).ready(function () {
     $('a[href="' + href + '"]').parent().addClass('active');
 });
 </script>
+
+
 
 </div>
 

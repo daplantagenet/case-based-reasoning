@@ -7,6 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 
 
@@ -76,12 +77,55 @@ code {
   color: inherit;
   background-color: rgba(0, 0, 0, 0.04);
 }
-img { 
-  max-width:100%; 
-  height: auto; 
+img {
+  max-width:100%;
+  height: auto;
+}
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
 }
 </style>
+
+
 <div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="libs/navigation/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
 
 
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -121,8 +165,11 @@ img {
                                     </div><!--/.container -->
                                     </nav><!--/.navbar -->
 
-<div id="header">
+<div class="fluid-row" id="header">
+
+
 <h1 class="title">Cox-Beta Model</h1>
+
 </div>
 
 
@@ -130,8 +177,8 @@ img {
 <div id="initialization" class="section level1">
 <h1><span class="header-section-number">1</span> Initialization</h1>
 <p>In the first example, we use the Cox-Model and the <code>ovarian</code> data set from the <code>survival</code> package. In the first step we initialize the R6 data object.</p>
-<p><br></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survival)
+<span class="kw">library</span>(ggplot2)
 <span class="kw">library</span>(cbr)
 
 <span class="co"># all variables should be numeric or factor</span>
@@ -151,10 +198,10 @@ sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span c
 <pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">getSimilarCases</span>(<span class="dt">nCases =</span> <span class="dv">1</span>)</code></pre>
 <pre><code>## Start caclulating similar cases...
 ## Start learning...
-## Learning finished in: 0.03 seconds.
+## Learning finished in: 0.49 seconds.
 ## Start calculating distance matrix...
 ## Distance matrix calculation finished in: 0 seconds.
-## Similar cases calculation finished in: 0.05 seconds.</code></pre>
+## Similar cases calculation finished in: 0.5 seconds.</code></pre>
 <p>You may extract then the similar cases and the verum data and put them together:</p>
 <pre class="sourceCode r"><code class="sourceCode r">verum &lt;-<span class="st"> </span>sc$<span class="kw">getVerumData</span>()
 verum$group &lt;-<span class="st"> &quot;Verum&quot;</span>
@@ -213,6 +260,8 @@ $(document).ready(function () {
     $('a[href="' + href + '"]').parent().addClass('active');
 });
 </script>
+
+
 
 </div>
 

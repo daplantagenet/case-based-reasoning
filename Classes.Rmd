@@ -32,13 +32,13 @@ DiagrammeR("
 ## Overview
 
 ```{r, eval=TRUE, echo=FALSE}
-nodes_class <- create_nodes(nodes=c("cbrData", "cbrCoxModel", "cbrRFProxy", "cbrSimCases", "cbrSimCases", "cbrValidate", "cbrValidate"),
+nodes_class <- create_nodes(nodes=c("cbrData", "cbrCoxModel", "cbrRF", "cbrSimCases", "cbrSimCases", "cbrValidate", "cbrValidate"),
                       shape=c("rectangle", "rectangel", "rectangle", "rectangle", "rectangle", "rectangle", "rectangle"))
 
-edges_class <- create_edges(from  = c("cbrData", "cbrData", "cbrCoxModel", "cbrRFProxy", "cbrCoxModel", "cbrRFProxy"),
+edges_class <- create_edges(from  = c("cbrData", "cbrData", "cbrCoxModel", "cbrRF", "cbrCoxModel", "cbrRF"),
                             relationship = "requires",
                             relationship = "requires",
-                            to    = c("cbrCoxModel", "cbrRFProxy", "cbrSimCases", "cbrSimCases", "cbrValidate", "cbrValidate"))
+                            to    = c("cbrCoxModel", "cbrRF", "cbrSimCases", "cbrSimCases", "cbrValidate", "cbrValidate"))
 
 render_graph(create_graph(nodes_class, edges_class))
 # 

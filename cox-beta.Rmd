@@ -9,9 +9,9 @@
 In the first example, we use the Cox-Model and the `ovarian` data set from the 
 `survival` package. In the first step we initialize the R6 data object. 
 
-<br>
 ```{r, warning=FALSE, message=FALSE}
 library(survival)
+library(ggplot2)
 library(cbr)
 
 # all variables should be numeric or factor
@@ -71,7 +71,6 @@ Alternatively, you may just be interested in the distance matrix, then you go th
 
 ```{r}
 sc <- cbrCoxModel$new(learning=ovarian, verumData=ovarian, learnVars=names(ovarian)[-c(1, 2)], endPoint=c("futime", "fustat"), impute=F)
-
 sc$getDistanceMatrix()
 ```
 ` sc$getFullDistanceMatrix()` calculates the full distance matrix. This matrix the dimension: cases of learning data versus cases of verum data. In the above example we used the same data set for learning and as verum data. Such case can also be achieved by:
