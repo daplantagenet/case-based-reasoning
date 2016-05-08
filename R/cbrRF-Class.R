@@ -25,12 +25,13 @@
 cbrRF <- R6Class("cbrRF",
                  inherit = cbrData,
                  public=list(
-                   distMat    = NA,
-                   orderMat   = NA,
-                   simCases   = NA,
-                   impData    = NA,
-                   impInd     = NA,
-                   learn=function(nCores, ntree, mtry, splitrule, ntime, nsplit, verbose) {
+                   distMat    = NULL,
+                   orderMat   = NULL,
+                   simCases   = NULL,
+                   impData    = NULL,
+                   impInd     = NULL,
+                   distMethod = "proximity",
+                   learn=function(nCores, ntree, mtry, splitrule, ntime, nsplit, verbose, distMethod) {
                      # split rule
                      if (missing(splitrule)) {
                        splitrule <- "logrank"
@@ -61,6 +62,14 @@ cbrRF <- R6Class("cbrRF",
                      # nsplit
                      if (missing(nsplit)) {
                        nsplit <- 0
+                     }
+                     
+                     # distance calculation
+                     if (!missing(distMethod)) {
+                       if (!distMethod %in% c("proximity", "deep")) {
+                         stop("distmethod should be: proximity or deep")
+                       }
+                       self$distMethod <- distMethod
                      }
                      
                      # number of cores for calculation
@@ -103,6 +112,7 @@ cbrRF <- R6Class("cbrRF",
                                                    proximity  = "all",
                                                    na.action  = impute,
                                                    importance = "none",
+                                                   forest     = T,
                                                    do.trace   = verbose)
                      plot(rsf)
                      
@@ -111,8 +121,8 @@ cbrRF <- R6Class("cbrRF",
                        self$impData <- rsf$imputed.data
                        self$impInd <- rsf$imputed.indv
                      } else {
-                       self$impData <- NA
-                       self$impInd <- NA
+                       self$impData <- NULL
+                       self$impInd <- NULL
                      }
                      
                      # get distance matrix: rsf$proximity has dimension n x n.
@@ -120,18 +130,23 @@ cbrRF <- R6Class("cbrRF",
                      # Dimension distance matrix:
                      # rows: reference cases
                      # columns: new cases
-                     if (self$refEQNew) {
-                       self$distMat <- sqrt(1 - rsf$proximity)
-                     } else {
-                       nRef <- nrow(self$learning)
-                       self$distMat <- sqrt(1 - rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)])
+                     cat("Start distance calculation...\n")
+                     if (self$distMethod == "proximity") {
+                       if (self$refEQNew) {
+                         self$distMat <- sqrt(1 - rsf$proximity)
+                       } else {
+                         nRef <- nrow(self$learning)
+                         self$distMat <- sqrt(1 - rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)])
+                       }
+                     } else if (self$distMethod == "deep") {
+                       
                      }
                      end <- Sys.time()
                      duration <- round(as.numeric(end - start), 2)
                      cat(paste0("Random Forest for Survival calculation finished in: ", duration, " seconds.\n"))
                    },
                    getDistanceMatrix = function() {
-                     if (class(self$distMat) != "matrix") {
+                     if (is.null(self$distMat)) {
                        self$learn()
                      }
                    },
@@ -168,11 +183,10 @@ cbrRF <- R6Class("cbrRF",
                      if (self$refEQNew) {
                        stop("no new data!")
                      }
-                     
                      start <- Sys.time()
                      cat("Start calculating similar cases...\n")
                      # learn if weights are empty
-                     if (class(self$distMat) != "matrix") {
+                     if (is.null(self$distMat)) {
                        self$learn()
                      }
                      
