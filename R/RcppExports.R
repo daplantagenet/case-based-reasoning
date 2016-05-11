@@ -21,11 +21,11 @@ getDistForTreesCPP <- function(df, nTree) {
     .Call('cbr_getDistForTreesCPP', PACKAGE = 'cbr', df, nTree)
 }
 
-getMatixDistances <- function(df, member, w = 2L) {
-    .Call('cbr_getMatixDistances', PACKAGE = 'cbr', df, member, w)
+getMatrixDistances <- function(df, member, w = 2L) {
+    .Call('cbr_getMatrixDistances', PACKAGE = 'cbr', df, member, w)
 }
 
-getParallelMatixDistances <- function(df, member, w = 2L) {
-    .Call('cbr_getParallelMatixDistances', PACKAGE = 'cbr', df, member, w)
+getParallelMatrixDistances <- function(df, member, w = 2L) {
+    .Call('cbr_getParallelMatrixDistances', PACKAGE = 'cbr', df, member, w)
 }
 

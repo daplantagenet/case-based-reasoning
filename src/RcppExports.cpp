@@ -58,7 +58,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // getDistForTreesCPP
-//    DataFrame getDistForTreesCPP(DataFrame df, int nTree);
+DataFrame getDistForTreesCPP(DataFrame df, int nTree);
 RcppExport SEXP cbr_getDistForTreesCPP(SEXP dfSEXP, SEXP nTreeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
@@ -69,29 +69,29 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// getMatixDistances
-//    NumericMatrix getMatixDistances(DataFrame df, DataFrame member, int w);
-RcppExport SEXP cbr_getMatixDistances(SEXP dfSEXP, SEXP memberSEXP, SEXP wSEXP) {
+// getMatrixDistances
+NumericMatrix getMatrixDistances(DataFrame df, DataFrame member, int w);
+RcppExport SEXP cbr_getMatrixDistances(SEXP dfSEXP, SEXP memberSEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
     Rcpp::traits::input_parameter< DataFrame >::type member(memberSEXP);
     Rcpp::traits::input_parameter< int >::type w(wSEXP);
-    __result = Rcpp::wrap(getMatixDistances(df, member, w));
+    __result = Rcpp::wrap(getMatrixDistances(df, member, w));
     return __result;
 END_RCPP
 }
-// getParallelMatixDistances
-NumericMatrix getParallelMatixDistances(DataFrame df, DataFrame member, int w);
-RcppExport SEXP cbr_getParallelMatixDistances(SEXP dfSEXP, SEXP memberSEXP, SEXP wSEXP) {
+// getParallelMatrixDistances
+NumericMatrix getParallelMatrixDistances(DataFrame df, DataFrame member, int w);
+RcppExport SEXP cbr_getParallelMatrixDistances(SEXP dfSEXP, SEXP memberSEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
     Rcpp::traits::input_parameter< DataFrame >::type member(memberSEXP);
     Rcpp::traits::input_parameter< int >::type w(wSEXP);
-    __result = Rcpp::wrap(getParallelMatixDistances(df, member, w));
+    __result = Rcpp::wrap(getParallelMatrixDistances(df, member, w));
     return __result;
 END_RCPP
 }
