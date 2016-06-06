@@ -4,17 +4,13 @@
 
 using namespace Rcpp;
 using namespace RcppParallel;
-
-#include <map>
-#include <vector>
-#include <algorithm>
-
 using namespace std;
 
 typedef pair<pair <int, int>, double>  TElementOne;
 typedef std::vector < TElementOne > TVectorOne;
 typedef pair<pair <int, int>, vector<double> > TElement;
 typedef unordered_map< pair<uint32_t, uint32_t>, vector <double> >  TuMap;
+
 
 namespace std {
 template <>
@@ -143,6 +139,7 @@ DataFrame umap_to_dataframe(TuMap treeMap, int nTree) {
   return dfout;
 }
 
+
 TuMap create_hash_map(DataFrame df, int nTree) {
   TuMap treeMap;
   TVectorOne one;
@@ -184,7 +181,7 @@ TuMap create_hash_map(DataFrame df, int nTree) {
   return treeMap;
 }
 
-// case 1, case 2, index of the tree (from 0)
+
 double get_node_distance(const TuMap &treeMap, int currentX, int currentY, int t) {
   if (treeMap.find(make_pair(currentX, currentY)) == treeMap.end()) return -1.;
   double d = treeMap.at(make_pair(currentX, currentY))[t];
@@ -221,17 +218,16 @@ struct rf_distance : public Worker {
             d = get_node_distance(treeMap, row2[t], row1[t], t);
           }
           if (d > 0) {
-            sum += 1. / std::pow(d, w);
+            sum += d;// 1. / pow(d, w);
             tmpTree += 1;
           }
         }
-        mDist(i, j) = mDist(j, i) = 1. - sum * 1. / nTree;
+        mDist(i, j) = mDist(j, i) = sum * 1. / (double) nTree;  // 1. - sum * 1. / nTree;
       }
     }
   }
 };
 
-// [[Rcpp::export]]
 NumericMatrix rf_distance_matrix(DataFrame df,  DataFrame member, int w=2){
   Rcpp::DataFrame memb(member);
   Rcpp::NumericMatrix matMember=internal::convert_using_rfunction(memb, "as.matrix");
@@ -258,6 +254,7 @@ NumericMatrix rf_distance_matrix(DataFrame df, DataFrame member, int w=2) {
       NumericMatrix::Row row1 = mat.row(i);
       NumericMatrix::Row row2 = mat.row(j);
       double sum=0.0, d;
+      int tmpTree = 1;
       for (int t=0; t < nTree; t++) { 
         if (row1[t] < row2[t]) {
           d = get_node_distance(treeMap, row1[t], row2[t], t);
@@ -265,10 +262,11 @@ NumericMatrix rf_distance_matrix(DataFrame df, DataFrame member, int w=2) {
           d = get_node_distance(treeMap, row2[t], row1[t], t);
         }
         if (d > 0) {
-          sum += 1. / std::pow(.1 * d, w);
+          sum += d;// 1. / pow(d, w);
+          tmpTree += 1;
         }
       }
-      mDist(i, j) = mDist(j, i) = 1. - sum * 1. / nTree;
+      mDist(i, j) = mDist(j, i) = sum * 1. / (double) nTree;  // 1. - sum * 1. / nTree;
     }
   }
   return mDist;

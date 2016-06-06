@@ -17,10 +17,6 @@ order_vector <- function(x, sort_direction = 0L, n = 0L) {
     .Call('cbr_order_vector', PACKAGE = 'cbr', x, sort_direction, n)
 }
 
-rf_distance_matrix <- function(df, member, w = 2L) {
-    .Call('cbr_rf_distance_matrix', PACKAGE = 'cbr', df, member, w)
-}
-
 get_rf_distance_matrix <- function(df, member, w = 2L) {
     .Call('cbr_get_rf_distance_matrix', PACKAGE = 'cbr', df, member, w)
 }

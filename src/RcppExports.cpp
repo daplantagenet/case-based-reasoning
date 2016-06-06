@@ -60,19 +60,6 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// rf_distance_matrix
-NumericMatrix rf_distance_matrix(DataFrame df, DataFrame member, int w);
-RcppExport SEXP cbr_rf_distance_matrix(SEXP dfSEXP, SEXP memberSEXP, SEXP wSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    Rcpp::traits::input_parameter< DataFrame >::type member(memberSEXP);
-    Rcpp::traits::input_parameter< int >::type w(wSEXP);
-    __result = Rcpp::wrap(rf_distance_matrix(df, member, w));
-    return __result;
-END_RCPP
-}
 // get_rf_distance_matrix
 NumericMatrix get_rf_distance_matrix(DataFrame df, DataFrame member, int w);
 RcppExport SEXP cbr_get_rf_distance_matrix(SEXP dfSEXP, SEXP memberSEXP, SEXP wSEXP) {
