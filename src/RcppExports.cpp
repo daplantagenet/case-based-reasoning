@@ -6,92 +6,108 @@
 
 using namespace Rcpp;
 
-// fast_Matrix_Order
-Rcpp::NumericMatrix fast_Matrix_Order(arma::mat mDist, int nCases);
-RcppExport SEXP cbr_fast_Matrix_Order(SEXP mDistSEXP, SEXP nCasesSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::mat >::type mDist(mDistSEXP);
-    Rcpp::traits::input_parameter< int >::type nCases(nCasesSEXP);
-    __result = Rcpp::wrap(fast_Matrix_Order(mDist, nCases));
-    return __result;
-END_RCPP
-}
-// fast_Vector_Order
-Rcpp::NumericVector fast_Vector_Order(arma::vec vX, int n);
-RcppExport SEXP cbr_fast_Vector_Order(SEXP vXSEXP, SEXP nSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::vec >::type vX(vXSEXP);
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    __result = Rcpp::wrap(fast_Vector_Order(vX, n));
-    return __result;
-END_RCPP
-}
 // get_Distance_Matrix
-RcppExport SEXP get_Distance_Matrix(SEXP newData, SEXP refData, SEXP weights);
-RcppExport SEXP cbr_get_Distance_Matrix(SEXP newDataSEXP, SEXP refDataSEXP, SEXP weightsSEXP) {
+RcppExport SEXP get_Distance_Matrix(SEXP queryData, SEXP x, SEXP weights);
+RcppExport SEXP cbr_get_Distance_Matrix(SEXP queryDataSEXP, SEXP xSEXP, SEXP weightsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< SEXP >::type newData(newDataSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type refData(refDataSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type queryData(queryDataSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< SEXP >::type weights(weightsSEXP);
-    __result = Rcpp::wrap(get_Distance_Matrix(newData, refData, weights));
+    __result = Rcpp::wrap(get_Distance_Matrix(queryData, x, weights));
     return __result;
 END_RCPP
 }
 // get_nearest_Elements
-Rcpp::List get_nearest_Elements(arma::mat mNew, arma::mat mRef, arma::vec vWeights, int nCases);
-RcppExport SEXP cbr_get_nearest_Elements(SEXP mNewSEXP, SEXP mRefSEXP, SEXP vWeightsSEXP, SEXP nCasesSEXP) {
+Rcpp::List get_nearest_Elements(arma::mat x, arma::mat query, arma::vec weights, const int sortDirection, const int k);
+RcppExport SEXP cbr_get_nearest_Elements(SEXP xSEXP, SEXP querySEXP, SEXP weightsSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::mat >::type mNew(mNewSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type mRef(mRefSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type vWeights(vWeightsSEXP);
-    Rcpp::traits::input_parameter< int >::type nCases(nCasesSEXP);
-    __result = Rcpp::wrap(get_nearest_Elements(mNew, mRef, vWeights, nCases));
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type query(querySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< const int >::type sortDirection(sortDirectionSEXP);
+    Rcpp::traits::input_parameter< const int >::type k(kSEXP);
+    __result = Rcpp::wrap(get_nearest_Elements(x, query, weights, sortDirection, k));
     return __result;
 END_RCPP
 }
-// getDistForTreesCPP
-DataFrame getDistForTreesCPP(DataFrame df, int nTree);
-RcppExport SEXP cbr_getDistForTreesCPP(SEXP dfSEXP, SEXP nTreeSEXP) {
+// order_matrix
+NumericMatrix order_matrix(arma::mat x, int sortDirection, int k);
+RcppExport SEXP cbr_order_matrix(SEXP xSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type sortDirection(sortDirectionSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    __result = Rcpp::wrap(order_matrix(x, sortDirection, k));
+    return __result;
+END_RCPP
+}
+// order_vector
+Rcpp::NumericVector order_vector(arma::vec x, int sort_direction, int n);
+RcppExport SEXP cbr_order_vector(SEXP xSEXP, SEXP sort_directionSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type sort_direction(sort_directionSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    __result = Rcpp::wrap(order_vector(x, sort_direction, n));
+    return __result;
+END_RCPP
+}
+// rf_distance_matrix
+NumericMatrix rf_distance_matrix(DataFrame df, DataFrame member, int w);
+RcppExport SEXP cbr_rf_distance_matrix(SEXP dfSEXP, SEXP memberSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type member(memberSEXP);
+    Rcpp::traits::input_parameter< int >::type w(wSEXP);
+    __result = Rcpp::wrap(rf_distance_matrix(df, member, w));
+    return __result;
+END_RCPP
+}
+// get_rf_distance_matrix
+NumericMatrix get_rf_distance_matrix(DataFrame df, DataFrame member, int w);
+RcppExport SEXP cbr_get_rf_distance_matrix(SEXP dfSEXP, SEXP memberSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type member(memberSEXP);
+    Rcpp::traits::input_parameter< int >::type w(wSEXP);
+    __result = Rcpp::wrap(get_rf_distance_matrix(df, member, w));
+    return __result;
+END_RCPP
+}
+// get_node_distances
+DataFrame get_node_distances(DataFrame df, int nTree);
+RcppExport SEXP cbr_get_node_distances(SEXP dfSEXP, SEXP nTreeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
     Rcpp::traits::input_parameter< int >::type nTree(nTreeSEXP);
-    __result = Rcpp::wrap(getDistForTreesCPP(df, nTree));
+    __result = Rcpp::wrap(get_node_distances(df, nTree));
     return __result;
 END_RCPP
 }
-// getMatrixDistances
-NumericMatrix getMatrixDistances(DataFrame df, DataFrame member, int w);
-RcppExport SEXP cbr_getMatrixDistances(SEXP dfSEXP, SEXP memberSEXP, SEXP wSEXP) {
+// weighted_distance
+NumericMatrix weighted_distance(NumericMatrix x, NumericMatrix query, NumericVector weigths);
+RcppExport SEXP cbr_weighted_distance(SEXP xSEXP, SEXP querySEXP, SEXP weigthsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    Rcpp::traits::input_parameter< DataFrame >::type member(memberSEXP);
-    Rcpp::traits::input_parameter< int >::type w(wSEXP);
-    __result = Rcpp::wrap(getMatrixDistances(df, member, w));
-    return __result;
-END_RCPP
-}
-// getParallelMatrixDistances
-NumericMatrix getParallelMatrixDistances(DataFrame df, DataFrame member, int w);
-RcppExport SEXP cbr_getParallelMatrixDistances(SEXP dfSEXP, SEXP memberSEXP, SEXP wSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    Rcpp::traits::input_parameter< DataFrame >::type member(memberSEXP);
-    Rcpp::traits::input_parameter< int >::type w(wSEXP);
-    __result = Rcpp::wrap(getParallelMatrixDistances(df, member, w));
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type query(querySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type weigths(weigthsSEXP);
+    __result = Rcpp::wrap(weighted_distance(x, query, weigths));
     return __result;
 END_RCPP
 }

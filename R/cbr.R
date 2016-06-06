@@ -8,6 +8,3 @@
 #' @importFrom magrittr %>%
 #' @useDynLib cbr
 NULL
-
-#' @export
-magrittr::`%>%`

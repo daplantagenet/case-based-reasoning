@@ -7,7 +7,7 @@
 #' cases. 
 #'
 #' @param learning: data set for learning the RF model
-#' @param verumData: Verum data set. For each case in the verum data, we are 
+#' @param queryData: Verum data set. For each case in the verum data, we are 
 #' looking for the k (=1,…,l) similar cases. Learning and verum data set need 
 #' the same structure (variable names and scales)
 #' @param learnVars (Default: all variables except endPoint): A character vector 
@@ -92,7 +92,7 @@ cbrRF <- R6Class("cbrRF",
                      if (self$refEQNew) {
                        learnData <- self$learning[, variables]
                      } else {
-                       learnData <- rbind(self$learning[, variables], self$verumData[, variables])
+                       learnData <- rbind(self$learning[, variables], self$queryData[, variables])
                      }
                      
                      # impute
@@ -124,7 +124,6 @@ cbrRF <- R6Class("cbrRF",
                        self$impData <- NULL
                        self$impInd <- NULL
                      }
-                     
                      # get distance matrix: rsf$proximity has dimension n x n.
                      # n = nRef + nNew
                      # Dimension distance matrix:
@@ -138,35 +137,35 @@ cbrRF <- R6Class("cbrRF",
                          nRef <- nrow(self$learning)
                          self$distMat <- sqrt(1 - rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)])
                        }
-                     } else if (self$distMethod == "deep") {
+                     } else if (self$distMethod == "depth") {
                        
                      }
                      end <- Sys.time()
                      duration <- round(as.numeric(end - start), 2)
                      cat(paste0("Random Forest for Survival calculation finished in: ", duration, " seconds.\n"))
                    },
-                   getDistanceMatrix = function() {
+                   calc_distance_matrix = function() {
                      if (is.null(self$distMat)) {
                        self$learn()
                      }
                    },
                    # get verum data, if there are missing values, return 
                    # imputed data
-                   getVerumData = function () {
+                   get_query_data = function () {
                      n <- nrow(self$learning)
                      idMissing <- self$impInd[self$impInd > n]
                      variables <- c(self$endPoint, self$learnVars)
                      if (length(idMissing) == 0) {
-                       return(self$verumData)
+                       return(self$queryData)
                      } else {
                        idMissing <- idMissing - n
-                       verumData <- self$verumData
-                       verumData[idMissing, variables] <- self$impData[self$impInd > n, ]
-                       return(verumData)
+                       queryData <- self$queryData
+                       queryData[idMissing, variables] <- self$impData[self$impInd > n, ]
+                       return(queryData)
                      }
                    },
                    # get learning data, if it is imputed return imputed data
-                   getLearningData = function () {
+                   get_data = function () {
                      n <- nrow(self$learning)
                      idMissing <- self$impInd[self$impInd <= n]
                      variables <- c(self$endPoint, self$learnVars)
@@ -179,7 +178,7 @@ cbrRF <- R6Class("cbrRF",
                      }
                    },
                    # calculate similar cases
-                   getSimilarCases = function(nCases) {
+                   calc_similar_cases = function(nCases) {
                      if (self$refEQNew) {
                        stop("no new data!")
                      }
@@ -189,7 +188,6 @@ cbrRF <- R6Class("cbrRF",
                      if (is.null(self$distMat)) {
                        self$learn()
                      }
-                     
                      # check nCases input
                      if (missing(nCases))
                        nCases <- 1
@@ -197,23 +195,21 @@ cbrRF <- R6Class("cbrRF",
                        stop("nCases must be numeric!")
                      if (nCases <= 0)
                        stop("nCases must be positive integer value!")
-                     
                      # catch floating numbers
                      nCases <- as.integer(nCases)
                      #create new object & calculate similar cases
                      sc <- simCases$new(distMat=self$distMat)
-                     sc$getSimilarCases(verumData=self$verumData, learning=self$learning, nCases=nCases)
+                     sc$calc_similar_cases(queryData=self$queryData, learning=self$learning, nCases=nCases)
                      self$orderMat <- sc$order
                      self$simCases <- sc$similarCases
-                     
                      end <- Sys.time()
                      duration <- round(as.numeric(end - start), 2)
                      cat(paste0("Similar cases calculation finished in: ", duration, " seconds.\n"))
                    },
-                   validate = function(plot=T) {
+                   validate_model = function(plot=T) {
                      if (is.null(nrow(self$simCases)))
                        stop("no similar cases")
                      valSC <- cbrValidate$new()
-                     return(valSC$validate(self$verumData, self$simCases, self$learnVars, plot))
+                     return(valSC$validate(self$queryData, self$simCases, self$learnVars, plot))
                    }
                  ))

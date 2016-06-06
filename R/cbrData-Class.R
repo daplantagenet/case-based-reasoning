@@ -1,20 +1,20 @@
 cbrData <- R6Class("cbrData",
                    public = list(
                      learning  = NA,
-                     verumData = NA,
+                     queryData = NA,
                      learnVars = NA,
                      endPoint  = NA,
                      refEQNew  = FALSE,
                      impute    = FALSE,
                      warnings  = "",
                      info      = data.frame(x=c("Dropped cases with missing values in learning set:",
-                                                "Dropped cases with missing values in verum set:",
+                                                "Dropped cases with missing values in query set:",
                                                 "Imputation:",
                                                 "Variablen:",
                                                 "Variablen nach Selektion:"), 
                                             y=NA),
                      # initialize class
-                     initialize = function(learning, verumData, learnVars, endPoint, impute=FALSE) {
+                     initialize = function(learning, queryData, learnVars, endPoint, impute=FALSE) {
                        # check for missing input
                        if (missing(learning)) {
                          stop("Please add data for learning the algorithm!")
@@ -22,19 +22,15 @@ cbrData <- R6Class("cbrData",
 
                        # check endpoint
                        if (missing(endPoint)) {
-                         self$endPoint <- c("Time2Event", "Event")
-                       } else {
-                         if (length(endPoint) != 2)
-                           stop("End point variable need to be of length 2!")
-                         self$endPoint <- endPoint
-                       }
+                         stop("Please add endpoint!")
+                       } 
                        chkEP <- self$endPoint %in% names(learning)
-                       if (sum(chkEP) != 2)
-                         stop("End point is not in reference data!")
+                       if (sum(chkEP) > 0)
+                         stop("Endpoint is not in data!")
 
                        # are there variables for learning
                        if (missing(learnVars)) {
-                         cat("All variables of the verumData data will be used for learning!\n")
+                         cat("All variables of the queryData data will be used for learning!\n")
                          idEP <- which(names(learning) %in% self$endPoint)
                          self$learnVars <- names(learning)[-idEP]
                        } else {
@@ -50,24 +46,22 @@ cbrData <- R6Class("cbrData",
                        # check data & add data to internal frame
                        self$learning <- private$check_data(as.data.frame(learning), impute)
 
-                       # validation check verum data
-                       if (missing(verumData)) {
-                         cat("No verum data: use reference data for distance calculation!\n")
-                         self$verumData <- self$learning
+                       # validation check query data
+                       if (missing(queryData)) {
+                         cat("No query data: use reference data for distance calculation!\n")
+                         self$queryData <- self$learning
                          self$refEQNew <- TRUE
                        } else {
-                         # validation check verum data
-                         self$verumData <- private$check_data(as.data.frame(verumData), impute, isLearning=F)
+                         # validation check query data
+                         self$queryData <- private$check_data(as.data.frame(queryData), impute, isLearning=F)
                        }
-
                        # impute data; just RSF
                        self$impute <- impute
                      }
                    ),
                    private = list(
                      learningValid = FALSE,
-                     verumDataValid = FALSE,
-
+                     queryDataValid = FALSE,
                      # check data sets
                      check_data = function(x, impute=F, isLearning=T) {
                        # check variable names verum data are in data
@@ -76,7 +70,7 @@ cbrData <- R6Class("cbrData",
                          if (isLearning) {
                            private$learningValid <- FALSE
                          } else {
-                           private$verumDataValid <- FALSE
+                           private$queryDataValid <- FALSE
                          }
                          missingVars <- self$learnVars[which(inData)]
                          stop(paste0("Following learning variables are missing: ", paste(missingVars, collapse=",")))
@@ -84,11 +78,11 @@ cbrData <- R6Class("cbrData",
                          if (isLearning) {
                            private$learningValid <- TRUE
                          } else {
-                           private$verumDataValid <- TRUE
+                           private$queryDataValid <- TRUE
                          }
                        }
 
-                       # if isLearning data : check for Time2Event and Event variables
+                       # if isLearning data
                        if (isLearning) {
                          if(any(!self$endPoint %in% names(x))) {
                            self$endPoint <- NA
@@ -104,7 +98,7 @@ cbrData <- R6Class("cbrData",
                            if (isLearning) {
                              stop("Learning data is empty after NA elimination")
                            } else {
-                             stop("Verum data is empty after NA elimination")
+                             stop("Query data is empty after NA elimination")
                            }
                          }
                        }

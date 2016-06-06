@@ -2,48 +2,33 @@
 #include <RcppArmadillo.h>
 
 // [[Rcpp::export]]
-Rcpp::List get_nearest_Elements(arma::mat mNew,
-                                arma::mat mRef,
-                                arma::vec vWeights,
-                                int nCases) {
-   try {
-    // number of variables in model
-    int nVars = vWeights.size();
-
-    // n new cases
-    int nNewCases = mNew.n_rows;
-
-    // allocate distance and order matrix
-    arma::mat retDist(nNewCases, nCases);
-    arma::umat retOrder(nNewCases, nCases);
-
-    // allocate tmp vector
-    arma::colvec tmpDist(mRef.n_rows);
-    arma::uvec order(mRef.n_rows);
-
-    for (int i=0; i<nNewCases; ++i) { // loop over cases
-      for (int j=0; j<nVars; ++j) { // loop over variables
-        tmpDist = tmpDist + abs(vWeights(j) * (mRef.col(j) - mNew(i, j))); //
-      } // end loop variables
-      order = arma::sort_index(tmpDist);
-      for (int k=0;k<nCases; ++k) {
-        // write distance to final matrix
-        retDist(i, k) = tmpDist(order(k));
-        // write order to final matrix
-        retOrder(i, k) = order(k) + 1;
-      }
-      // reset tmp distance vector
-      tmpDist = arma::zeros<arma::vec>(mRef.n_rows);
-    } // end loop cases
-    return Rcpp::List::create(
-      Rcpp::Named("distance") = retDist,
-      Rcpp::Named("order")    = retOrder
-    );
-   } catch(std::exception &ex) {
-     forward_exception_to_r(ex);
-   } catch(...) {
-     ::Rf_error("c++ exception (unknown reason)");
-   }
-   // never go here
-   return NA_REAL;
+Rcpp::List get_nearest_Elements(arma::mat x,
+                                arma::mat query,
+                                arma::vec weights,
+                                const int sortDirection = 0,
+                                const int k = 1) {
+  int nVars = weights.size();
+  int nQuery = query.n_rows;
+  
+  arma::mat retDist(nQuery, k);
+  arma::umat retOrder(nQuery, k);
+  
+  arma::colvec tmpDist(x.n_rows);
+  arma::uvec order(x.n_rows);
+  
+  for (std::size_t i=0; i < nQuery; ++i) {
+    for (std::size_t j=0; j < nVars; ++j) {
+      tmpDist = tmpDist + abs(weights(j) * (x.col(j) - query(i, j)));
+    }
+    order = arma::sort_index(tmpDist, sortDirection);
+    for (std::size_t l=0; l < k; ++l) {
+      retDist(i, l) = tmpDist(order(l));
+      retOrder(i, l) = order(l) + 1;
+    }
+    tmpDist = arma::zeros<arma::vec>(x.n_rows);
+  }
+  return Rcpp::List::create(
+    Rcpp::Named("distance") = retDist,
+    Rcpp::Named("order")    = retOrder
+  );
 }
