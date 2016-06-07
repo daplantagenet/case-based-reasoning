@@ -5,8 +5,8 @@ get_Distance_Matrix <- function(queryData, x, weights) {
     .Call('cbr_get_Distance_Matrix', PACKAGE = 'cbr', queryData, x, weights)
 }
 
-get_nearest_Elements <- function(x, query, weights, sortDirection = 0L, k = 1L) {
-    .Call('cbr_get_nearest_Elements', PACKAGE = 'cbr', x, query, weights, sortDirection, k)
+weighted_knn <- function(x, query, weights, sortDirection = 0L, k = 1L) {
+    .Call('cbr_weighted_knn', PACKAGE = 'cbr', x, query, weights, sortDirection, k)
 }
 
 order_matrix <- function(x, sortDirection = 0L, k = 5L) {
@@ -17,8 +17,12 @@ order_vector <- function(x, sort_direction = 0L, n = 0L) {
     .Call('cbr_order_vector', PACKAGE = 'cbr', x, sort_direction, n)
 }
 
-get_rf_distance_matrix <- function(df, member, w = 2L) {
-    .Call('cbr_get_rf_distance_matrix', PACKAGE = 'cbr', df, member, w)
+get_rf_distance_matrix <- function(df, member, memberQuery, w = 2L) {
+    .Call('cbr_get_rf_distance_matrix', PACKAGE = 'cbr', df, member, memberQuery, w)
+}
+
+rf_knn <- function(df, member, memberQuery, w = 2L, k = 5L) {
+    .Call('cbr_rf_knn', PACKAGE = 'cbr', df, member, memberQuery, w, k)
 }
 
 get_node_distances <- function(df, nTree) {

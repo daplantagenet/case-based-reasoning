@@ -19,9 +19,9 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// get_nearest_Elements
-Rcpp::List get_nearest_Elements(arma::mat x, arma::mat query, arma::vec weights, const int sortDirection, const int k);
-RcppExport SEXP cbr_get_nearest_Elements(SEXP xSEXP, SEXP querySEXP, SEXP weightsSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
+// weighted_knn
+Rcpp::List weighted_knn(arma::mat x, arma::mat query, arma::vec weights, const int sortDirection, const int k);
+RcppExport SEXP cbr_weighted_knn(SEXP xSEXP, SEXP querySEXP, SEXP weightsSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -30,7 +30,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type weights(weightsSEXP);
     Rcpp::traits::input_parameter< const int >::type sortDirection(sortDirectionSEXP);
     Rcpp::traits::input_parameter< const int >::type k(kSEXP);
-    __result = Rcpp::wrap(get_nearest_Elements(x, query, weights, sortDirection, k));
+    __result = Rcpp::wrap(weighted_knn(x, query, weights, sortDirection, k));
     return __result;
 END_RCPP
 }
@@ -61,15 +61,31 @@ BEGIN_RCPP
 END_RCPP
 }
 // get_rf_distance_matrix
-NumericMatrix get_rf_distance_matrix(DataFrame df, DataFrame member, int w);
-RcppExport SEXP cbr_get_rf_distance_matrix(SEXP dfSEXP, SEXP memberSEXP, SEXP wSEXP) {
+NumericMatrix get_rf_distance_matrix(DataFrame df, NumericMatrix member, NumericMatrix memberQuery, int w);
+RcppExport SEXP cbr_get_rf_distance_matrix(SEXP dfSEXP, SEXP memberSEXP, SEXP memberQuerySEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    Rcpp::traits::input_parameter< DataFrame >::type member(memberSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type member(memberSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type memberQuery(memberQuerySEXP);
     Rcpp::traits::input_parameter< int >::type w(wSEXP);
-    __result = Rcpp::wrap(get_rf_distance_matrix(df, member, w));
+    __result = Rcpp::wrap(get_rf_distance_matrix(df, member, memberQuery, w));
+    return __result;
+END_RCPP
+}
+// rf_knn
+List rf_knn(DataFrame df, arma::mat member, arma::mat memberQuery, int w, int k);
+RcppExport SEXP cbr_rf_knn(SEXP dfSEXP, SEXP memberSEXP, SEXP memberQuerySEXP, SEXP wSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type member(memberSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type memberQuery(memberQuerySEXP);
+    Rcpp::traits::input_parameter< int >::type w(wSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    __result = Rcpp::wrap(rf_knn(df, member, memberQuery, w, k));
     return __result;
 END_RCPP
 }
