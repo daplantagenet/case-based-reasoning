@@ -22,7 +22,9 @@ Imports:
     survival,
     rms,
     parallel,
-    randomForestSRC
+    randomForestSRC,
+    data.table,
+    magrittr
 LinkingTo: 
     Rcpp,
     RcppArmadillo,
