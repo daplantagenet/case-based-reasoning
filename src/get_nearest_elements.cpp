@@ -2,11 +2,12 @@
 #include <RcppArmadillo.h>
 
 // [[Rcpp::export]]
-Rcpp::List get_nearest_Elements(arma::mat x,
-                                arma::mat query,
-                                arma::vec weights,
-                                const int sortDirection = 0,
-                                const int k = 1) {
+Rcpp::List weighted_knn(arma::mat x,
+                        arma::mat query,
+                        arma::vec weights,
+                        const int sortDirection = 0,
+                        const int k = 1) {
+  
   int nVars = weights.size();
   int nQuery = query.n_rows;
   

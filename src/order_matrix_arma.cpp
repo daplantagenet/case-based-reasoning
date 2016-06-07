@@ -2,7 +2,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 #include <RcppParallel.h>
-#include <Rcpp.h>
 
 using namespace RcppParallel;
 using namespace Rcpp;
