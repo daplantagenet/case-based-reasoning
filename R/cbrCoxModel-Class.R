@@ -155,7 +155,7 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                                             ncol     = 2))
                                 },
                                 # calculate distance matrix for query data
-                                get_distance_matrix = function() {
+                                calc_distance_matrix = function() {
                                   # learn if weights are empty
                                   if (class(self$weights) != "list") {
                                     self$learn()
@@ -180,7 +180,7 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                 get_data = function () {
                                   return(self$learning)
                                 },
-                                get_sim_caes = function() {
+                                get_sim_cases = function() {
                                   return(self$simCases)
                                 },
                                 # return query + matched data
@@ -216,7 +216,7 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                   
                                   # catch floating numbers
                                   k <- as.integer(k)
-                                  self$get_distance_matrix()
+                                  self$calc_distance_matrix()
                                   # calculate distance and order of cases based on distance calculation
                                   sc <- simCases$new(distMat=self$distMat)
                                   sc$calc_similar_cases(queryData=self$queryData, learning=self$learning, nCases=k)

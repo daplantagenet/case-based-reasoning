@@ -7,7 +7,7 @@
 #' cases. 
 #'
 #' @param learning: data set for learning the RF model
-#' @param queryData: Verum data set. For each case in the verum data, we are 
+#' @param queryData: Query data set. For each case in the verum data, we are 
 #' looking for the k (=1,…,l) similar cases. Learning and verum data set need 
 #' the same structure (variable names and scales)
 #' @param learnVars (Default: all variables except endPoint): A character vector 
@@ -138,7 +138,9 @@ cbrRF <- R6Class("cbrRF",
                          self$distMat <- sqrt(1 - rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)])
                        }
                      } else if (self$distMethod == "depth") {
-                       
+                       self$distMat <- cbr:::get_rf_distance_matrix(rsf$forest$nativeArray, 
+                                                                    rsf$membership[1:nRef, ],  
+                                                                    rsf$membership[(nRef + 1):ncol(rsf$proximity), ], .75)
                      }
                      end <- Sys.time()
                      duration <- round(as.numeric(end - start), 2)
@@ -176,6 +178,19 @@ cbrRF <- R6Class("cbrRF",
                        learning[idMissing, variables] <- self$impData[self$impInd <= n, ]
                        return(learning)
                      }
+                   },
+                   get_sim_cases = function() {
+                     return(self$simCases)
+                   },
+                   # return query + matched data
+                   get_matched_data = function() {
+                     queryData <- self$queryData
+                     queryData$group <- "Query Data"
+                     matchedData <- self$simCases
+                     matchedData$caseId <- NULL
+                     matchedData$scDist <- NULL
+                     matchedData$group <- "Matched Data"
+                     return(rbind(queryData, simCases))
                    },
                    # calculate similar cases
                    calc_similar_cases = function(nCases) {
