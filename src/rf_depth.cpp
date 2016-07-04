@@ -1,7 +1,9 @@
 // [[Rcpp::depends(RcppParallel)]]
-// [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppParallel.h>
-#include <RcppArmadillo.h>
+#include <Rcpp.h>
+#include <unordered_map>
+#include <algorithm>
+#include "sort.h"
 
 using namespace Rcpp;
 using namespace RcppParallel;
@@ -13,9 +15,10 @@ typedef pair<pair <int, int>, vector<double> > TElement;
 typedef unordered_map< pair<uint32_t, uint32_t>, vector <double> >  TuMap;
 
 
+// custom hash function for pair
 namespace std {
 template <>
-struct hash<std::pair<uint32_t, uint32_t>>
+struct std::hash<std::pair<uint32_t, uint32_t> >
 {
   inline uint64_t operator()(const std::pair<uint32_t, uint32_t>& k) const
   {
@@ -111,11 +114,11 @@ TVectorOne getTryForOne(DataFrame df) {
 }
 
 
-DataFrame umap_to_dataframe(TuMap treeMap, int nTree) {
+DataFrame tumap_to_dataframe(TuMap treeMap, int nTree) {
   Rcpp::NumericVector x, y, dist, null;
   Rcpp::CharacterVector namevec;
   List lists(nTree + 2);
-    
+  
   std::vector<double> v(nTree, -1);
   std::vector<vector <double> > dists(nTree); 
   namevec.push_back("x");
@@ -201,10 +204,10 @@ struct rf_distance : public Worker {
   
   RMatrix<double> mDist;
   rf_distance(
-    const NumericMatrix &member, 
-    const NumericMatrix &memberQuery, 
+    const NumericMatrix member, 
+    const NumericMatrix memberQuery, 
     const std::size_t nTree, 
-    const TuMap &treeMap, 
+    const TuMap treeMap, 
     NumericMatrix mDist, 
     const std::size_t w=2)
     : member(member), memberQuery(memberQuery), nTree(nTree), w(w), treeMap(treeMap), mDist(mDist) {}
@@ -222,7 +225,7 @@ struct rf_distance : public Worker {
           } else if (row1[t] > row2[t]) {
             d = get_node_distance(treeMap, row2[t], row1[t], t);
           } else {
-            d = 0;
+            d = 0.0;
             sum += 0.0;
             tmpTree += 1;
           }
@@ -231,7 +234,7 @@ struct rf_distance : public Worker {
             tmpTree += 1;
           }
         }
-        mDist(i, j) = log(sum + 1); // 1. - sum * 1. / nTree;
+        mDist(i, j) = log(sum + 1.); // 1. - sum * 1. / nTree;
       }
     }
   }
@@ -251,75 +254,77 @@ NumericMatrix rf_distance_matrix(DataFrame df, NumericMatrix member, NumericMatr
 
 
 struct rf_knn : public Worker {
-  const arma::mat member;
-  const arma::mat memberQuery;
+  const RMatrix<double> member;
+  const RMatrix<double> memberQuery;
   const int nTree;
   const int w;
   const int k;
   const TuMap treeMap;
   
-  arma::mat &mDist;
-  arma::umat &mOrder;
+  RMatrix<double> mDist;
+  RMatrix<double> mOrder;
   
   rf_knn(
-    const arma::mat &member, 
-    const arma::mat &memberQuery, 
+    const NumericMatrix member, 
+    const NumericMatrix memberQuery, 
     const std::size_t nTree, 
     const std::size_t w,
     const std::size_t k, 
-    const TuMap &treeMap, 
-    arma::mat &mDist,
-    arma::umat &mOrder
+    const TuMap treeMap, 
+    NumericMatrix mDist,
+    NumericMatrix mOrder
   ) : member(member), memberQuery(memberQuery), nTree(nTree), w(w), k(k), 
   treeMap(treeMap), mDist(mDist), mOrder(mOrder) {}
   void operator()(std::size_t begin, std::size_t end) {
-    int size = member.n_rows;
-    arma::colvec tmpDist(size);
-    arma::uvec order(size);
-    tmpDist = arma::zeros<arma::vec>(size);
-    int x, y;
+    int size = member.nrow();
+    double sum = 0.0;
+    int tmpTree;
+    double d;
+    vector<double> tmpDist(size, 0);
+    map<int, double> tmp;
     for (size_t i=begin; i<end; ++i) {
+      RMatrix<double>::Row row1 = member.row(i);
       for (size_t j=0; j<size; ++j) { 
-        double d;
-        int tmpTree = 1;
-        for (int t=0; t<nTree; t++) { 
-          x = member.row(j)(t);
-          y = memberQuery.row(i)(t);
-          if (x < y) {
-            d = get_node_distance(treeMap, x, y, t);
-          } else if (x > y) {
-            d = get_node_distance(treeMap, x, y, t);
+        RMatrix<double>::Row row2 = memberQuery.row(j);
+        tmpTree = 1;
+        sum = 0.0;
+        for (int t=0; t < nTree; t++) { 
+          if (row1[t] < row2[t]) {
+            d = get_node_distance(treeMap, row1[t], row2[t], t);
+          } else if (row1[t] > row2[t]) {
+            d = get_node_distance(treeMap, row2[t], row1[t], t);
           } else {
-            d = 0;
-            tmpDist(j) += 0.0;
+            d = 0.0;
+            sum += 0.0;
             tmpTree += 1;
           }
           if (d > 0) {
-            tmpDist(j) += d; //1. / pow(d, w);
+            sum += d;
             tmpTree += 1;
           }
         }
+        tmp[j] = sum;
       }
-      tmpDist = log(tmpDist + 1.); // 1. - tmpDist * 1. / nTree;
-      order = arma::sort_index(tmpDist, 0);
+      std::multimap<double, int> dst = flip_map(tmp);
+      multimap<double, int>::const_iterator it = dst.cbegin();
       for (size_t l=0; l<k; ++l) {
-        mDist(i, l) = tmpDist(order(l));
-        mOrder(i, l) = order(l) + 1;
+        mDist(i, l) = log(it->first + 1.);
+        mOrder(i, l) = it->second + 1;
+        it++;
       }
-      tmpDist = arma::zeros<arma::vec>(size);
     }
   }
 };
 
-List rf_knn_matrix(DataFrame df, arma::mat member, arma::mat memberQuery, int w=2, int k = 1) {
+List rf_knn_matrix(DataFrame df, NumericMatrix member, NumericMatrix memberQuery, int w=2, int k = 1) {
   Rcpp::Rcout << "Start Parallel Calculation!" << std::endl;
-  int nTree = member.n_cols;
-  int sizeQuery = memberQuery.n_rows;
+  int nTree = member.ncol();
+  int sizeQuery = memberQuery.nrow();
   
   TuMap treeMap = create_hash_map(df, nTree);
-  arma::mat  mDist(sizeQuery, k);
-  arma::umat mOrder(sizeQuery, k);
-    
+  NumericMatrix mDist(sizeQuery, k);
+  NumericMatrix mOrder(sizeQuery, k);
+  
   rf_knn rf_knn(member, memberQuery, nTree, w, k, treeMap, mDist, mOrder);
   parallelFor(0, sizeQuery, rf_knn);
   return Rcpp::List::create(
@@ -366,7 +371,7 @@ NumericMatrix rf_distance_matrix(DataFrame df, NumericMatrix member, NumericMatr
 }
 
 // rf knn
-List rf_knn_matrix(DataFrame df, arma::mat member, arma::mat memberQuery, int w=2, int k = 1) {
+List rf_knn_matrix(DataFrame df, NumericMatrix member, NumericMatrix memberQuery, int w=2, int k = 1) {
   Rcpp::Rcout << "Start Single Calculation!" << std::endl;
   int nTree = member.n_cols;
   int size = member.n_rows;
@@ -374,20 +379,20 @@ List rf_knn_matrix(DataFrame df, arma::mat member, arma::mat memberQuery, int w=
   
   TuMap treeMap = create_hash_map(df, nTree);
   
-  arma::mat  mDist(sizeQuery, k);
-  arma::umat mOrder(sizeQuery, k);
+  NumericMatrix mDist(sizeQuery, k);
+  NumericMatrix mOrder(sizeQuery, k);
   
   arma::colvec tmpDist(size);
   arma::uvec order(size);
   tmpDist = arma::zeros<arma::vec>(size);
   int x, y;
-  for (int i=0; i<sizeQuery - 1; i++) {
-    for (int j=0; j<size; j++) { 
+  for (int i=0; i<sizeQuery - 1; ++i) {
+    for (int j=0; j<size; ++j) { 
       double d;
       int tmpTree = 1;
       for (int t=0; t<nTree; t++) { 
-        x = member.col(i)(t);
-        y = memberQuery.col(i)(t);
+        x = member.row(j)(t);
+        y = memberQuery.row(i)(t);
         if (x < y) {
           d = get_node_distance(treeMap, x, y, t);
         } else if (x > y) {
@@ -403,20 +408,20 @@ List rf_knn_matrix(DataFrame df, arma::mat member, arma::mat memberQuery, int w=
         }
       }
     }
+    Rcpp::Rcout << "Start Single Calculation!" << k << std::endl;
     tmpDist = 1. - tmpDist * 1. / nTree;
     order = arma::sort_index(tmpDist, 0);
     for (size_t l=0; l<k; ++l) {
       mDist(i, l) = tmpDist(order(l));
       mOrder(i, l) = order(l) + 1;
     }
-    tmpDist = arma::zeros<arma::vec>(x.n_rows);
+    tmpDist = arma::zeros<arma::vec>(size);
   }
   return Rcpp::List::create(
     Rcpp::Named("distance") = mDist,
     Rcpp::Named("order")    = mOrder
   );
 }
-
 #endif
 
 // [[Rcpp::export]]
@@ -425,7 +430,7 @@ NumericMatrix get_rf_distance_matrix(DataFrame df, NumericMatrix member, Numeric
 }
 
 // [[Rcpp::export]]
-List rf_knn(DataFrame df, arma::mat member, arma::mat memberQuery, int w = 2, int k = 5) {
+List rf_knn(DataFrame df, NumericMatrix member, NumericMatrix memberQuery, int w = 2, int k = 5) {
   return rf_knn_matrix(df, member, memberQuery, w, k);
 }
 
@@ -433,6 +438,6 @@ List rf_knn(DataFrame df, arma::mat member, arma::mat memberQuery, int w = 2, in
 // [[Rcpp::export]]
 DataFrame get_node_distances(DataFrame df, int nTree) {
   TuMap treeMap = create_hash_map(df, nTree);
-  return umap_to_dataframe(treeMap, nTree);
+  return tumap_to_dataframe(treeMap, nTree);
 }
 

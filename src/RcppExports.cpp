@@ -75,14 +75,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // rf_knn
-List rf_knn(DataFrame df, arma::mat member, arma::mat memberQuery, int w, int k);
+List rf_knn(DataFrame df, NumericMatrix member, NumericMatrix memberQuery, int w, int k);
 RcppExport SEXP cbr_rf_knn(SEXP dfSEXP, SEXP memberSEXP, SEXP memberQuerySEXP, SEXP wSEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type member(memberSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type memberQuery(memberQuerySEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type member(memberSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type memberQuery(memberQuerySEXP);
     Rcpp::traits::input_parameter< int >::type w(wSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
     __result = Rcpp::wrap(rf_knn(df, member, memberQuery, w, k));
