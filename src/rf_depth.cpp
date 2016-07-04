@@ -1,6 +1,8 @@
 // [[Rcpp::depends(RcppParallel)]]
+// [[Rcpp::depends("RcppArmadillo")]]
 #include <RcppParallel.h>
-#include <Rcpp.h>
+#include <RcppArmadillo.h>
+
 #include <unordered_map>
 #include <algorithm>
 #include "sort.h"
