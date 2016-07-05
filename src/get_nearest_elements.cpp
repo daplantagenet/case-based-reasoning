@@ -15,6 +15,7 @@ Rcpp::List weighted_knn(arma::mat x,
   arma::umat retOrder(nQuery, k);
   
   arma::colvec tmpDist(x.n_rows);
+  tmpDist.fill(0);
   arma::uvec order(x.n_rows);
   
   for (std::size_t i=0;i<nQuery;++i) {
@@ -26,7 +27,7 @@ Rcpp::List weighted_knn(arma::mat x,
       retDist(i, l) = tmpDist(order(l));
       retOrder(i, l) = order(l) + 1;
     }
-    tmpDist = arma::zeros<arma::vec>(x.n_rows);
+    tmpDist.fill(0);
   }
   return Rcpp::List::create(
     Rcpp::Named("distance") = retDist,
