@@ -7,14 +7,14 @@
 using namespace Rcpp;
 
 // get_Distance_Matrix
-RcppExport SEXP get_Distance_Matrix(SEXP queryData, SEXP x, SEXP weights);
+Rcpp::NumericMatrix get_Distance_Matrix(Rcpp::NumericMatrix queryData, Rcpp::NumericMatrix x, Rcpp::NumericVector weights);
 RcppExport SEXP cbr_get_Distance_Matrix(SEXP queryDataSEXP, SEXP xSEXP, SEXP weightsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< SEXP >::type queryData(queryDataSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type queryData(queryDataSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type weights(weightsSEXP);
     __result = Rcpp::wrap(get_Distance_Matrix(queryData, x, weights));
     return __result;
 END_RCPP
@@ -48,7 +48,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // order_vector
-Rcpp::NumericVector order_vector(arma::vec x, int sort_direction, int n);
+arma::uvec order_vector(arma::vec x, int sort_direction, int n);
 RcppExport SEXP cbr_order_vector(SEXP xSEXP, SEXP sort_directionSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;

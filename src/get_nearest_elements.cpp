@@ -17,12 +17,12 @@ Rcpp::List weighted_knn(arma::mat x,
   arma::colvec tmpDist(x.n_rows);
   arma::uvec order(x.n_rows);
   
-  for (std::size_t i=0; i < nQuery; ++i) {
-    for (std::size_t j=0; j < nVars; ++j) {
+  for (std::size_t i=0;i<nQuery;++i) {
+    for (std::size_t j=0;j <nVars;++j) {
       tmpDist = tmpDist + abs(weights(j) * (x.col(j) - query(i, j)));
     }
     order = arma::sort_index(tmpDist, sortDirection);
-    for (std::size_t l=0; l < k; ++l) {
+    for (std::size_t l=0; l<k;++l) {
       retDist(i, l) = tmpDist(order(l));
       retOrder(i, l) = order(l) + 1;
     }
