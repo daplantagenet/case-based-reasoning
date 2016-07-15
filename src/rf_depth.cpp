@@ -13,8 +13,8 @@ using namespace std;
 
 typedef pair<pair <int, int>, double>  TElementOne;
 typedef std::vector < TElementOne > TVectorOne;
-typedef pair<pair <int, int>, vector<double> > TElement;
-typedef unordered_map< pair<uint32_t, uint32_t>, vector <double> >  TuMap;
+typedef pstd::air<std::pair <int, int>, std::vector<double> > TElement;
+typedef std::unordered_map< std::pair<std::uint32_t, std::uint32_t>, std::vector <double> >  TuMap;
 
 
 // custom hash function for pair
