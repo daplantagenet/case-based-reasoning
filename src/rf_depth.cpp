@@ -3,7 +3,6 @@
 #include <RcppParallel.h>
 #include <RcppArmadillo.h>
 
-#include <unordered_map>
 #include <algorithm>
 #include <vector>
 #include "sort.h"
