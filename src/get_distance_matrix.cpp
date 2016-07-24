@@ -1,3 +1,4 @@
+// [[Rcpp::depends(Rcpp)]]
 #include <Rcpp.h>
 
 // [[Rcpp::export]]
