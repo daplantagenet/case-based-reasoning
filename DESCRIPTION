@@ -27,6 +27,7 @@ Imports:
     magrittr
 LinkingTo: 
     Rcpp,
+    BH,
     RcppArmadillo,
     RcppParallel
 SystemRequirements: GNU make

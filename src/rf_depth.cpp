@@ -1,7 +1,9 @@
 // [[Rcpp::depends(RcppParallel)]]
+// [[Rcpp::depends(BH)]]
 // [[Rcpp::depends("RcppArmadillo")]]
 #include <RcppParallel.h>
 #include <RcppArmadillo.h>
+#include <boost/unordered_map.hpp>
 
 #include <algorithm>
 #include <vector>
@@ -11,19 +13,18 @@ using namespace Rcpp;
 using namespace RcppParallel;
 using namespace std;
 
+
 typedef pair<pair <int, int>, double>  TElementOne;
 typedef std::vector < TElementOne > TVectorOne;
-typedef pstd::air<std::pair <int, int>, std::vector<double> > TElement;
-typedef std::unordered_map< std::pair<std::uint32_t, std::uint32_t>, std::vector <double> >  TuMap;
+typedef std::pair<std::pair <int, int>, std::vector<double> > TElement;
+typedef boost::unordered_map< std::pair<std::uint32_t, std::uint32_t>, std::vector <double> >  TuMap;
 
 
 // custom hash function for pair
 namespace std {
 template <>
-struct std::hash<std::pair<uint32_t, uint32_t> >
-{
-  inline uint64_t operator()(const std::pair<uint32_t, uint32_t>& k) const
-  {
+struct std::hash<std::pair<uint32_t, uint32_t> > {
+  inline uint64_t operator()(const std::pair<uint32_t, uint32_t>& k) const {
     //should produce no collisions
     //http://stackoverflow.com/a/24693169/1069256
     //return f << (CHAR_BIT * sizeof(size_t) / 2) | s;
