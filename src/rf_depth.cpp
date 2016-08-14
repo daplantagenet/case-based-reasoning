@@ -1,3 +1,4 @@
+#define ARMA_DONT_USE_CXX11 
 #include <RcppArmadillo.h>
 // [[Rcpp::depends("RcppArmadillo")]]
 #include <RcppParallel.h>

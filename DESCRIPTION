@@ -15,11 +15,7 @@ Depends:
     RcppArmadillo,
     RcppParallel,
 Imports:
-    Rcpp (>= 0.11.5),
-    RcppArmadillo,
-    RcppParallel,
     BH,
-    R6 (>= 2.0.1),
     ggplot2,
     cowplot,
     Rtsne,
