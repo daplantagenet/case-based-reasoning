@@ -1,9 +1,8 @@
+// [[Rcpp::depends("RcppArmadillo")]]
 // [[Rcpp::depends(RcppParallel)]]
 // [[Rcpp::depends(BH)]]
-// [[Rcpp::depends("RcppArmadillo")]]
 #include <RcppParallel.h>
 #include <RcppArmadillo.h>
-#include <boost/unordered_map.hpp>
 
 #include <algorithm>
 #include <vector>
@@ -17,21 +16,30 @@ using namespace std;
 typedef pair<pair <int, int>, double>  TElementOne;
 typedef std::vector < TElementOne > TVectorOne;
 typedef std::pair<std::pair <int, int>, std::vector<double> > TElement;
-typedef boost::unordered_map< std::pair<std::uint32_t, std::uint32_t>, std::vector <double> >  TuMap;
 
+#ifndef dplyr_hash_map
+  #if defined(_WIN32)
+    #define cbr_hash_map RCPP_UNORDERED_MAP
+  #else
+    #include <boost/unordered_map.hpp>
+    #define cbr_hash_map boost::unordered_map
+  #endif
+#endif
+
+typedef cbr_hash_map< std::pair<std::uint32_t, std::uint32_t>, std::vector <double> >  TuMap;
 
 // custom hash function for pair
 namespace std {
-template <>
-struct std::hash<std::pair<uint32_t, uint32_t> > {
-  inline uint64_t operator()(const std::pair<uint32_t, uint32_t>& k) const {
-    //should produce no collisions
-    //http://stackoverflow.com/a/24693169/1069256
-    //return f << (CHAR_BIT * sizeof(size_t) / 2) | s;
-    //http://stackoverflow.com/questions/2768890/how-to-combine-two-32-bit-integers-into-one-64-bit-integer?lq=1
-    return (uint64_t) k.first << 32 | k.second;
-  }
-};
+  template <>
+  struct hash<std::pair<uint32_t, uint32_t> > {
+    inline uint64_t operator()(const std::pair<uint32_t, uint32_t>& k) const {
+      //should produce no collisions
+      //http://stackoverflow.com/a/24693169/1069256
+      //return f << (CHAR_BIT * sizeof(size_t) / 2) | s;
+      //http://stackoverflow.com/questions/2768890/how-to-combine-two-32-bit-integers-into-one-64-bit-integer?lq=1
+      return (uint64_t) k.first << 32 | k.second;
+    }
+  };
 }
 
 
