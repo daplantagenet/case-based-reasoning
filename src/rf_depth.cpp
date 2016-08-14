@@ -1,8 +1,8 @@
+#include <RcppArmadillo.h>
 // [[Rcpp::depends("RcppArmadillo")]]
+#include <RcppParallel.h>
 // [[Rcpp::depends(RcppParallel)]]
 // [[Rcpp::depends(BH)]]
-#include <RcppParallel.h>
-#include <RcppArmadillo.h>
 
 #include <algorithm>
 #include <vector>
