@@ -7,7 +7,7 @@
 
 #include <algorithm>
 #include <vector>
-#include <cstdint.h>
+#include <stdint.h>
 #include "sort.h"
 
 using namespace Rcpp;
