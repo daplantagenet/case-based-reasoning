@@ -34,7 +34,7 @@ typedef cbr_hash_map< std::pair<uint32_t, uint32_t>, std::vector <double> >  TuM
 namespace std {
   template <>
   struct hash<std::pair<uint32_t, uint32_t> > {
-    inline uint64_t operator()(const std::pair<uint32_t, uint32_t>& k) const {
+    inline uint64_t operator()(std::pair<uint32_t, uint32_t>& k) const {
       //should produce no collisions
       //http://stackoverflow.com/a/24693169/1069256
       //return f << (CHAR_BIT * sizeof(size_t) / 2) | s;
