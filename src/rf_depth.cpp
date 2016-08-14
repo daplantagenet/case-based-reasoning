@@ -28,7 +28,7 @@ typedef std::pair<std::pair <int, int>, std::vector<double> > TElement;
   #endif
 #endif
 
-typedef cbr_hash_map< std::pair<std::uint32_t, std::uint32_t>, std::vector <double> >  TuMap;
+typedef cbr_hash_map< std::pair<uint32_t, uint32_t>, std::vector <double> >  TuMap;
 
 // custom hash function for pair
 namespace std {
