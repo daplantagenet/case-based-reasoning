@@ -148,7 +148,7 @@ DataFrame tumap_to_dataframe(TuMap treeMap, int nTree) {
   lists[0] = x; 
   lists[1] = y; 
   for (int n=0; n < nTree; n++) {
-    namevec.push_back(namestem + std::to_string(n + 1));
+    namevec.push_back(namestem + to_string(n + 1));
     lists[n + 2] = dists[n];
   }
   lists.attr("names") = namevec;
