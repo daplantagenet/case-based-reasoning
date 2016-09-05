@@ -1,6 +1,5 @@
 #include <RcppParallel.h>
 // [[Rcpp::depends(RcppParallel)]]
-// [[Rcpp::depends(BH)]]
 
 #include <algorithm>
 #include <vector>
