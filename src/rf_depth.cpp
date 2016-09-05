@@ -1,4 +1,3 @@
-#define ARMA_DONT_USE_CXX11 
 #include <RcppArmadillo.h>
 // [[Rcpp::depends("RcppArmadillo")]]
 #include <RcppParallel.h>
@@ -18,17 +17,20 @@ using namespace std;
 typedef pair<pair <int, int>, double>  TElementOne;
 typedef std::vector < TElementOne > TVectorOne;
 typedef std::pair<std::pair <int, int>, std::vector<double> > TElement;
+typedef tbb::concurrent_unordered_map<std::pair <int, int>, std::vector<double> > tbbTuMap;
 
-#ifndef dplyr_hash_map
-  #if defined(_WIN32)
-    #define cbr_hash_map RCPP_UNORDERED_MAP
-  #else
-    #include <boost/unordered_map.hpp>
-    #define cbr_hash_map boost::unordered_map
-  #endif
-#endif
+// 
+// #ifndef dplyr_hash_map
+//   #if defined(_WIN32)
+//     #define cbr_hash_map RCPP_UNORDERED_MAP
+//   #else
+//     #include <boost/unordered_map.hpp>
+//     #define cbr_hash_map boost::unordered_map
+//   #endif
+// #endif
+// 
+// typedef cbr_hash_map< std::pair<uint32_t, uint32_t>, std::vector <double> >  TuMap;
 
-typedef cbr_hash_map< std::pair<uint32_t, uint32_t>, std::vector <double> >  TuMap;
 
 // custom hash function for pair
 namespace std {
@@ -127,7 +129,7 @@ TVectorOne getTryForOne(DataFrame df) {
 }
 
 
-DataFrame tumap_to_dataframe(TuMap treeMap, int nTree) {
+DataFrame tumap_to_dataframe(tbbTuMap treeMap, int nTree) {
   Rcpp::NumericVector x, y, dist, null;
   Rcpp::CharacterVector namevec;
   List lists(nTree + 2);
@@ -138,16 +140,16 @@ DataFrame tumap_to_dataframe(TuMap treeMap, int nTree) {
   namevec.push_back("y");
   
   std::string namestem = "tree_";
-  for(TuMap::const_iterator it1 = treeMap.begin(); it1 != treeMap.end(); ++it1) {
+  for(tbbTuMap::const_iterator it1 = treeMap.begin(); it1 != treeMap.end(); ++it1) {
     x.push_back(it1->first.first);
     y.push_back(it1->first.second);
-    for(int n=0; n < nTree; n++) {
+    for (std::size_t n=0;n<nTree;++n) {
       dists[n].push_back(it1->second[n]);
     }
   }
   lists[0] = x; 
   lists[1] = y; 
-  for (int n=0; n < nTree; n++) {
+  for (std::size_t n=0;n<nTree;++n) {
     namevec.push_back(namestem + to_string(n + 1));
     lists[n + 2] = dists[n];
   }
@@ -157,8 +159,8 @@ DataFrame tumap_to_dataframe(TuMap treeMap, int nTree) {
 }
 
 
-TuMap create_hash_map(DataFrame df, int nTree) {
-  TuMap treeMap;
+tbbTuMap create_hash_map(DataFrame df, int nTree) {
+  tbbTuMap treeMap;
   TVectorOne one;
   Rcpp::DataFrame obj(df);
   
@@ -199,7 +201,7 @@ TuMap create_hash_map(DataFrame df, int nTree) {
 }
 
 
-double get_node_distance(const TuMap &treeMap, int currentX, int currentY, int t) {
+double get_node_distance(const tbbTuMap &treeMap, int currentX, int currentY, int t) {
   if (treeMap.find(make_pair(currentX, currentY)) == treeMap.end()) return -1.;
   double d = treeMap.at(make_pair(currentX, currentY))[t];
   return d;
@@ -209,34 +211,35 @@ double get_node_distance(const TuMap &treeMap, int currentX, int currentY, int t
 #if RCPP_PARALLEL_USE_TBB
 
 struct rf_distance : public Worker {
-  const RMatrix<double> member;
-  const RMatrix<double> memberQuery;
-  const std::size_t nTree;
-  const std::size_t w;
-  const TuMap treeMap;
+  const RMatrix<double> member_;
+  const RMatrix<double> memberQuery_;
+  const std::size_t nTree_;
+  const std::size_t w_;
+  const tbbTuMap treeMap_;
   
-  RMatrix<double> mDist;
+  RMatrix<double> mDist_;
+  
   rf_distance(
     const NumericMatrix member, 
     const NumericMatrix memberQuery, 
     const std::size_t nTree, 
-    const TuMap treeMap, 
+    const tbbTuMap treeMap, 
     NumericMatrix mDist, 
     const std::size_t w=2)
-    : member(member), memberQuery(memberQuery), nTree(nTree), w(w), treeMap(treeMap), mDist(mDist) {}
+    : member_(member), memberQuery_(memberQuery), nTree_(nTree), w_(w), treeMap_(treeMap), mDist_(mDist) {}
   void operator()(std::size_t begin, std::size_t end) {
-    int sizeQuery = memberQuery.nrow();
-    for (std::size_t i=begin; i<end; i++) {
-      RMatrix<double>::Row row1 = member.row(i);
-      for (std::size_t j=0; j<sizeQuery; j++) {      
-        RMatrix<double>::Row row2 = memberQuery.row(j);
+    int sizeQuery = memberQuery_.nrow();
+    for (std::size_t i=begin; i<end;++i) {
+      RMatrix<double>::Row row1 = member_.row(i);
+      for (std::size_t j=0;j<sizeQuery;++j) {      
+        RMatrix<double>::Row row2 = memberQuery_.row(j);
         double sum=0.0, d;
         int tmpTree = 1;
-        for (int t=0; t < nTree; t++) { 
+        for (std::size_t t=0; t<nTree_;++t) { 
           if (row1[t] < row2[t]) {
-            d = get_node_distance(treeMap, row1[t], row2[t], t);
+            d = get_node_distance(treeMap_, row1[t], row2[t], t);
           } else if (row1[t] > row2[t]) {
-            d = get_node_distance(treeMap, row2[t], row1[t], t);
+            d = get_node_distance(treeMap_, row2[t], row1[t], t);
           } else {
             d = 0.0;
             sum += 0.0;
@@ -247,7 +250,7 @@ struct rf_distance : public Worker {
             tmpTree += 1;
           }
         }
-        mDist(i, j) = log(sum + 1.); // 1. - sum * 1. / nTree;
+        mDist_(i, j) = log(sum + 1.); // 1. - sum * 1. / nTree_;
       }
     }
   }
@@ -258,7 +261,7 @@ NumericMatrix rf_distance_matrix(DataFrame df, NumericMatrix member, NumericMatr
   std::size_t nTree = member.ncol(), wPar=w;
   std::size_t size = member.nrow();
   std::size_t sizeQuery = memberQuery.nrow();
-  TuMap treeMap = create_hash_map(df, nTree);
+  tbbTuMap treeMap = create_hash_map(df, nTree);
   NumericMatrix mDist(size, sizeQuery);
   rf_distance rf_distance(member, memberQuery, nTree, treeMap,  mDist, wPar);
   parallelFor(0, member.nrow(), rf_distance);
@@ -267,15 +270,15 @@ NumericMatrix rf_distance_matrix(DataFrame df, NumericMatrix member, NumericMatr
 
 
 struct rf_knn : public Worker {
-  const RMatrix<double> member;
-  const RMatrix<double> memberQuery;
-  const int nTree;
-  const int w;
-  const int k;
-  const TuMap treeMap;
+  const RMatrix<double> member_;
+  const RMatrix<double> memberQuery_;
+  const int nTree_;
+  const int w_;
+  const int k_;
+  const tbbTuMap treeMap_;
   
-  RMatrix<double> mDist;
-  RMatrix<double> mOrder;
+  RMatrix<double> mDist_;
+  RMatrix<double> mOrder_;
   
   rf_knn(
     const NumericMatrix member, 
@@ -283,29 +286,29 @@ struct rf_knn : public Worker {
     const std::size_t nTree, 
     const std::size_t w,
     const std::size_t k, 
-    const TuMap treeMap, 
+    const tbbTuMap treeMap, 
     NumericMatrix mDist,
     NumericMatrix mOrder
-  ) : member(member), memberQuery(memberQuery), nTree(nTree), w(w), k(k), 
-  treeMap(treeMap), mDist(mDist), mOrder(mOrder) {}
+  ) : member_(member), memberQuery_(memberQuery), nTree_(nTree), w_(w), k_(k), 
+  treeMap_(treeMap), mDist_(mDist), mOrder_(mOrder) {}
   void operator()(std::size_t begin, std::size_t end) {
-    int size = member.nrow();
+    int size = member_.nrow();
     double sum = 0.0;
     int tmpTree;
     double d;
     vector<double> tmpDist(size, 0);
     map<int, double> tmp;
     for (size_t i=begin; i<end; ++i) {
-      RMatrix<double>::Row row1 = member.row(i);
+      RMatrix<double>::Row row1 = member_.row(i);
       for (size_t j=0; j<size; ++j) { 
-        RMatrix<double>::Row row2 = memberQuery.row(j);
+        RMatrix<double>::Row row2 = memberQuery_.row(j);
         tmpTree = 1;
         sum = 0.0;
-        for (int t=0; t < nTree; t++) { 
+        for (int t=0; t < nTree_; t++) { 
           if (row1[t] < row2[t]) {
-            d = get_node_distance(treeMap, row1[t], row2[t], t);
+            d = get_node_distance(treeMap_, row1[t], row2[t], t);
           } else if (row1[t] > row2[t]) {
-            d = get_node_distance(treeMap, row2[t], row1[t], t);
+            d = get_node_distance(treeMap_, row2[t], row1[t], t);
           } else {
             d = 0.0;
             sum += 0.0;
@@ -320,21 +323,22 @@ struct rf_knn : public Worker {
       }
       std::multimap<double, int> dst = flip_map(tmp);
       multimap<double, int>::const_iterator it = dst.cbegin();
-      for (size_t l=0; l<k; ++l) {
-        mDist(i, l) = log(it->first + 1.);
-        mOrder(i, l) = it->second + 1;
+      for (size_t l=0; l<k_; ++l) {
+        mDist_(i, l) = log(it->first + 1.);
+        mOrder_(i, l) = it->second + 1;
         it++;
       }
     }
   }
 };
 
+
 List rf_knn_matrix(DataFrame df, NumericMatrix member, NumericMatrix memberQuery, int w=2, int k = 1) {
   Rcpp::Rcout << "Start Parallel Calculation!" << std::endl;
   int nTree = member.ncol();
   int sizeQuery = memberQuery.nrow();
   
-  TuMap treeMap = create_hash_map(df, nTree);
+  tbbTuMap treeMap = create_hash_map(df, nTree);
   NumericMatrix mDist(sizeQuery, k);
   NumericMatrix mOrder(sizeQuery, k);
   
@@ -354,7 +358,7 @@ NumericMatrix rf_distance_matrix(DataFrame df, NumericMatrix member, NumericMatr
   int nTree = member.ncol();
   int size = member.nrow();
   int sizeQuery = memberQuery.nrow();
-  TuMap treeMap = create_hash_map(df, nTree);
+  tbbTuMap treeMap = create_hash_map(df, nTree);
   NumericMatrix mDist(size, sizeQuery);
   for (int i=0; i < size; i++) {
     NumericMatrix::Row row1 = member.row(i);
@@ -390,7 +394,7 @@ List rf_knn_matrix(DataFrame df, NumericMatrix member, NumericMatrix memberQuery
   int size = member.n_rows;
   int sizeQuery = memberQuery.n_rows;
   
-  TuMap treeMap = create_hash_map(df, nTree);
+  TuMap tbbTuMap = create_hash_map(df, nTree);
   
   NumericMatrix mDist(sizeQuery, k);
   NumericMatrix mOrder(sizeQuery, k);
@@ -450,7 +454,7 @@ List rf_knn(DataFrame df, NumericMatrix member, NumericMatrix memberQuery, int w
 
 // [[Rcpp::export]]
 DataFrame get_node_distances(DataFrame df, int nTree) {
-  TuMap treeMap = create_hash_map(df, nTree);
+  tbbTuMap treeMap = create_hash_map(df, nTree);
   return tumap_to_dataframe(treeMap, nTree);
 }
 
