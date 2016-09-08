@@ -28,6 +28,8 @@ cbrData <- R6Class("cbrData",
                        if (sum(chkEP) > 0)
                          stop("Endpoint is not in data!")
 
+                       self$endPoint <- endPoint
+                       
                        # are there variables for learning
                        if (missing(learnVars)) {
                          cat("All variables of the queryData data will be used for learning!\n")

@@ -93,12 +93,14 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                   #  datadist scoping
                                   on.exit(detach("design.options"))
                                   attach(list(), name="design.options")
-                                  assign('dd', rms::datadist(self$learning), pos='design.options')
+                                  self$learning %>% 
+                                    dplyr::select_(.dots = c(self$endPoint, self$learnVars)) -> dtData
+                                  assign('dd', rms::datadist(dtData), pos='design.options')
                                   options(datadist="dd")
                                   
                                   # Cox Regression
                                   formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
-                                  coxFit <- rms::cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
+                                  coxFit <- rms::cph(formel, data=dtData, x=TRUE, y=TRUE, surv=T)
                                   self$coxFit <- coxFit
                                   self$cph <- survival::cox.zph(self$coxFit, "rank")
                                   
@@ -109,17 +111,17 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                   for (i in 1:nVars) {
                                     if (is.factor(self$learning[, self$learnVars[i]])) {
                                       nLev <- nlevels(self$learning[, self$learnVars[i]])
-                                      weights <- rep(NA, times = nLev)
-                                      names(weights) <- levels(self$learning[, self$learnVars[i]])
+                                      weightsTmp <- rep(NA, times = nLev)
+                                      names(weightsTmp) <- levels(self$learning[, self$learnVars[i]])
                                       for (j in 1:nLev) {
                                         myLevel <- paste(self$learnVars[i], "=", levels(self$learning[, self$learnVars[i]])[j], sep="")
                                         if (j==1) {
-                                          weights[j] <- 0
+                                          weightsTmp[j] <- 0
                                         } else {
-                                          weights[j] <- coxFit$coefficients[myLevel]
+                                          weightsTmp[j] <- coxFit$coefficients[myLevel]
                                         }
                                       }
-                                      weights[[i]] <- weights
+                                      weights[[i]] <- weightsTmp
                                     } else {  # else Faktor numeric
                                       myLevel <- paste(self$learnVars[i])
                                       weights[[i]] <- coxFit$coefficients[myLevel]

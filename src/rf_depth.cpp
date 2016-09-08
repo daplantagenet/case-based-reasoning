@@ -1,5 +1,8 @@
+#include <RcppArmadillo.h>
+// [[Rcpp::depends("RcppArmadillo")]]
 #include <RcppParallel.h>
 // [[Rcpp::depends(RcppParallel)]]
+// [[Rcpp::depends(BH)]]
 
 #include <algorithm>
 #include <vector>
@@ -32,13 +35,13 @@ typedef tbb::concurrent_unordered_map<std::pair <int, int>, std::vector<double> 
 // custom hash function for pair
 namespace std {
   template <>
-  struct hash<std::pair<std::uint32_t, std::uint32_t> > {
-    inline std::uint64_t operator()(std::pair<uint32_t, uint32_t>& k) const {
+  struct hash<std::pair<uint32_t, uint32_t> > {
+    inline uint64_t operator()(std::pair<uint32_t, uint32_t>& k) const {
       //should produce no collisions
       //http://stackoverflow.com/a/24693169/1069256
       //return f << (CHAR_BIT * sizeof(size_t) / 2) | s;
       //http://stackoverflow.com/questions/2768890/how-to-combine-two-32-bit-integers-into-one-64-bit-integer?lq=1
-      return (std::uint64_t) k.first << 32 | k.second;
+      return (uint64_t) k.first << 32 | k.second;
     }
   };
 }
@@ -385,57 +388,57 @@ NumericMatrix rf_distance_matrix(DataFrame df, NumericMatrix member, NumericMatr
 }
 
 // rf knn
-// List rf_knn_matrix(DataFrame df, NumericMatrix member, NumericMatrix memberQuery, int w=2, int k = 1) {
-//   Rcpp::Rcout << "Start Single Calculation!" << std::endl;
-//   int nTree = member.n_cols;
-//   int size = member.n_rows;
-//   int sizeQuery = memberQuery.n_rows;
-//   
-//   TuMap tbbTuMap = create_hash_map(df, nTree);
-//   
-//   NumericMatrix mDist(sizeQuery, k);
-//   NumericMatrix mOrder(sizeQuery, k);
-//   
-//   arma::colvec tmpDist(size);
-//   arma::uvec order(size);
-//   tmpDist = arma::zeros<arma::vec>(size);
-//   int x, y;
-//   for (int i=0; i<sizeQuery - 1; ++i) {
-//     for (int j=0; j<size; ++j) { 
-//       double d;
-//       int tmpTree = 1;
-//       for (int t=0; t<nTree; t++) { 
-//         x = member.row(j)(t);
-//         y = memberQuery.row(i)(t);
-//         if (x < y) {
-//           d = get_node_distance(treeMap, x, y, t);
-//         } else if (x > y) {
-//           d = get_node_distance(treeMap, x, y, t);
-//         } else {
-//           d = 0;
-//           tmpDist(j) += 1.;
-//           tmpTree += 1;
-//         }
-//         if (d > 0) {
-//           tmpDist(j) += 1. / pow(d, w);
-//           tmpTree += 1;
-//         }
-//       }
-//     }
-//     Rcpp::Rcout << "Start Single Calculation!" << k << std::endl;
-//     tmpDist = 1. - tmpDist * 1. / nTree;
-//     order = arma::sort_index(tmpDist, 0);
-//     for (size_t l=0; l<k; ++l) {
-//       mDist(i, l) = tmpDist(order(l));
-//       mOrder(i, l) = order(l) + 1;
-//     }
-//     tmpDist = arma::zeros<arma::vec>(size);
-//   }
-//   return Rcpp::List::create(
-//     Rcpp::Named("distance") = mDist,
-//     Rcpp::Named("order")    = mOrder
-//   );
-// }
+List rf_knn_matrix(DataFrame df, NumericMatrix member, NumericMatrix memberQuery, int w=2, int k = 1) {
+  Rcpp::Rcout << "Start Single Calculation!" << std::endl;
+  int nTree = member.n_cols;
+  int size = member.n_rows;
+  int sizeQuery = memberQuery.n_rows;
+  
+  TuMap tbbTuMap = create_hash_map(df, nTree);
+  
+  NumericMatrix mDist(sizeQuery, k);
+  NumericMatrix mOrder(sizeQuery, k);
+  
+  arma::colvec tmpDist(size);
+  arma::uvec order(size);
+  tmpDist = arma::zeros<arma::vec>(size);
+  int x, y;
+  for (int i=0; i<sizeQuery - 1; ++i) {
+    for (int j=0; j<size; ++j) { 
+      double d;
+      int tmpTree = 1;
+      for (int t=0; t<nTree; t++) { 
+        x = member.row(j)(t);
+        y = memberQuery.row(i)(t);
+        if (x < y) {
+          d = get_node_distance(treeMap, x, y, t);
+        } else if (x > y) {
+          d = get_node_distance(treeMap, x, y, t);
+        } else {
+          d = 0;
+          tmpDist(j) += 1.;
+          tmpTree += 1;
+        }
+        if (d > 0) {
+          tmpDist(j) += 1. / pow(d, w);
+          tmpTree += 1;
+        }
+      }
+    }
+    Rcpp::Rcout << "Start Single Calculation!" << k << std::endl;
+    tmpDist = 1. - tmpDist * 1. / nTree;
+    order = arma::sort_index(tmpDist, 0);
+    for (size_t l=0; l<k; ++l) {
+      mDist(i, l) = tmpDist(order(l));
+      mOrder(i, l) = order(l) + 1;
+    }
+    tmpDist = arma::zeros<arma::vec>(size);
+  }
+  return Rcpp::List::create(
+    Rcpp::Named("distance") = mDist,
+    Rcpp::Named("order")    = mOrder
+  );
+}
 #endif
 
 // [[Rcpp::export]]
