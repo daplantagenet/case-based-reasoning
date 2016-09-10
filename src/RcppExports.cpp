@@ -110,47 +110,6 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// get_rf_distance_matrix
-NumericMatrix get_rf_distance_matrix(DataFrame df, NumericMatrix member, NumericMatrix memberQuery, int w);
-RcppExport SEXP cbr_get_rf_distance_matrix(SEXP dfSEXP, SEXP memberSEXP, SEXP memberQuerySEXP, SEXP wSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type member(memberSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type memberQuery(memberQuerySEXP);
-    Rcpp::traits::input_parameter< int >::type w(wSEXP);
-    __result = Rcpp::wrap(get_rf_distance_matrix(df, member, memberQuery, w));
-    return __result;
-END_RCPP
-}
-// rf_knn
-List rf_knn(DataFrame df, NumericMatrix member, NumericMatrix memberQuery, int w, int k);
-RcppExport SEXP cbr_rf_knn(SEXP dfSEXP, SEXP memberSEXP, SEXP memberQuerySEXP, SEXP wSEXP, SEXP kSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type member(memberSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type memberQuery(memberQuerySEXP);
-    Rcpp::traits::input_parameter< int >::type w(wSEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    __result = Rcpp::wrap(rf_knn(df, member, memberQuery, w, k));
-    return __result;
-END_RCPP
-}
-// get_node_distances
-DataFrame get_node_distances(DataFrame df, int nTree);
-RcppExport SEXP cbr_get_node_distances(SEXP dfSEXP, SEXP nTreeSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    Rcpp::traits::input_parameter< int >::type nTree(nTreeSEXP);
-    __result = Rcpp::wrap(get_node_distances(df, nTree));
-    return __result;
-END_RCPP
-}
 // weighted_distance
 NumericMatrix weighted_distance(NumericMatrix x, NumericMatrix query, NumericVector weigths);
 RcppExport SEXP cbr_weighted_distance(SEXP xSEXP, SEXP querySEXP, SEXP weigthsSEXP) {

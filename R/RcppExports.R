@@ -33,18 +33,6 @@ distTest <- function(path1, path2) {
     .Call('cbr_distTest', PACKAGE = 'cbr', path1, path2)
 }
 
-get_rf_distance_matrix <- function(df, member, memberQuery, w = 2L) {
-    .Call('cbr_get_rf_distance_matrix', PACKAGE = 'cbr', df, member, memberQuery, w)
-}
-
-rf_knn <- function(df, member, memberQuery, w = 2L, k = 5L) {
-    .Call('cbr_rf_knn', PACKAGE = 'cbr', df, member, memberQuery, w, k)
-}
-
-get_node_distances <- function(df, nTree) {
-    .Call('cbr_get_node_distances', PACKAGE = 'cbr', df, nTree)
-}
-
 weighted_distance <- function(x, query, weigths) {
     .Call('cbr_weighted_distance', PACKAGE = 'cbr', x, query, weigths)
 }
