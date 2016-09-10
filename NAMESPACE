@@ -3,6 +3,8 @@
 export(cbrDistViz)
 export(cbrRF)
 export(cbrRegressionModel)
+export(rangerProximityMatrix)
+export(rangerTerminalNodeIds)
 import(R6)
 import(Rcpp)
 import(data.table)

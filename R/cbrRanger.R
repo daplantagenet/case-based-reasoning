@@ -6,11 +6,13 @@
 #' @return Matrix with terminal node IDs for all observations in x (rows) and
 #'         trees (columns)
 #'         
-#' @example 
-#' library(ranger)
+#' @examples
+#' \dontrun{
+#' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 #' rangerTerminalNodeIds(rf, iris[, -5])
-#'
+#' }
+#' 
 #' @export
 rangerTerminalNodeIds <- function(rf, x) {
   x <- as.matrix(x)
@@ -32,11 +34,13 @@ rangerTerminalNodeIds <- function(rf, x) {
 #' 
 #' @return a \code{dist} object with pairwise proximity of observations in x
 #'         
-#' @example 
-#' library(ranger)
+#' @examples
+#' \dontrun{
+#' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 #' rangerProximityMatrix(rf, iris[, -5])
-#'
+#' }
+#' 
 #' @export
 rangerProximityMatrix <- function(rf, x) {
   x <- as.matrix(x)

@@ -1,8 +1,8 @@
 Package: cbr
 Type: Package
-Title: Case Based Reasoning
+Title: Case-Based-Reasoning
 Version: 0.1
-Date: 2015-11-04
+Date: 2016-09-10
 Author: Dr. Simon Mueller <info@muon-stat.com>
 Maintainer: Dr. Simon Mueller <info@muon-stat.com>
 Description: Matching for Time2Event Data
@@ -16,12 +16,12 @@ Depends:
     RcppParallel,
 Imports:
     BH,
+    ranger,
     ggplot2,
     cowplot,
     Rtsne,
     survival,
     rms,
-    parallel,
     randomForestSRC,
     data.table,
     magrittr
