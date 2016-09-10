@@ -14,9 +14,9 @@ Depends:
     Rcpp (>= 0.11.5),
     RcppArmadillo,
     RcppParallel,
+    ranger
 Imports:
     BH,
-    ranger,
     ggplot2,
     cowplot,
     Rtsne,
