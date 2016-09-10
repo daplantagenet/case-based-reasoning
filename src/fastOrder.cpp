@@ -58,7 +58,7 @@ arma::umat orderMatrix(arma::mat& x, int sortDirection, int k) {
 
 // [[Rcpp::export]]
 arma::umat getOrderMatrix(arma::mat& x, int sortDirection = 0, int k = 5) {
-  return(orderMatrix(x, sortDirection, k));
+  return orderMatrix(x, sortDirection, k);
 }
 
 // [[Rcpp::export]]
