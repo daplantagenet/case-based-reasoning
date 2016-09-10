@@ -11,7 +11,7 @@ cbrRF
 \arguments{
 \item{learning:}{data set for learning the RF model}
 
-\item{queryData:}{Verum data set. For each case in the verum data, we are 
+\item{queryData:}{Query data set. For each case in the verum data, we are 
 looking for the k (=1,…,l) similar cases. Learning and verum data set need 
 the same structure (variable names and scales)}
 

@@ -19,6 +19,32 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// getOrderMatrix
+arma::umat getOrderMatrix(arma::mat& x, int sortDirection, int k);
+RcppExport SEXP cbr_getOrderMatrix(SEXP xSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type sortDirection(sortDirectionSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    __result = Rcpp::wrap(getOrderMatrix(x, sortDirection, k));
+    return __result;
+END_RCPP
+}
+// getOrderVector
+arma::uvec getOrderVector(arma::vec x, int sort_direction, int k);
+RcppExport SEXP cbr_getOrderVector(SEXP xSEXP, SEXP sort_directionSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type sort_direction(sort_directionSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    __result = Rcpp::wrap(getOrderVector(x, sort_direction, k));
+    return __result;
+END_RCPP
+}
 // weighted_knn
 Rcpp::List weighted_knn(arma::mat x, arma::mat query, arma::vec weights, const int sortDirection, const int k);
 RcppExport SEXP cbr_weighted_knn(SEXP xSEXP, SEXP querySEXP, SEXP weightsSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
@@ -34,29 +60,53 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// order_matrix
-NumericMatrix order_matrix(arma::mat x, int sortDirection, int k);
-RcppExport SEXP cbr_order_matrix(SEXP xSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
+// terminalNodeIDs
+arma::vec terminalNodeIDs(arma::mat& x, arma::vec& childNodes1, arma::vec& childNodes2, arma::vec& splitValues, arma::vec& splitVarIds);
+RcppExport SEXP cbr_terminalNodeIDs(SEXP xSEXP, SEXP childNodes1SEXP, SEXP childNodes2SEXP, SEXP splitValuesSEXP, SEXP splitVarIdsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
-    Rcpp::traits::input_parameter< int >::type sortDirection(sortDirectionSEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    __result = Rcpp::wrap(order_matrix(x, sortDirection, k));
+    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type childNodes1(childNodes1SEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type childNodes2(childNodes2SEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type splitValues(splitValuesSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type splitVarIds(splitVarIdsSEXP);
+    __result = Rcpp::wrap(terminalNodeIDs(x, childNodes1, childNodes2, splitValues, splitVarIds));
     return __result;
 END_RCPP
 }
-// order_vector
-arma::uvec order_vector(arma::vec x, int sort_direction, int n);
-RcppExport SEXP cbr_order_vector(SEXP xSEXP, SEXP sort_directionSEXP, SEXP nSEXP) {
+// proximityMatrix
+arma::vec proximityMatrix(arma::mat& x);
+RcppExport SEXP cbr_proximityMatrix(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< int >::type sort_direction(sort_directionSEXP);
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    __result = Rcpp::wrap(order_vector(x, sort_direction, n));
+    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
+    __result = Rcpp::wrap(proximityMatrix(x));
+    return __result;
+END_RCPP
+}
+// getPath
+arma::uvec getPath(arma::umat& nodeIDs, int k);
+RcppExport SEXP cbr_getPath(SEXP nodeIDsSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::umat& >::type nodeIDs(nodeIDsSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    __result = Rcpp::wrap(getPath(nodeIDs, k));
+    return __result;
+END_RCPP
+}
+// distTest
+int distTest(arma::uvec& path1, arma::uvec& path2);
+RcppExport SEXP cbr_distTest(SEXP path1SEXP, SEXP path2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::uvec& >::type path1(path1SEXP);
+    Rcpp::traits::input_parameter< arma::uvec& >::type path2(path2SEXP);
+    __result = Rcpp::wrap(distTest(path1, path2));
     return __result;
 END_RCPP
 }

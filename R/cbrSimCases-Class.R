@@ -86,7 +86,7 @@ simCases <- R6Class("simCases",
                       },
                       get_order = function(nCases) {
                         return(
-                          cbr:::order_matrix(
+                          cbr:::getOrderMatrix(
                             self$distMat,
                             nCases
                           )
