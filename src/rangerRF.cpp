@@ -57,12 +57,12 @@ struct parallelTerminalNode : public RcppParallel::Worker {
   }
 };
 
-struct parallelProximityMatrix : public RcppParallel::Worker {
+struct parallelTerminalNodeDistance : public RcppParallel::Worker {
   const arma::mat data_;
   const int nrow_;
   arma::vec& output_;
   
-  parallelProximityMatrix(
+  parallelTerminalNodeDistance(
     const arma::mat& data,
     const int nrow,
     arma::vec& output
@@ -81,7 +81,7 @@ struct parallelProximityMatrix : public RcppParallel::Worker {
 
 #else
 
-// no single threated implementation
+// no single threathed implementation
 
 #endif
 

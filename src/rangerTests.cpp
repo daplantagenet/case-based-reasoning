@@ -1,7 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
-#include "rangerForest.hpp"
+#include "ranger/rangerForest.hpp"
 
 // [[Rcpp::export]]
 arma::uvec getPath(arma::umat& nodeIDs, int k) {
