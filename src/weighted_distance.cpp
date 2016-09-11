@@ -59,6 +59,6 @@ NumericMatrix get_weighted_distance(NumericMatrix x, NumericMatrix query, Numeri
 #endif
 
 // [[Rcpp::export]]
-NumericMatrix weighted_distance(NumericMatrix x, NumericMatrix query, NumericVector weigths) {
+NumericMatrix weighted_distance2(NumericMatrix x, NumericMatrix query, NumericVector weigths) {
   return get_weighted_distance(x, query, weigths);
 }

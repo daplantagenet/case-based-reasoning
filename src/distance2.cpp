@@ -4,16 +4,14 @@
 #include <RcppArmadillo.h>
 
 #include "distance/weightedDistance.hpp"
-#include "distance/nodeDistance.hpp"
+#include "distance/rangerProximity.hpp"
+#include "distance/rfDepthDistance.hpp"
 
 // TODO: Representation of Results
 // column-wise, row-wise, or full
-using namespace RcppParallel;
-using namespace Rcpp;
-
 #if RCPP_PARALLEL_USE_TBB
 
-struct parallelDistance : public Worker {
+struct parallelDistance : public RcppParallel::Worker {
   const arma::mat input_;
   std::shared_ptr<distance> dist_;
   const int nrow_;
@@ -55,7 +53,7 @@ arma::vec get_distance(arma::mat& input, std::shared_ptr<distance> dist) {
 
 
 // [[Rcpp::export]]
-arma::vec weightedDistance(arma::mat& x, arma::vec& weights) {
+arma::vec weighted_distance(arma::mat& x, arma::vec& weights) {
   weightedDistance dist;
   dist.set_parameters(weights);
   return get_distance(x, std::make_shared<weightedDistance>(dist));
@@ -63,9 +61,9 @@ arma::vec weightedDistance(arma::mat& x, arma::vec& weights) {
 
 
 // [[Rcpp::export]]
-arma::vec nodeDistance(arma::mat& x, arma::vec& weights) {
-  nodeDistance dist;
+arma::vec nodeDistance(arma::mat& x) {
+  rfDepthDistance dist;
   RfDistContainer rfDist;
   dist.set_parameters(rfDist);
-  return get_distance(x, std::make_shared<nodeDistance>(dist));
+  return get_distance(x, std::make_shared<rfDepthDistance>(dist));
 }

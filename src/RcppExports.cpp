@@ -19,6 +19,29 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// weighted_distance
+arma::vec weighted_distance(arma::mat& x, arma::vec& weights);
+RcppExport SEXP cbr_weighted_distance(SEXP xSEXP, SEXP weightsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type weights(weightsSEXP);
+    __result = Rcpp::wrap(weighted_distance(x, weights));
+    return __result;
+END_RCPP
+}
+// nodeDistance
+arma::vec nodeDistance(arma::mat& x);
+RcppExport SEXP cbr_nodeDistance(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
+    __result = Rcpp::wrap(nodeDistance(x));
+    return __result;
+END_RCPP
+}
 // getOrderMatrix
 arma::umat getOrderMatrix(arma::mat& x, int sortDirection, int k);
 RcppExport SEXP cbr_getOrderMatrix(SEXP xSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
@@ -75,17 +98,6 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// proximityMatrix
-arma::vec proximityMatrix(arma::mat& x);
-RcppExport SEXP cbr_proximityMatrix(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
-    __result = Rcpp::wrap(proximityMatrix(x));
-    return __result;
-END_RCPP
-}
 // getPath
 arma::uvec getPath(arma::umat& nodeIDs, int k);
 RcppExport SEXP cbr_getPath(SEXP nodeIDsSEXP, SEXP kSEXP) {
@@ -110,16 +122,16 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// weighted_distance
-NumericMatrix weighted_distance(NumericMatrix x, NumericMatrix query, NumericVector weigths);
-RcppExport SEXP cbr_weighted_distance(SEXP xSEXP, SEXP querySEXP, SEXP weigthsSEXP) {
+// weighted_distance2
+NumericMatrix weighted_distance2(NumericMatrix x, NumericMatrix query, NumericVector weigths);
+RcppExport SEXP cbr_weighted_distance2(SEXP xSEXP, SEXP querySEXP, SEXP weigthsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type query(querySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type weigths(weigthsSEXP);
-    __result = Rcpp::wrap(weighted_distance(x, query, weigths));
+    __result = Rcpp::wrap(weighted_distance2(x, query, weigths));
     return __result;
 END_RCPP
 }

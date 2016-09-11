@@ -64,12 +64,11 @@ arma::vec terminalNodeIDs(arma::mat& x,
   return output;
 }
 
-// [[Rcpp::export]]
-arma::vec proximityMatrix(arma::mat& x) {
-  int nrow = x.n_rows;
-  arma::vec output(nrow * (nrow - 1) / 2);
-  output.fill(0);
-  parallelProximityMatrix parallelProximityMatrix(x, nrow, output);
-  parallelFor(0, nrow, parallelProximityMatrix);
-  return output;
-}
+// arma::vec proximityMatrix(arma::mat& x) {
+//   int nrow = x.n_rows;
+//   arma::vec output(nrow * (nrow - 1) / 2);
+//   output.fill(0);
+//   parallelProximityMatrix parallelProximityMatrix(x, nrow, output);
+//   parallelFor(0, nrow, parallelProximityMatrix);
+//   return output;
+// }
