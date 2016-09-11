@@ -23,52 +23,11 @@ public:
   rangerForest(arma::umat& nodeIDs) {
     nodeIDs_ = nodeIDs;
     this->treeIndex();
+    this->getPaths();
   };
   
-  // get paths to root for all terminal nodes for one tree
-  void getPaths(arma::umat& nodeIDs) {
-    // transform nideID matrix to hashmap
-    treeHashMap nodes = this->nodeIdToHashMap(nodeIDs);
-    // get terminal nodes
-    arma::uvec tNodes = this->terminalNodes(nodeIDs);
-    // get for each terminal node the path to root
-    for (auto tn : tNodes) {
-      hp_[tn] = this->pathToRoot(nodes, tn);
-    }
-  };
-  
-  arma::umat extractSingleTreeNodeIDs(arma::umat& kNodeIDs, int& k) {
-    int n 
-  }
-  
-  // get the path to the root for length calculation
-  arma::uvec pathToRoot(hashMap& nodes, int& terminalNode) {
-    Rcpp::NumericVector path;
-    path.push_back(terminalNode);
-    while (true) {
-      // stop when at root
-      if (terminalNode == 1) {
-        break;
-      }
-      terminalNode = nodes.at(terminalNode - 1);
-      path.push_back(terminalNode);
-    }
-    return Rcpp::as<arma::uvec>(Rcpp::wrap(path));
-  };
-  
-  // calculate the number of edges between two terminal nodes
-  int terminalNodeDistance(arma::uvec& path1, arma::uvec& path2) {
-    int n = path1.size();
-    int m = path2.size();
-    for (std::size_t i=0;i<n;++i) {
-      for (std::size_t j=0;j<m;++j) {
-        if (path1(i) == path2(j)) {
-          return i + j;
-        }
-      }
-    }
-    // should not happen; at least root node is common node
-    return -99;
+  RfDistContainer distance() {
+    this.distance();
   };
   
 private:
@@ -122,6 +81,58 @@ private:
       treeNodes[t + 1] = nodes;
     }
     return treeNodes;
+  };
+  
+  // get paths to root for all terminal nodes for one tree
+  void getPaths() {
+    // transform nodeID matrix to hashmap
+    treeHashMap nodes = this->nodeIdToHashMap();
+    // get terminal nodes
+    arma::uvec tNodes = this->terminalNodes();
+    int nTrees = treeIndex_.size() - 1;
+    for (auto t=0;t<nTrees;++t) {
+      hashVec hv;
+      // get for each terminal node the path to root
+      for (auto tn : tNodes[t+1]) {
+        hv[tn] = this->pathToRoot(nodes[t+1], tn);
+      }
+      hp_[t+1] = hv;
+    }
+  };
+  
+  // get the path to the root for length calculation
+  arma::uvec pathToRoot(hashMap& nodes, int& terminalNode) {
+    Rcpp::NumericVector path;
+    path.push_back(terminalNode);
+    while (true) {
+      // stop when at root
+      if (terminalNode == 1) {
+        break;
+      }
+      terminalNode = nodes.at(terminalNode - 1);
+      path.push_back(terminalNode);
+    }
+    return Rcpp::as<arma::uvec>(Rcpp::wrap(path));
+  };
+  
+  // calculate the number of edges between two terminal nodes
+  int terminalNodeDistance(arma::uvec& path1, arma::uvec& path2) {
+    int n = path1.size();
+    int m = path2.size();
+    for (std::size_t i=0;i<n;++i) {
+      for (std::size_t j=0;j<m;++j) {
+        if (path1(i) == path2(j)) {
+          return i + j;
+        }
+      }
+    }
+    // should not happen; at least root node is common node
+    return -99;
+  };
+  
+  RfDistContainer getDistance() {
+    RfDistContainer rfDist;
+    
   };
   
   arma::uvec treeIndex_;
