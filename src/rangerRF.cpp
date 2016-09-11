@@ -3,19 +3,6 @@
 #include <RcppParallel.h>
 #include <RcppArmadillo.h>
 
-
-double proximityByObservation(arma::rowvec& x, arma::rowvec& y) {
-  int nTrees = x.size();
-  int similarity = 0;
-  for (std::size_t k=0;k<nTrees;++k) {
-    if (x(k) != y(k)) {
-      ++similarity;
-    }
-  }
-  return similarity * 1. / nTrees;
-}
-
-
 #if RCPP_PARALLEL_USE_TBB
 
 // get the terminal for each observation
@@ -53,28 +40,6 @@ struct parallelTerminalNode : public RcppParallel::Worker {
         }
       }
       output_(i) = nodeId;
-    }
-  }
-};
-
-struct parallelTerminalNodeDistance : public RcppParallel::Worker {
-  const arma::mat data_;
-  const int nrow_;
-  arma::vec& output_;
-  
-  parallelTerminalNodeDistance(
-    const arma::mat& data,
-    const int nrow,
-    arma::vec& output
-  ) : data_(data), nrow_(nrow), output_(output) {}
-  
-  void operator() (std::size_t begin, std::size_t end) {
-    for (std::size_t i=begin;i<end;++i) {
-      arma::rowvec x = data_.row(i);
-      for (std::size_t j=i+1;j<nrow_;++j) {
-        arma::rowvec y = data_.row(j);
-        output_((2 * i * nrow_ - i * i + 2 * j - 3 * i - 2) / 2) = proximityByObservation(x, y);
-      }
     }
   }
 };
