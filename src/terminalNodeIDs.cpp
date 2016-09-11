@@ -6,7 +6,7 @@
 #if RCPP_PARALLEL_USE_TBB
 
 // get the terminal for each observation
-struct parallelTerminalNode : public RcppParallel::Worker {
+struct parallelTerminalNodes : public RcppParallel::Worker {
   const arma::mat data_;
   const arma::vec childNodes1_;
   const arma::vec childNodes2_;
@@ -14,7 +14,7 @@ struct parallelTerminalNode : public RcppParallel::Worker {
   const arma::vec splitVarIds_;
   arma::vec& output_;
   
-  parallelTerminalNode(
+  parallelTerminalNodes(
     const arma::mat& data,
     const arma::vec childNodes1,
     const arma::vec childNodes2,
@@ -51,16 +51,16 @@ struct parallelTerminalNode : public RcppParallel::Worker {
 #endif
 
 // [[Rcpp::export]]
-arma::vec terminalNodeIDs(arma::mat& x,
-                          arma::vec& childNodes1, 
-                          arma::vec& childNodes2, 
-                          arma::vec& splitValues, 
-                          arma::vec& splitVarIds) {
+arma::vec terminalNodeIDRanger(arma::mat& x,
+                               arma::vec& childNodes1, 
+                               arma::vec& childNodes2, 
+                               arma::vec& splitValues, 
+                               arma::vec& splitVarIds) {
   int nrow = x.n_rows;
   arma::vec output(nrow);
   output.fill(0);
-  parallelTerminalNode parallelTerminalNode(x, childNodes1, childNodes2, splitValues, splitVarIds, output);
-  parallelFor(0, nrow, parallelTerminalNode);
+  parallelTerminalNodes parallelTerminalNodes(x, childNodes1, childNodes2, splitValues, splitVarIds, output);
+  parallelFor(0, nrow, parallelTerminalNodes);
   return output;
 }
 

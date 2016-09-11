@@ -15,3 +15,13 @@ int distTest(arma::uvec& path1, arma::uvec& path2) {
   rangerForest rf;
   return rf.nodeDistance(path1, path2);
 }
+
+// [[Rcpp::export]]
+int treeDist(arma::umat& nodeIDs) {
+  rangerForest rf;
+  hashMap nodes = rf.nodeIdToHashMap(nodeIDs);
+  arma::uvec tNodes = rf.terminalNodes(nodeIDs);
+  // calculate path to root
+  
+  return rf.nodeDistance(path1, path2);
+}

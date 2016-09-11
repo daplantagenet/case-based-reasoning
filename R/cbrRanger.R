@@ -10,18 +10,18 @@
 #' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-#' rangerTerminalNodeIds(rf, iris[, -5])
+#' terminalNodeIdsRanger(rf, iris[, -5])
 #' }
 #' 
 #' @export
-rangerTerminalNodeIds <- function(rf, x) {
+terminalNodeIdsRanger <- function(rf, x) {
   x <- as.matrix(x)
   res=sapply(1:rf$num.trees, function(tree) {
-    cbr:::terminalNodeIDs(x = x, 
-                          childNodes1 = rf$forest$child.nodeIDs[[tree]][[1]], 
-                          childNodes2 = rf$forest$child.nodeIDs[[tree]][[2]], 
-                          splitValues = as.double(rf$forest$split.values[[tree]]),
-                          splitVarIds = rf$forest$split.varIDs[[tree]])
+    cbr:::terminalNodeIDRanger(x = x, 
+                               childNodes1 = rf$forest$child.nodeIDs[[tree]][[1]], 
+                               childNodes2 = rf$forest$child.nodeIDs[[tree]][[2]], 
+                               splitValues = as.double(rf$forest$split.values[[tree]]),
+                               splitVarIds = rf$forest$split.varIDs[[tree]])
   })
   return(res)
 }
@@ -38,11 +38,11 @@ rangerTerminalNodeIds <- function(rf, x) {
 #' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-#' rangerProximityMatrix(rf, iris[, -5])
+#' proximityMatrixRanger(rf, iris[, -5])
 #' }
 #' 
 #' @export
-rangerProximityMatrix <- function(rf, x) {
+proximityMatrixRanger <- function(rf, x) {
   x <- as.matrix(x)
   nodes <- rangerTerminalNodeIds(x, rf)
   d <- proximityMatrix(nodes)

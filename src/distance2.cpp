@@ -53,7 +53,7 @@ arma::vec get_distance(arma::mat& input, std::shared_ptr<distance> dist) {
 
 
 // [[Rcpp::export]]
-arma::vec weighted_distance(arma::mat& x, arma::vec& weights) {
+arma::vec weightedDistanceCBR(arma::mat& x, arma::vec& weights) {
   weightedDistance dist;
   dist.set_parameters(weights);
   return get_distance(x, std::make_shared<weightedDistance>(dist));
@@ -61,9 +61,21 @@ arma::vec weighted_distance(arma::mat& x, arma::vec& weights) {
 
 
 // [[Rcpp::export]]
-arma::vec nodeDistance(arma::mat& x) {
-  rfDepthDistance dist;
+arma::vec distanceRanger(arma::mat& x) {
+  // container with node IDs as keys and vector of number of trees as values
   RfDistContainer rfDist;
+  
+  
+  // distance object 
+  rfDepthDistance dist;
   dist.set_parameters(rfDist);
   return get_distance(x, std::make_shared<rfDepthDistance>(dist));
+}
+
+
+// [[Rcpp::export]]
+arma::vec proximityMatrixRanger(arma::mat& x, std::uint32_t nTrees) {
+  rangerProximity dist;
+  dist.set_parameters(nTrees);
+  return get_distance(x, std::make_shared<rangerProximity>(dist));
 }

@@ -9,40 +9,40 @@
 #include <unordered_map>
 
 typedef std::unordered_map<int, int> hashMap;
-typedef std::unordered_map<int, arma::uvec> hashPaths;
+typedef std::unordered_map<int, hashMap> treeHashMap;
+typedef std::unordered_map<int, arma::uvec> hashVec;
+typedef std::unordered_map<int, hashVec> treeHashVec;
 
 class rangerForest {
 public: 
-  rangerForest() {};
-  
-  // get indices of terminal nodes
-  arma::uvec terminalNodes(arma::mat& nodeIDs) {
-    Rcpp::NumericVector ind;
-    for (std::size_t i=0;i<nodeIDs.n_rows;++i) {
-      if (nodeIDs.col(0)(i) == 0) {
-        ind.push_back(i);
-      }
-    }
-    return Rcpp::as<arma::uvec>(Rcpp::wrap(ind));
+  // nodeIDs: 
+  //    column 1: tree id
+  //    column 2: node id
+  //    column 3: childNodeIDs 1
+  //    column 4: childNodeIDs 1
+  rangerForest(arma::umat& nodeIDs) {
+    nodeIDs_ = nodeIDs;
+    this->treeIndex();
   };
   
-  // transform matrix to hashmap
-  hashMap nodeIdToHashMap(arma::umat& nodeIDs) {
-    hashMap nodes;
-    int nrow = nodeIDs.n_rows;
-    for (std::size_t i=0;i<nrow;++i) {
-      if (nodeIDs(i, 1) != 0) {
-        nodes[nodeIDs(i, 1)] = nodeIDs(i, 0);
-      }
-      if (nodeIDs(i, 2) != 0) {
-        nodes[nodeIDs(i, 2)] = nodeIDs(i, 0);
-      }
+  // get paths to root for all terminal nodes for one tree
+  void getPaths(arma::umat& nodeIDs) {
+    // transform nideID matrix to hashmap
+    treeHashMap nodes = this->nodeIdToHashMap(nodeIDs);
+    // get terminal nodes
+    arma::uvec tNodes = this->terminalNodes(nodeIDs);
+    // get for each terminal node the path to root
+    for (auto tn : tNodes) {
+      hp_[tn] = this->pathToRoot(nodes, tn);
     }
-    return nodes;
   };
+  
+  arma::umat extractSingleTreeNodeIDs(arma::umat& kNodeIDs, int& k) {
+    int n 
+  }
   
   // get the path to the root for length calculation
-  arma::uvec pathToRoot(hashMap& nodes, int terminalNode) {
+  arma::uvec pathToRoot(hashMap& nodes, int& terminalNode) {
     Rcpp::NumericVector path;
     path.push_back(terminalNode);
     while (true) {
@@ -57,7 +57,7 @@ public:
   };
   
   // calculate the number of edges between two terminal nodes
-  int nodeDistance(arma::uvec& path1, arma::uvec& path2) {
+  int terminalNodeDistance(arma::uvec& path1, arma::uvec& path2) {
     int n = path1.size();
     int m = path2.size();
     for (std::size_t i=0;i<n;++i) {
@@ -72,7 +72,61 @@ public:
   };
   
 private:
-  hashPaths hp_;
+  // get the tree indices
+  arma::uvec treeIndex() {
+    int nTrees = nodeIDs_.col(0)(nrow - 1); 
+    // tree index starts from 1, so this vector has length n trees + 1
+    amra::uvec treeIndex(nTrees);
+    treeIndex.fill(0);
+    int tmpTree = 0;
+    int nrow = nodeIDs_.n_rows;
+    for (auto i=0;i<nrow;++i) {
+      if (tmpTree != nodeIDs_.col(0)(i)) {
+        treeIndex(tmpTree + 1) = i;
+        ++tmpTree;
+      }
+    }
+    treeIndex(nTrees) = nrow;
+    treeIndex_ = treeIndex;
+  };
+  
+  // get indices of terminal nodes for all trees
+  hashVec terminalNodes() {
+    hashVec treeTerminalNodes;
+    for (auto t=0;t<treeIndex_.size();++i) {
+      Rcpp::NumericVector ind;
+      for (auto i=treeIndex_(t);i<treeIndex_(t+1);++i) {
+        if (nodeIDs.col(0)(i) == 0) {
+          ind.push_back(i);
+        }
+      }
+      hashVec[t + 1] = Rcpp::as<arma::uvec>(Rcpp::wrap(ind))
+    }
+    return hashVec;
+  };
+  
+  // transform matrix to hashmap for all trees
+  treeHashMap nodeIdToHashMap() {
+    treeHashMap treeNodes;
+    int nrow = nodeIDs_.n_rows;
+    for (auto t=0;t<treeIndex_.size();++i) {
+      hashMap nodes;
+      for (auto i=treeIndex_(t);i<treeIndex_(t+1);++i) {
+        if (nodeIDs_(i, 2) != 0) {
+          nodes[nodeIDs_(i, 2)] = nodeIDs_(i, 1);
+        }
+        if (nodeIDs_(i, 3) != 0) {
+          nodes[nodeIDs_(i, 3)] = nodeIDs_(i, 1);
+        }
+      }
+      treeNodes[t + 1] = nodes;
+    }
+    return treeNodes;
+  };
+  
+  arma::uvec treeIndex_;
+  arma::umat nodeIDs_;
+  treeHashVec hp_;
 };
 
 #endif
