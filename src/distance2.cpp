@@ -60,17 +60,17 @@ arma::vec weightedDistanceCBR(arma::mat& x, arma::vec& weights) {
 }
 
 
-// [[Rcpp::export]]
-arma::vec distanceRanger(arma::mat& x) {
-  // container with node IDs as keys and vector of number of trees as values
-  RfDistContainer rfDist;
-  
-  
-  // distance object 
-  rfDepthDistance dist;
-  dist.set_parameters(rfDist);
-  return get_distance(x, std::make_shared<rfDepthDistance>(dist));
-}
+// // [[Rcpp::export]]
+// arma::vec distanceRanger(arma::mat& x) {
+//   // container with node IDs as keys and vector of number of trees as values
+//   RfDistContainer rfDist(100);
+//   
+//   
+//   // distance object 
+//   // rfDepthDistance dist;
+//   dist.set_parameters(rfDist);
+//   return get_distance(x, std::make_shared<rfDepthDistance>(dist));
+// }
 
 
 // [[Rcpp::export]]

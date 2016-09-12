@@ -28,8 +28,8 @@ public:
         sum += d;
         ++nTree;
       }
-      return sum * 1. / nTree;
     }
+    return sum * 1. / nTree;
   };
   
   void set_parameters(RfDistContainer nodeDist) {

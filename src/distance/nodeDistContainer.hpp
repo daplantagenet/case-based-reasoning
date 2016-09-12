@@ -23,7 +23,9 @@ struct hash<std::pair<uint32_t, uint32_t>>
 // borrowed from: https://github.com/dselivanov/text2vec/blob/master/src/SparseTripletMatrix.h
 class RfDistContainer {
 public:
-  RfDistContainer() {};
+  RfDistContainer(uint32_t nTrees) {
+    ntrees_ = nTrees;
+  };
   
   void setNTree(uint32_t nTrees) {
     ntrees_ = nTrees;
@@ -33,14 +35,23 @@ public:
     return ntrees_;
   };
   
-  void addValue(uint32_t i, uint32_t j, uint32_t tree,  uint32_t value) {
+  void addValue(uint32_t i, uint32_t j, uint32_t tree, uint32_t value) {
     // check for key pair
     if (this->container_.find(std::make_pair(i, j)) == this->container_.end()) {
-      arma::uvec vec(ntrees_);
+      arma::vec vec(ntrees_);
       vec.fill(-1);
-      this->container_[std::make_pair(i, j)] = vec;
+      if (i > j) {
+        this->container_[std::make_pair(j, i)] = vec;
+      } else {
+        this->container_[std::make_pair(i, j)] = vec;
+      }
     }
-    this->container_[std::make_pair(i, j)][tree] = value;
+    Rcpp::Rcout << "i, j:" << i << ", " << j << "tree: " << tree << " value: " << value << std::endl;
+    if (i > j) {
+      this->container_[std::make_pair(j, i)][tree] = value;
+    } else {
+      this->container_[std::make_pair(i, j)][tree] = value;
+    }
   };
   
   int getValue(int i, int j, int tree) const {
@@ -49,17 +60,17 @@ public:
     return this->container_.at(std::make_pair(i, j))[tree];
   };
   
-  arma::uvec getValues(uint32_t i, uint32_t j) const {
+  arma::vec getValues(uint32_t i, uint32_t j) const {
     // return -1 vector if there is no pair
     if (this->container_.find(std::make_pair(i, j)) == this->container_.end()) { 
-      arma::uvec vec(ntrees_);
+      arma::vec vec(ntrees_);
       vec.fill(-1);
       return vec;
     }
     return this->container_.at(std::make_pair(i, j));
   };
   
-  Rcpp::DataFrame getDataFrame() const {
+  Rcpp::DataFrame asDataFrame() const {
       Rcpp::NumericVector x, y, dist, null;
       Rcpp::CharacterVector namevec;
       Rcpp::List lists(ntrees_ + 2);
@@ -94,7 +105,7 @@ public:
   
 private:
   uint32_t ntrees_;
-  std::unordered_map< std::pair<uint32_t, uint32_t>, arma::uvec> container_;
+  std::unordered_map< std::pair<uint32_t, uint32_t>, arma::vec> container_;
 };
 
 #endif

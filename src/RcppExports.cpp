@@ -19,26 +19,27 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// weighted_distance
-arma::vec weighted_distance(arma::mat& x, arma::vec& weights);
-RcppExport SEXP cbr_weighted_distance(SEXP xSEXP, SEXP weightsSEXP) {
+// weightedDistanceCBR
+arma::vec weightedDistanceCBR(arma::mat& x, arma::vec& weights);
+RcppExport SEXP cbr_weightedDistanceCBR(SEXP xSEXP, SEXP weightsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type weights(weightsSEXP);
-    __result = Rcpp::wrap(weighted_distance(x, weights));
+    __result = Rcpp::wrap(weightedDistanceCBR(x, weights));
     return __result;
 END_RCPP
 }
-// nodeDistance
-arma::vec nodeDistance(arma::mat& x);
-RcppExport SEXP cbr_nodeDistance(SEXP xSEXP) {
+// proximityMatrixRanger
+arma::vec proximityMatrixRanger(arma::mat& x, std::uint32_t nTrees);
+RcppExport SEXP cbr_proximityMatrixRanger(SEXP xSEXP, SEXP nTreesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
-    __result = Rcpp::wrap(nodeDistance(x));
+    Rcpp::traits::input_parameter< std::uint32_t >::type nTrees(nTreesSEXP);
+    __result = Rcpp::wrap(proximityMatrixRanger(x, nTrees));
     return __result;
 END_RCPP
 }
@@ -83,9 +84,20 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// terminalNodeIDs
-arma::vec terminalNodeIDs(arma::mat& x, arma::vec& childNodes1, arma::vec& childNodes2, arma::vec& splitValues, arma::vec& splitVarIds);
-RcppExport SEXP cbr_terminalNodeIDs(SEXP xSEXP, SEXP childNodes1SEXP, SEXP childNodes2SEXP, SEXP splitValuesSEXP, SEXP splitVarIdsSEXP) {
+// terminalNodeDistance
+Rcpp::DataFrame terminalNodeDistance(arma::umat& nodeIDs);
+RcppExport SEXP cbr_terminalNodeDistance(SEXP nodeIDsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::umat& >::type nodeIDs(nodeIDsSEXP);
+    __result = Rcpp::wrap(terminalNodeDistance(nodeIDs));
+    return __result;
+END_RCPP
+}
+// terminalNodeIDRanger
+arma::vec terminalNodeIDRanger(arma::mat& x, arma::vec& childNodes1, arma::vec& childNodes2, arma::vec& splitValues, arma::vec& splitVarIds);
+RcppExport SEXP cbr_terminalNodeIDRanger(SEXP xSEXP, SEXP childNodes1SEXP, SEXP childNodes2SEXP, SEXP splitValuesSEXP, SEXP splitVarIdsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -94,44 +106,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec& >::type childNodes2(childNodes2SEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type splitValues(splitValuesSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type splitVarIds(splitVarIdsSEXP);
-    __result = Rcpp::wrap(terminalNodeIDs(x, childNodes1, childNodes2, splitValues, splitVarIds));
-    return __result;
-END_RCPP
-}
-// getPath
-arma::uvec getPath(arma::umat& nodeIDs, int k);
-RcppExport SEXP cbr_getPath(SEXP nodeIDsSEXP, SEXP kSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::umat& >::type nodeIDs(nodeIDsSEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    __result = Rcpp::wrap(getPath(nodeIDs, k));
-    return __result;
-END_RCPP
-}
-// distTest
-int distTest(arma::uvec& path1, arma::uvec& path2);
-RcppExport SEXP cbr_distTest(SEXP path1SEXP, SEXP path2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::uvec& >::type path1(path1SEXP);
-    Rcpp::traits::input_parameter< arma::uvec& >::type path2(path2SEXP);
-    __result = Rcpp::wrap(distTest(path1, path2));
-    return __result;
-END_RCPP
-}
-// weighted_distance2
-NumericMatrix weighted_distance2(NumericMatrix x, NumericMatrix query, NumericVector weigths);
-RcppExport SEXP cbr_weighted_distance2(SEXP xSEXP, SEXP querySEXP, SEXP weigthsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type query(querySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type weigths(weigthsSEXP);
-    __result = Rcpp::wrap(weighted_distance2(x, query, weigths));
+    __result = Rcpp::wrap(terminalNodeIDRanger(x, childNodes1, childNodes2, splitValues, splitVarIds));
     return __result;
 END_RCPP
 }

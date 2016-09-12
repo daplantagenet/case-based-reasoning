@@ -44,7 +44,7 @@ terminalNodeIdsRanger <- function(rf, x) {
 #' @export
 proximityMatrixRanger <- function(rf, x) {
   x <- as.matrix(x)
-  nodes <- rangerTerminalNodeIds(x, rf)
+  nodes <- terminalNodeIdsRanger(rf, x)
   d <- proximityMatrix(nodes)
   n <- nrow(x)
   # convert to dist object
@@ -55,4 +55,17 @@ proximityMatrixRanger <- function(rf, x) {
             Upper  = F,
             method = "rangerProximity",
             class  = "dist")
+}
+
+
+rangerRFtoMat <- function(rf) {
+  res <- sapply(1:rf$num.trees, function(t) {
+    len <- length(rf$forest$child.nodeIDs[[t]][[1]])
+    data.frame(t   = rep(t, len), 
+          n   = seq_len(len),
+          id1 = rf$forest$child.nodeIDs[[t]][[1]],
+          id2 = rf$forest$child.nodeIDs[[t]][[2]])
+  }, simplify = F)
+  res <- do.call(rbind, res)
+  as.matrix(res)
 }

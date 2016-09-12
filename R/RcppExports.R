@@ -5,12 +5,12 @@ get_Distance_Matrix <- function(queryData, x, weights) {
     .Call('cbr_get_Distance_Matrix', PACKAGE = 'cbr', queryData, x, weights)
 }
 
-weighted_distance <- function(x, weights) {
-    .Call('cbr_weighted_distance', PACKAGE = 'cbr', x, weights)
+weightedDistanceCBR <- function(x, weights) {
+    .Call('cbr_weightedDistanceCBR', PACKAGE = 'cbr', x, weights)
 }
 
-nodeDistance <- function(x) {
-    .Call('cbr_nodeDistance', PACKAGE = 'cbr', x)
+proximityMatrixRanger <- function(x, nTrees) {
+    .Call('cbr_proximityMatrixRanger', PACKAGE = 'cbr', x, nTrees)
 }
 
 getOrderMatrix <- function(x, sortDirection = 0L, k = 5L) {
@@ -25,19 +25,11 @@ weighted_knn <- function(x, query, weights, sortDirection = 0L, k = 1L) {
     .Call('cbr_weighted_knn', PACKAGE = 'cbr', x, query, weights, sortDirection, k)
 }
 
-terminalNodeIDs <- function(x, childNodes1, childNodes2, splitValues, splitVarIds) {
-    .Call('cbr_terminalNodeIDs', PACKAGE = 'cbr', x, childNodes1, childNodes2, splitValues, splitVarIds)
+terminalNodeDistance <- function(nodeIDs) {
+    .Call('cbr_terminalNodeDistance', PACKAGE = 'cbr', nodeIDs)
 }
 
-getPath <- function(nodeIDs, k) {
-    .Call('cbr_getPath', PACKAGE = 'cbr', nodeIDs, k)
-}
-
-distTest <- function(path1, path2) {
-    .Call('cbr_distTest', PACKAGE = 'cbr', path1, path2)
-}
-
-weighted_distance2 <- function(x, query, weigths) {
-    .Call('cbr_weighted_distance2', PACKAGE = 'cbr', x, query, weigths)
+terminalNodeIDRanger <- function(x, childNodes1, childNodes2, splitValues, splitVarIds) {
+    .Call('cbr_terminalNodeIDRanger', PACKAGE = 'cbr', x, childNodes1, childNodes2, splitValues, splitVarIds)
 }
 
