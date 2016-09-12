@@ -74,7 +74,7 @@ arma::vec weightedDistanceCBR(arma::mat& x, arma::vec& weights) {
 
 
 // [[Rcpp::export]]
-arma::vec proximityMatrixRanger(arma::mat& x, std::uint32_t nTrees) {
+arma::vec proximityMatrixRangerCPP(arma::mat& x, std::uint32_t nTrees) {
   rangerProximity dist;
   dist.set_parameters(nTrees);
   return get_distance(x, std::make_shared<rangerProximity>(dist));

@@ -46,7 +46,6 @@ public:
         this->container_[std::make_pair(i, j)] = vec;
       }
     }
-    Rcpp::Rcout << "i, j:" << i << ", " << j << "tree: " << tree << " value: " << value << std::endl;
     if (i > j) {
       this->container_[std::make_pair(j, i)][tree] = value;
     } else {

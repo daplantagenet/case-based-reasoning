@@ -45,7 +45,7 @@ terminalNodeIdsRanger <- function(rf, x) {
 proximityMatrixRanger <- function(rf, x) {
   x <- as.matrix(x)
   nodes <- terminalNodeIdsRanger(rf, x)
-  d <- proximityMatrix(nodes)
+  d <- cbr:::proximityMatrixRangerCPP(x = nodes, nTrees = rf$num.trees)
   n <- nrow(x)
   # convert to dist object
   structure(.Data  = d,

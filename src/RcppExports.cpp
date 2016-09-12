@@ -31,15 +31,15 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// proximityMatrixRanger
-arma::vec proximityMatrixRanger(arma::mat& x, std::uint32_t nTrees);
-RcppExport SEXP cbr_proximityMatrixRanger(SEXP xSEXP, SEXP nTreesSEXP) {
+// proximityMatrixRangerCPP
+arma::vec proximityMatrixRangerCPP(arma::mat& x, std::uint32_t nTrees);
+RcppExport SEXP cbr_proximityMatrixRangerCPP(SEXP xSEXP, SEXP nTreesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< std::uint32_t >::type nTrees(nTreesSEXP);
-    __result = Rcpp::wrap(proximityMatrixRanger(x, nTrees));
+    __result = Rcpp::wrap(proximityMatrixRangerCPP(x, nTrees));
     return __result;
 END_RCPP
 }

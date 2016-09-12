@@ -9,8 +9,8 @@ weightedDistanceCBR <- function(x, weights) {
     .Call('cbr_weightedDistanceCBR', PACKAGE = 'cbr', x, weights)
 }
 
-proximityMatrixRanger <- function(x, nTrees) {
-    .Call('cbr_proximityMatrixRanger', PACKAGE = 'cbr', x, nTrees)
+proximityMatrixRangerCPP <- function(x, nTrees) {
+    .Call('cbr_proximityMatrixRangerCPP', PACKAGE = 'cbr', x, nTrees)
 }
 
 getOrderMatrix <- function(x, sortDirection = 0L, k = 5L) {

@@ -110,7 +110,6 @@ private:
       hashVec hv;
       // get for each terminal node the path to root
       for (auto tn : tNodes[t + 1]) {
-        Rcpp::Rcout << "tn: " << tn << std::endl;
         hv[tn] = this->pathToRoot(nodes[t + 1], tn);
       }
       hp_[t + 1] = hv;
