@@ -24,7 +24,7 @@ public:
   };
   
 private:
-  std::uint32_t nTrees_;
+  auto nTrees_;
 };
   
 #endif
