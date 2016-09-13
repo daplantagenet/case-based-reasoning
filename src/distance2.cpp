@@ -5,6 +5,8 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
+#include <memory>
+
 #include "distance/weightedDistance.hpp"
 #include "distance/rangerProximity.hpp"
 #include "distance/rfDepthDistance.hpp"
@@ -58,7 +60,8 @@ arma::vec get_distance(arma::mat& input, std::shared_ptr<distance> dist) {
 arma::vec weightedDistanceCBR(arma::mat& x, arma::vec& weights) {
   weightedDistance dist;
   dist.set_parameters(weights);
-  return get_distance(x, std::make_shared<weightedDistance>(dist));
+  arma::vec ret = get_distance(x, std::make_shared<weightedDistance>(dist));
+  return ret;
 }
 
 

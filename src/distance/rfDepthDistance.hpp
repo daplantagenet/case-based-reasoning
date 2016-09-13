@@ -12,7 +12,7 @@ public:
   virtual double calc_distance(arma::rowvec& x, arma::rowvec& y) const {
     double sum = 0.0;
     double d = 0.0;
-    int nTree = 0;
+    auto nTree = 0;
     for (auto t=0; t<nTrees_;++t) {
       if (x[t] < y[t]) {
         d = nodeDists_.getValue(x[t], y[t], t);
