@@ -6,7 +6,7 @@ Date: 2016-09-10
 Author: Dr. Simon Mueller <info@muon-stat.com>
 Maintainer: Dr. Simon Mueller <info@muon-stat.com>
 Description: Matching for Time2Event Data
-License: AGPL
+License: GPL-2
 LazyData: TRUE
 Depends:
     R6,
@@ -23,9 +23,8 @@ Imports:
     rms,
     data.table,
     magrittr
-LinkingTo: 
-    Rcpp,
-    RcppArmadillo,
-    RcppParallel
+LinkingTo: Rcpp, RcppParallel, RcppArmadillo
 SystemRequirements: GNU make
+LazyLoad: yes
+ByteCompile: yes
 RoxygenNote: 5.0.1

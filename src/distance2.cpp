@@ -1,6 +1,8 @@
+#define STRICT_R_HEADERS
+
 // [[Rcpp::depends(RcppParallel)]]
-// [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppParallel.h>
+// [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
 #include "distance/weightedDistance.hpp"

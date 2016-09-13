@@ -2,8 +2,8 @@
 #define RANGERFOREST_H
 
 // [[Rcpp::depends(RcppParallel)]]
-// [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppParallel.h>
+// [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
 #include <unordered_map>
@@ -30,7 +30,7 @@ public:
   
   // calculate terminal node distance for each tree
   RfDistContainer nodeDistance() {
-    int nTrees = treeIndex_.size() - 1;
+    auto nTrees = treeIndex_.size() - 1;
     RfDistContainer rfDist(nTrees);
     int d = 0;
     for (auto t=0;t<nTrees;++t) {
@@ -50,11 +50,11 @@ public:
 private:
   // get the tree indices
   void treeIndex() {
-    int nTrees = nodeIDs_.col(0)(nodeIDs_.n_rows - 1); 
+    auto nTrees = nodeIDs_.col(0)(nodeIDs_.n_rows - 1); 
     // tree index starts from 1, so this vector has length n trees + 1
     arma::uvec treeIndex(nTrees + 1);
     treeIndex.fill(0);
-    int tmpTree = 1;
+    auto tmpTree = 1;
     int nrow = nodeIDs_.n_rows;
     for (auto i=0;i<nrow;++i) {
       if (tmpTree != nodeIDs_.col(0)(i)) {
@@ -105,7 +105,7 @@ private:
     treeHashMap nodes = this->nodeIdToHashMap();
     // get terminal nodes
     hashVec tNodes = this->terminalNodes();
-    int nTrees = treeIndex_.size() - 1;
+    auto nTrees = treeIndex_.size() - 1;
     for (auto t=0;t<nTrees;++t) {
       hashVec hv;
       // get for each terminal node the path to root
@@ -135,8 +135,8 @@ private:
   int terminalNodeDistance(arma::uvec path1, arma::uvec path2) {
     int n = path1.size();
     int m = path2.size();
-    for (std::size_t i=0;i<n;++i) {
-      for (std::size_t j=0;j<m;++j) {
+    for (auto i=0;i<n;++i) {
+      for (auto j=0;j<m;++j) {
         if (path1(i) == path2(j)) {
           return i + j;
         }
