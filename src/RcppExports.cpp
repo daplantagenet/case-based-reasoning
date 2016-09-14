@@ -97,14 +97,14 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// terminalNodeDistance
-Rcpp::DataFrame terminalNodeDistance(arma::umat& nodeIDs);
-RcppExport SEXP cbr_terminalNodeDistance(SEXP nodeIDsSEXP) {
+// terminalNodeDistanceCPP
+Rcpp::DataFrame terminalNodeDistanceCPP(arma::umat& nodeIDs);
+RcppExport SEXP cbr_terminalNodeDistanceCPP(SEXP nodeIDsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< arma::umat& >::type nodeIDs(nodeIDsSEXP);
-    __result = Rcpp::wrap(terminalNodeDistance(nodeIDs));
+    __result = Rcpp::wrap(terminalNodeDistanceCPP(nodeIDs));
     return __result;
 END_RCPP
 }

@@ -29,8 +29,8 @@ getOrderVector <- function(x, sort_direction = 0L, k = 0L) {
     .Call('cbr_getOrderVector', PACKAGE = 'cbr', x, sort_direction, k)
 }
 
-terminalNodeDistance <- function(nodeIDs) {
-    .Call('cbr_terminalNodeDistance', PACKAGE = 'cbr', nodeIDs)
+terminalNodeDistanceCPP <- function(nodeIDs) {
+    .Call('cbr_terminalNodeDistanceCPP', PACKAGE = 'cbr', nodeIDs)
 }
 
 terminalNodeIDRanger <- function(x, childNodes1, childNodes2, splitValues, splitVarIds) {
