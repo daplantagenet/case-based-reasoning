@@ -5,7 +5,7 @@
 #include <RcppArmadillo.h>
 
 #include "distance.hpp"
-#include "nodeDistContainer.hpp"
+#include "../containers/nodeDistContainer.hpp"
 
 class rfDepthDistance : public distance {
 public:
@@ -38,7 +38,7 @@ public:
   };
 private:
   RfDistContainer nodeDists_;
-  auto nTrees_;
+  std::uint32_t nTrees_;
 };
 
 #endif

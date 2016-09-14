@@ -8,7 +8,7 @@
 
 #include <unordered_map>
 
-#include "../distance/nodeDistContainer.hpp"
+#include "../containers/nodeDistContainer.hpp"
 
 typedef std::unordered_map<int, int> hashMap;
 typedef std::unordered_map<int, hashMap> treeHashMap;

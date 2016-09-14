@@ -6,21 +6,20 @@
 #' @keywords Cox Model
 simCases <- R6Class("simCases",
                     public=list(
-                      distMat      = NA,
-                      distOrder    = NA,
-                      similarCases = NA,
+                      distMat      = NULL,
+                      distOrder    = NULL,
+                      similarCases = NULL,
                       initialize = function(distMat) {
                         if (missing(distMat)) {
                           self$distMat <- NA
                         } else {
                           self$distMat <- distMat
-                          # diag(self$distMat) <- Inf
                         }
                       },
                       # calculate distance matrix for new data
                       get_distance_matrix = function(queryData, learning, learnVars, weights) {
                         # Start calculation
-                        if (class(self$distMat) != "matrix") {
+                        if (!is(self$distMat, "matrix")) {
                           return(private$distance_matrix(queryData, learning, learnVars, weights))
                         } else {
                           self$distMat
@@ -28,7 +27,7 @@ simCases <- R6Class("simCases",
                       },
                       # get similar cases from reference data
                       calc_similar_cases = function(queryData, learning, nCases) {
-                        if (class(self$distMat) != "matrix") {
+                        if (!is(self$distMat, "matrix")) {
                           stop("Need distance Matrix!")
                         }
                         

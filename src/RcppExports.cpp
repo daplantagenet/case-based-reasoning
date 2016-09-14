@@ -6,28 +6,28 @@
 
 using namespace Rcpp;
 
-// get_Distance_Matrix
-Rcpp::NumericMatrix get_Distance_Matrix(Rcpp::NumericMatrix queryData, Rcpp::NumericMatrix x, Rcpp::NumericVector weights);
-RcppExport SEXP cbr_get_Distance_Matrix(SEXP queryDataSEXP, SEXP xSEXP, SEXP weightsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type queryData(queryDataSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type x(xSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type weights(weightsSEXP);
-    __result = Rcpp::wrap(get_Distance_Matrix(queryData, x, weights));
-    return __result;
-END_RCPP
-}
-// weightedDistanceCBR
-arma::vec weightedDistanceCBR(arma::mat& x, arma::vec& weights);
-RcppExport SEXP cbr_weightedDistanceCBR(SEXP xSEXP, SEXP weightsSEXP) {
+// weightedDistanceCPP
+arma::vec weightedDistanceCPP(arma::mat& x, arma::vec& weights);
+RcppExport SEXP cbr_weightedDistanceCPP(SEXP xSEXP, SEXP weightsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type weights(weightsSEXP);
-    __result = Rcpp::wrap(weightedDistanceCBR(x, weights));
+    __result = Rcpp::wrap(weightedDistanceCPP(x, weights));
+    return __result;
+END_RCPP
+}
+// weightedDistanceCPPNM
+arma::vec weightedDistanceCPPNM(arma::mat& x, arma::mat& y, arma::vec& weights);
+RcppExport SEXP cbr_weightedDistanceCPPNM(SEXP xSEXP, SEXP ySEXP, SEXP weightsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type weights(weightsSEXP);
+    __result = Rcpp::wrap(weightedDistanceCPPNM(x, y, weights));
     return __result;
 END_RCPP
 }
@@ -40,6 +40,34 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< std::uint32_t >::type nTrees(nTreesSEXP);
     __result = Rcpp::wrap(proximityMatrixRangerCPP(x, nTrees));
+    return __result;
+END_RCPP
+}
+// proximityMatrixRangerCPPNM
+arma::vec proximityMatrixRangerCPPNM(arma::mat& x, arma::mat& y, std::uint32_t nTrees);
+RcppExport SEXP cbr_proximityMatrixRangerCPPNM(SEXP xSEXP, SEXP ySEXP, SEXP nTreesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< std::uint32_t >::type nTrees(nTreesSEXP);
+    __result = Rcpp::wrap(proximityMatrixRangerCPPNM(x, y, nTrees));
+    return __result;
+END_RCPP
+}
+// weighted_knn
+Rcpp::List weighted_knn(arma::mat x, arma::mat query, arma::vec weights, const int sortDirection, const int k);
+RcppExport SEXP cbr_weighted_knn(SEXP xSEXP, SEXP querySEXP, SEXP weightsSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type query(querySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< const int >::type sortDirection(sortDirectionSEXP);
+    Rcpp::traits::input_parameter< const int >::type k(kSEXP);
+    __result = Rcpp::wrap(weighted_knn(x, query, weights, sortDirection, k));
     return __result;
 END_RCPP
 }
@@ -66,21 +94,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type sort_direction(sort_directionSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
     __result = Rcpp::wrap(getOrderVector(x, sort_direction, k));
-    return __result;
-END_RCPP
-}
-// weighted_knn
-Rcpp::List weighted_knn(arma::mat x, arma::mat query, arma::vec weights, const int sortDirection, const int k);
-RcppExport SEXP cbr_weighted_knn(SEXP xSEXP, SEXP querySEXP, SEXP weightsSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type query(querySEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type weights(weightsSEXP);
-    Rcpp::traits::input_parameter< const int >::type sortDirection(sortDirectionSEXP);
-    Rcpp::traits::input_parameter< const int >::type k(kSEXP);
-    __result = Rcpp::wrap(weighted_knn(x, query, weights, sortDirection, k));
     return __result;
 END_RCPP
 }

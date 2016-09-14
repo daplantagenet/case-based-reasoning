@@ -2,7 +2,7 @@
 #include <RcppArmadillo.h>
 
 #include "ranger/rangerForest.hpp"
-#include "distance/nodeDistContainer.hpp"
+#include "containers/nodeDistContainer.hpp"
 
 // // [[Rcpp::export]]
 // arma::uvec getPath(arma::umat& nodeIDs, int k) {

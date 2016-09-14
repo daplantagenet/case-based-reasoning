@@ -6,13 +6,14 @@
 #' matrix, where n is the number of cases in the learning data set and m is the 
 #' number of cases of the query data. This distance matrix can then be used for 
 #' cluster analysis or for getting for each case in the query data k (=1,...,l)
-#' smilar cases from the learning data.
+#' smilar cases from the learning data. The rms-package is used for model fitting,
+#' variable selection, and checking the assumptions. 
 #' If query data is ommitted, a n x n- distance matrix is returned.
 #'
 #' @param learning data set for learning the Cox model
-#' @param queryData (optional): Query data set. For each case in the verum data, 
+#' @param queryData (optional): Query data set. For each case in the query data, 
 #'  we are looking for the k (=1,…,l) similar cases in the learning data. 
-#'  Learning and query data set need the same structure (variable names and scales)
+#'  Learning and query datasets need the same structure (variable names and scales)
 #' @param learnVars (Default: all variables except endPoint): A character vector 
 #' variable names. This variables are used for learning the model. Do not 
 #' include time2event and event variable here. 
@@ -22,33 +23,37 @@
 #' @param impute (Default: FALSE): Missing value imputation. Actually, not 
 #' implemented for the regression model.
 #'
-#' @field new Initialization of the cbrRegressionModel
+#' @field new : Initialization of the cbrRegressionModel
 #' 
-#' @field learn Fit regression model on the learning data set
+#' @field variable_selection : performs a fast backward variable selection
 #' 
-#' @field getDistanceMatrix Calculates full n x m (n x n)-distance matrix 
+#' @field learn : Fit regression model on the learning data set
 #' 
-#' @field getSimilarCases get for each case in verum data nCases (=1,...,l < n) 
+#' @field check_ph : Check proportional hazard assumption
+#' 
+#' @field calc_distance_matrix : Calculates full n x m / (n x n)-distance matrix 
+#' 
+#' @field calc_similar_cases : get for each case in verum data nCases (=1,...,l < n) 
 #' similar cases from the learning data; (1:nCases matching)
 #' 
-#' @usage cbrCoxModel$new
+#' @usage cbrRegressionModel$new
 #' 
 #' @useDynLib cbr
 #' @docType class
 #' @importFrom R6 R6Class
 #' @export
 #' @format An \code{\link{R6Class}} generator object
-#' @keywords Cox-Beta
+#' @keywords Beta
 cbrRegressionModel <- R6Class("cbrRegressionModel",
                               inherit = cbrData,
                               public=list(
-                                weights    = NA,
-                                distMat    = NA,
-                                orderMat   = NA,
-                                simCases   = NA,
-                                coxFit     = NA,
-                                cph        = NA,
-                                modelValid = NA,
+                                weights    = NULL,
+                                distMat    = NULL,
+                                orderMat   = NULL,
+                                simCases   = NULL,
+                                coxFit     = NULL,
+                                cph        = NULL,
+                                modelValid = NULL,
                                 # fast backward variable selection with penalization
                                 variable_selection = function() {
                                   if (!private$learningValid)
@@ -64,11 +69,16 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                   options(datadist="dd")
                                   
                                   # Cox Regression
-                                  formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
-                                  coxFit <- rms::cph(formel, data=self$learning, x=TRUE, y=TRUE, surv=T)
+                                  formula <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
+                                  coxFit <- rms::cph(formula = formula, 
+                                                     data    = self$learning, 
+                                                     x       = TRUE, 
+                                                     y       = TRUE, 
+                                                     surv    = T)
                                   
                                   # Variable Selection
-                                  vars <- rms::fastbw(coxFit, type = "i")
+                                  vars <- rms::fastbw(fit  = coxFit, 
+                                                      type = "i")
                                   cat(paste0("Initial variable set: ", paste(self$learnVars, collapse = ", "), "\n"))
                                   cat(paste0("Selected variable set: ", paste(vars$names.kept, collapse = ", "), "\n"))
                                   self$info$y[5] <- paste(vars$names.kept, collapse = ", ")
@@ -99,8 +109,12 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                   options(datadist="dd")
                                   
                                   # Cox Regression
-                                  formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
-                                  coxFit <- rms::cph(formel, data=dtData, x=TRUE, y=TRUE, surv=T)
+                                  formula <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
+                                  coxFit <- rms::cph(formula = formula, 
+                                                     data    = dtData, 
+                                                     x       = TRUE, 
+                                                     y       = TRUE, 
+                                                     surv    = T)
                                   self$coxFit <- coxFit
                                   self$cph <- survival::cox.zph(self$coxFit, "rank")
                                   
@@ -137,7 +151,7 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                 # check proportional hazard
                                 check_ph=function() {
                                   # learn if weights are empty
-                                  if (class(self$weights) != "list") {
+                                  if (!is(self$weights, "list")) {
                                     self$learn()
                                   }
                                   n <- length(self$learnVars)
@@ -156,10 +170,10 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                   return(cowplot::plot_grid(plotlist = ggPlot, 
                                                             ncol     = 2))
                                 },
-                                # calculate distance matrix for query data
+                                # calculate distance matrix
                                 calc_distance_matrix = function() {
                                   # learn if weights are empty
-                                  if (class(self$weights) != "list") {
+                                  if (!is(self$weights, "list")) {
                                     self$learn()
                                   }
                                   # Start calculation
@@ -172,8 +186,8 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                   duration <- round(as.numeric(end - start), 2)
                                   cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
                                 },
-                                # get query data, if there are missing values, return 
-                                # imputed data
+                                # get query data, if there are missing values, 
+                                # return imputed data
                                 get_query_data = function () {
                                   return(self$queryData)
                                 },
@@ -209,19 +223,19 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                   if(private$check_weights()) {
                                     stop("NA values in regression beta coefficients!")
                                   }
-                                  
                                   # check nCases input
                                   if (!is.numeric(k))
                                     stop("nCases must be numeric!")
                                   if (k <= 0)
                                     stop("nCases must be positive integer value!")
-                                  
                                   # catch floating numbers
                                   k <- as.integer(k)
                                   self$calc_distance_matrix()
                                   # calculate distance and order of cases based on distance calculation
                                   sc <- simCases$new(distMat=self$distMat)
-                                  sc$calc_similar_cases(queryData=self$queryData, learning=self$learning, nCases=k)
+                                  sc$calc_similar_cases(queryData = self$queryData, 
+                                                        learning  = self$learning, 
+                                                        nCases    = k)
                                   self$orderMat <- sc$order
                                   self$simCases <- sc$similarCases
                                   end <- Sys.time()
@@ -232,7 +246,10 @@ cbrRegressionModel <- R6Class("cbrRegressionModel",
                                   if (is.null(nrow(self$simCases)))
                                     stop("no similar cases")
                                   valSC <- cbrValidate$new()
-                                  return(valSC$validate(self$queryData, self$simCases, self$learnVars, plot))
+                                  return(valSC$validate(self$queryData, 
+                                                        self$simCases, 
+                                                        self$learnVars, 
+                                                        plot))
                                 }
                               ),
                               private = list(

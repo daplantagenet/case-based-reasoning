@@ -13,16 +13,12 @@ Depends:
     dplyr (>= 0.4.1),
     Rcpp (>= 0.11.5),
     RcppArmadillo,
-    RcppParallel
-Imports:
+    RcppParallel,
     ranger,
-    ggplot2,
-    cowplot,
-    Rtsne,
-    survival,
-    rms,
+    dplyr,
     data.table,
-    magrittr
+    magrittr,
+    rms
 LinkingTo: Rcpp, RcppParallel, RcppArmadillo
 SystemRequirements: GNU make
 LazyLoad: yes

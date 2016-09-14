@@ -5,7 +5,7 @@
 #include <RcppArmadillo.h>
 
 #include "distance.hpp"
-#include "nodeDistContainer.hpp"
+#include "../containers/nodeDistContainer.hpp"
 
 class rangerProximity : public distance {
 public:
@@ -24,7 +24,7 @@ public:
   };
   
 private:
-  auto nTrees_;
+  std::uint32_t nTrees_;
 };
   
 #endif
