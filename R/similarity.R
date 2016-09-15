@@ -2,9 +2,9 @@
 #' @docType package
 #' @name similarity
 #' @import Rcpp
+#' @import RcppArmadillo
 #' @import R6
 #' @import data.table
 #' @importFrom RcppParallel RcppParallelLibs
-#' @importFrom magrittr %>%
-#' @useDynLib similarity
+#' @useDynLib Similarity
 NULL

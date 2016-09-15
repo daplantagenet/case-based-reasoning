@@ -21,7 +21,7 @@ Get proximity matrix of an ranger object
 \dontrun{
 require(ranger)
 rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-proximityMatrixRanger(rf, iris[, -5])
+proximityMatrixRanger(iris[, -5], rf)
 }
 
 }

@@ -1,17 +1,17 @@
-Package: similarity
+Package: Similarity
 Type: Package
-Title: Distance
+Title: Similarity Calculation
 Version: 0.1
 Date: 2016-09-10
 Author: Dr. Simon Mueller <info@muon-stat.com>
 Maintainer: Dr. Simon Mueller <info@muon-stat.com>
-Description: Distance
+Description: Similarity Calculation
 License: GPL-2
 LazyData: TRUE
 Depends:
     R6,
     dplyr (>= 0.4.1),
-    Rcpp (>= 0.11.5),
+    Rcpp,
     RcppArmadillo,
     RcppParallel,
     ranger,
@@ -19,8 +19,8 @@ Depends:
     data.table,
     magrittr,
     rms
-LinkingTo: RcppNT2, BH (>= 1.60.0), Rcpp, RcppParallel, RcppArmadillo
-SystemRequirements: C++11
+LinkingTo: Rcpp, RcppParallel, RcppArmadillo
+SystemRequirements: GNU make
 LazyLoad: yes
 ByteCompile: yes
 RoxygenNote: 5.0.1

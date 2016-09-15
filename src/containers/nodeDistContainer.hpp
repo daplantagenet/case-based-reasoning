@@ -23,9 +23,7 @@ struct hash<std::pair<uint32_t, uint32_t>>
 // borrowed from: https://github.com/dselivanov/text2vec/blob/master/src/SparseTripletMatrix.h
 class RfDistContainer {
 public:
-  RfDistContainer(uint32_t nTrees) {
-    ntrees_ = nTrees;
-  };
+  RfDistContainer() {};
   
   void setNTree(uint32_t nTrees) {
     ntrees_ = nTrees;

@@ -33,7 +33,8 @@ public:
   // calculate terminal node distance for each tree
   RfDistContainer nodeDistance() {
     auto nTrees = treeIndex_.size() - 1;
-    RfDistContainer rfDist(nTrees);
+    RfDistContainer rfDist;
+    rfDist.setNTree(nTrees);
     int d = 0;
     for (auto t=0;t<nTrees;++t) {
       hashVec hv = hp_[t+1];

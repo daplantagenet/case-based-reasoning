@@ -6,6 +6,8 @@
 #' @return Matrix with terminal node IDs for all observations in x (rows) and
 #'         trees (columns)
 #'         
+#' @useDynLib Similarity       
+#' 
 #' @examples
 #' \dontrun{
 #' require(ranger)
@@ -17,11 +19,11 @@
 terminalNodeIdsRanger <- function(x, rf) {
   x <- as.matrix(x)
   res=sapply(1:rf$num.trees, function(tree) {
-    cbr:::terminalNodeIDRanger(x = x, 
-                               childNodes1 = rf$forest$child.nodeIDs[[tree]][[1]], 
-                               childNodes2 = rf$forest$child.nodeIDs[[tree]][[2]], 
-                               splitValues = as.double(rf$forest$split.values[[tree]]),
-                               splitVarIds = rf$forest$split.varIDs[[tree]])
+    Similarity:::terminalNodeIDRanger(x = x, 
+                                      childNodes1 = rf$forest$child.nodeIDs[[tree]][[1]], 
+                                      childNodes2 = rf$forest$child.nodeIDs[[tree]][[2]], 
+                                      splitValues = as.double(rf$forest$split.values[[tree]]),
+                                      splitVarIds = rf$forest$split.varIDs[[tree]])
   })
   return(res)
 }
@@ -33,7 +35,9 @@ terminalNodeIdsRanger <- function(x, rf) {
 #' @param x a new dataset
 #' 
 #' @return a \code{dist} object with pairwise proximity of observations in x
-#'         
+#'      
+#' @useDynLib Similarity
+#' 
 #' @examples
 #' \dontrun{
 #' require(ranger)
@@ -45,7 +49,7 @@ terminalNodeIdsRanger <- function(x, rf) {
 proximityMatrixRanger <- function(x, rf) {
   x <- as.matrix(x)
   nodes <- terminalNodeIdsRanger(x, rf)
-  d <- cbr:::proximityMatrixRangerCPP(x = nodes, nTrees = rf$num.trees)
+  d <- Similarity:::proximityMatrixRangerCPP(x = nodes, nTrees = rf$num.trees)
   n <- nrow(x)
   # convert to dist object
   structure(.Data  = d,
@@ -61,7 +65,15 @@ proximityMatrixRanger <- function(x, rf) {
 depthMatrixRanger <- function(x, rf) {
   x <- as.matrix(x)
   nodes <- terminalNodeIdsRanger(x, rf)
-  
+  d <- Similarity:::depthMatrixRangerCPP(rangerRFtoMat(x), nodes)
+  # convert to dist object
+  structure(.Data  = d,
+            Size   = n,
+            Labels = 1:n,
+            Diag   = F,
+            Upper  = F,
+            method = "rangerProximity",
+            class  = "dist")
 }
 
 
@@ -73,7 +85,9 @@ depthMatrixRanger <- function(x, rf) {
 #' @param rf \code{ranger} object
 #' 
 #' @return a \code{matrix} object with pairwise terminal node edge length
-#'         
+#'    
+#' @useDynLib Similarity
+#'      
 #' @examples
 #' \dontrun{
 #' require(ranger)
@@ -81,10 +95,12 @@ depthMatrixRanger <- function(x, rf) {
 #' terminalNodeDistance(rf)
 #' }
 #' 
+#' @useDynLib Similarity
+#' 
 #' @export
 terminalNodeDistance <- function(rf) {
   nodes <- rangerRFtoMat(rf)
-  cbr:::terminalNodeDistanceCPP(nodeIDs = nodes)
+  Similarity:::terminalNodeDistanceCPP(nodeIDs = nodes)
 }
 
 
@@ -95,7 +111,9 @@ terminalNodeDistance <- function(rf) {
 #' Column 2: node ID
 #' Column 3: child node ID 1
 #' Column 4: child node ID 2
-#' 
+#'
+#' @useDynLib Similarity
+#'
 #' @examples
 #' \dontrun{
 #' require(ranger)

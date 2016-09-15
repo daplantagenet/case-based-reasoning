@@ -138,9 +138,9 @@ cbrRF <- R6Class("cbrRF",
                          self$distMat <- sqrt(1 - rsf$proximity[1:nRef, (nRef + 1):ncol(rsf$proximity)])
                        }
                      } else if (self$distMethod == "depth") {
-                       self$distMat <- cbr:::get_rf_distance_matrix(rsf$forest$nativeArray, 
-                                                                    rsf$membership[1:nRef, ],  
-                                                                    rsf$membership[(nRef + 1):ncol(rsf$proximity), ], .75)
+                       self$distMat <- similarity:::get_rf_distance_matrix(rsf$forest$nativeArray, 
+                                                                           rsf$membership[1:nRef, ],  
+                                                                           rsf$membership[(nRef + 1):ncol(rsf$proximity), ], .75)
                      }
                      end <- Sys.time()
                      duration <- round(as.numeric(end - start), 2)
