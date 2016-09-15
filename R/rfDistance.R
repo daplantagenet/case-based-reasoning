@@ -38,7 +38,7 @@ terminalNodeIdsRanger <- function(x, rf) {
 #' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-#' proximityMatrixRanger(rf, iris[, -5])
+#' proximityMatrixRanger(iris[, -5], rf)
 #' }
 #' 
 #' @export
@@ -83,7 +83,7 @@ depthMatrixRanger <- function(x, rf) {
 #' 
 #' @export
 terminalNodeDistance <- function(rf) {
-  nodes <- rangerRFtoMat
+  nodes <- rangerRFtoMat(rf)
   cbr:::terminalNodeDistanceCPP(nodeIDs = nodes)
 }
 

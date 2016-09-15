@@ -2,38 +2,42 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 weightedDistanceCPP <- function(x, weights) {
-    .Call('cbr_weightedDistanceCPP', PACKAGE = 'cbr', x, weights)
+    .Call('similarity_weightedDistanceCPP', PACKAGE = 'similarity', x, weights)
 }
 
 weightedDistanceCPPNM <- function(x, y, weights) {
-    .Call('cbr_weightedDistanceCPPNM', PACKAGE = 'cbr', x, y, weights)
-}
-
-proximityMatrixRangerCPP <- function(x, nTrees) {
-    .Call('cbr_proximityMatrixRangerCPP', PACKAGE = 'cbr', x, nTrees)
-}
-
-proximityMatrixRangerCPPNM <- function(x, y, nTrees) {
-    .Call('cbr_proximityMatrixRangerCPPNM', PACKAGE = 'cbr', x, y, nTrees)
+    .Call('similarity_weightedDistanceCPPNM', PACKAGE = 'similarity', x, y, weights)
 }
 
 weighted_knn <- function(x, query, weights, sortDirection = 0L, k = 1L) {
-    .Call('cbr_weighted_knn', PACKAGE = 'cbr', x, query, weights, sortDirection, k)
+    .Call('similarity_weighted_knn', PACKAGE = 'similarity', x, query, weights, sortDirection, k)
 }
 
 getOrderMatrix <- function(x, sortDirection = 0L, k = 5L) {
-    .Call('cbr_getOrderMatrix', PACKAGE = 'cbr', x, sortDirection, k)
+    .Call('similarity_getOrderMatrix', PACKAGE = 'similarity', x, sortDirection, k)
 }
 
 getOrderVector <- function(x, sort_direction = 0L, k = 0L) {
-    .Call('cbr_getOrderVector', PACKAGE = 'cbr', x, sort_direction, k)
+    .Call('similarity_getOrderVector', PACKAGE = 'similarity', x, sort_direction, k)
+}
+
+proximityMatrixRangerCPP <- function(x, nTrees) {
+    .Call('similarity_proximityMatrixRangerCPP', PACKAGE = 'similarity', x, nTrees)
+}
+
+proximityMatrixRangerCPPNM <- function(x, y, nTrees) {
+    .Call('similarity_proximityMatrixRangerCPPNM', PACKAGE = 'similarity', x, y, nTrees)
+}
+
+depthMatrixRangerCPP <- function(x, terminalNodeIDs) {
+    .Call('similarity_depthMatrixRangerCPP', PACKAGE = 'similarity', x, terminalNodeIDs)
 }
 
 terminalNodeDistanceCPP <- function(nodeIDs) {
-    .Call('cbr_terminalNodeDistanceCPP', PACKAGE = 'cbr', nodeIDs)
+    .Call('similarity_terminalNodeDistanceCPP', PACKAGE = 'similarity', nodeIDs)
 }
 
 terminalNodeIDRanger <- function(x, childNodes1, childNodes2, splitValues, splitVarIds) {
-    .Call('cbr_terminalNodeIDRanger', PACKAGE = 'cbr', x, childNodes1, childNodes2, splitValues, splitVarIds)
+    .Call('similarity_terminalNodeIDRanger', PACKAGE = 'similarity', x, childNodes1, childNodes2, splitValues, splitVarIds)
 }
 
