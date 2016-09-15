@@ -2,6 +2,7 @@
 
 export(cbrDistViz)
 export(cbrRF)
+export(depthMatrixRanger)
 export(proximityMatrixRanger)
 export(rangerRFtoMat)
 export(terminalNodeDistance)

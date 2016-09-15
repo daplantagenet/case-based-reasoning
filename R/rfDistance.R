@@ -62,10 +62,21 @@ proximityMatrixRanger <- function(x, rf) {
 }
 
 
+#' Get mean node dist length
+#' 
+#' @examples
+#' \dontrun{
+#' require(ranger)
+#' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
+#' proximityMatrixRanger(iris[, -5], rf)
+#' }
+#' 
+#' @export
 depthMatrixRanger <- function(x, rf) {
   x <- as.matrix(x)
   nodes <- terminalNodeIdsRanger(x, rf)
-  d <- Similarity:::depthMatrixRangerCPP(rangerRFtoMat(x), nodes)
+  d <- Similarity:::depthMatrixRangerCPP(nodes, rangerRFtoMat(rf))
+  n <- nrow(x)
   # convert to dist object
   structure(.Data  = d,
             Size   = n,
