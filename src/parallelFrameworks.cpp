@@ -9,7 +9,6 @@
 #include "containers/nodeDistContainer.hpp"
 
 #include "distance/distance.hpp"
-#include "distance/rfDepthDistance.hpp"
 
 #include <memory>
 
@@ -41,15 +40,6 @@ struct parallelDistance : public RcppParallel::Worker {
   }
 };
 
-arma::vec get_distance(arma::mat& input, std::shared_ptr<distance> dist) {
-  int nrow = input.n_rows;
-  arma::vec output(nrow * (nrow - 1) / 2);
-  output.fill(0);
-  parallelDistance parallelDistance(input, dist, nrow, output);
-  parallelFor(0, nrow, parallelDistance);
-  return output;
-}
-
 
 struct parallelDistanceNM : public RcppParallel::Worker {
   const arma::mat& inputX_;
@@ -78,38 +68,34 @@ struct parallelDistanceNM : public RcppParallel::Worker {
   }
 };
 
-arma::vec get_distanceNM(arma::mat& inputX, arma::mat& inputY, std::shared_ptr<distance> dist) {
-  int nrow = inputX.n_rows;
-  int mrow = inputY.n_rows;
-  arma::vec output(nrow, mrow);
-  output.fill(0);
-  parallelDistanceNM parallelDistanceNM(inputX, inputY, dist, nrow, output);
-  parallelFor(0, nrow, parallelDistanceNM);
-  return output;
-}
+
+struct parallelMatrixNorm : public RcppParallel::Worker {
+  const arma::mat& inputX_;
+  const arma::mat& inputY_;
+  std::shared_ptr<distance> dist_;
+  arma::vec& output_;
+  
+  parallelMatrixNorm(
+    const arma::mat& inputX,
+    const arma::mat& inputY,
+    const std::shared_ptr<distance> dist,
+    arma::vec& output
+  ) : inputX_(inputX), inputY_(inputY), dist_(dist), output_(output) {}
+  
+  void operator() (std::size_t begin, std::size_t end) {
+    for (auto i=begin;i<end;++i) {
+      arma::rowvec x = inputX_.row(i);
+      arma::rowvec y = inputY_.row(i);
+      output_(i) = dist_->calc_distance(x, y);
+    }
+  }
+};
 
 #else
 
 // no single threated implementation
 
 #endif
-
-
-// [[Rcpp::export]]
-arma::vec weightedDistanceCPP(arma::mat& x, arma::rowvec& weights) {
-  weightedDistance dist;
-  dist.set_parameters(weights);
-  arma::vec ret = get_distance(x, std::make_shared<weightedDistance>(dist));
-  return ret;
-}
-
-// [[Rcpp::export]]
-arma::vec weightedDistanceCPPNM(arma::mat& x, arma::mat& y, arma::rowvec& weights) {
-  weightedDistance dist;
-  dist.set_parameters(weights);
-  arma::vec ret = get_distanceNM(x, y, std::make_shared<weightedDistance>(dist));
-  return ret;
-}
 
 // [[Rcpp::export]]
 arma::vec proximityMatrixRangerCPP(arma::mat& x, std::uint32_t nTrees) {

@@ -18,8 +18,8 @@ Rcpp::List weighted_knn(arma::mat x,
   tmpDist.fill(0);
   arma::uvec order(x.n_rows);
   
-  for (std::size_t i=0;i<nQuery;++i) {
-    for (std::size_t j=0;j <nVars;++j) {
+  for (auto i=0;i<nQuery;++i) {
+    for (auto j=0;j <nVars;++j) {
       tmpDist = tmpDist + abs(weights(j) * (x.col(j) - query(i, j)));
     }
     order = arma::sort_index(tmpDist, sortDirection);
