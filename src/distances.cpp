@@ -1,7 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include<RcppArmadillo.h>
 
-#include "distanceApi.hpp"
+#include "distanceAPI.hpp"
 
 /**
  * Standard distance functions
