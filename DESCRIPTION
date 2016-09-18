@@ -1,6 +1,6 @@
-Package: Similarity
+Package: cbr
 Type: Package
-Title: Similarity Calculation
+Title: Case-Based-Resoning
 Version: 0.1
 Date: 2016-09-10
 Author: Dr. Simon Mueller <info@muon-stat.com>
@@ -11,16 +11,11 @@ LazyData: TRUE
 Depends:
     R6,
     dplyr (>= 0.4.1),
-    Rcpp,
-    RcppArmadillo,
-    RcppParallel,
     ranger,
     dplyr,
     data.table,
     magrittr,
     rms
-LinkingTo: Rcpp, RcppParallel, RcppArmadillo
-SystemRequirements: GNU make
 LazyLoad: yes
 ByteCompile: yes
 RoxygenNote: 5.0.1

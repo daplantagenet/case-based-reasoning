@@ -1,10 +1,10 @@
-#' similarity is a package for similarity calculation
+#' case based reasoning
 #' @docType package
-#' @name similarity
+#' @name cbr
 #' @import Rcpp
 #' @import RcppArmadillo
 #' @import R6
 #' @import data.table
 #' @importFrom RcppParallel RcppParallelLibs
-#' @useDynLib Similarity
+#' @useDynLib cbr
 NULL
