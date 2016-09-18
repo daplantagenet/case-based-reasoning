@@ -2,12 +2,6 @@
 
 export(cbrDistViz)
 export(cbrRF)
-export(depthMatrixRanger)
-export(distance)
-export(proximityMatrixRanger)
-export(rangerTreeAsMat)
-export(terminalNodeDistance)
-export(terminalNodeIdsRanger)
 import(R6)
 import(Rcpp)
 import(RcppArmadillo)
