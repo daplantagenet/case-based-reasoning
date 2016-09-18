@@ -40,6 +40,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// depthMatrixRangerCPP
+arma::vec depthMatrixRangerCPP(arma::mat& xNodeIDs, arma::umat& terminalNodeIDs);
+RcppExport SEXP Similarity_depthMatrixRangerCPP(SEXP xNodeIDsSEXP, SEXP terminalNodeIDsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type xNodeIDs(xNodeIDsSEXP);
+    Rcpp::traits::input_parameter< arma::umat& >::type terminalNodeIDs(terminalNodeIDsSEXP);
+    rcpp_result_gen = Rcpp::wrap(depthMatrixRangerCPP(xNodeIDs, terminalNodeIDs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// depthMatrixRangerCPPXY
+arma::vec depthMatrixRangerCPPXY(arma::mat& xNodeIDs, arma::mat& yNodeIDs, arma::umat& terminalNodeIDs);
+RcppExport SEXP Similarity_depthMatrixRangerCPPXY(SEXP xNodeIDsSEXP, SEXP yNodeIDsSEXP, SEXP terminalNodeIDsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type xNodeIDs(xNodeIDsSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type yNodeIDs(yNodeIDsSEXP);
+    Rcpp::traits::input_parameter< arma::umat& >::type terminalNodeIDs(terminalNodeIDsSEXP);
+    rcpp_result_gen = Rcpp::wrap(depthMatrixRangerCPPXY(xNodeIDs, yNodeIDs, terminalNodeIDs));
+    return rcpp_result_gen;
+END_RCPP
+}
 // weighted_knn
 Rcpp::List weighted_knn(arma::mat x, arma::mat query, arma::vec weights, const int sortDirection, const int k);
 RcppExport SEXP Similarity_weighted_knn(SEXP xSEXP, SEXP querySEXP, SEXP weightsSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {

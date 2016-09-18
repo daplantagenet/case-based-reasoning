@@ -114,11 +114,27 @@ protected:
  */
 class rfDepthDistanceAPI : public distanceAPI {
 public:
-  void init(arma::mat& x, arma::mat& y, std::string method = "euclidian", std::size_t p = 2);
+  void init(arma::mat& xNodeIDs, arma::umat& terminalNodeIDs);
   
 protected:
-  virtual void calc(arma::mat& x, arma::mat& y);
+  void set_distance(RfDistContainer& nodeDists);
+  virtual void calc(arma::mat& xNodeIDs);
 };
 
+
+/**
+ * RandomForests XY Depth Distance Calculation
+ */
+class rfDepthXYDistanceAPI : public distanceAPI {
+public:
+  void init(arma::mat& xNodeIDs, arma::mat& yNodeIDs, arma::umat& terminalNodeIDs);
+  arma::mat get() {return output_;};
+  
+protected:
+  void set_distance(RfDistContainer& nodeDists);
+  virtual void calc(arma::mat& xNodeIDs, arma::mat& yNodeIDs);
+  
+  arma::mat output_;
+};
 
 #endif

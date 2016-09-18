@@ -120,6 +120,45 @@ void rfProximityXYDistanceAPI::calc(arma::mat& x, arma::mat& y) {
 };
 
 
-//   rangerProximity dist;
-//   dist.set_parameters(x.ncol());
-//   return get_distance(x, std::make_shared<rangerProximity>(dist));
+/**
+ * RandomForests Depth Distance
+ */
+void rfDepthDistanceAPI::init(arma::mat& xNodeIDs, arma::umat& terminalNodeIDs) {
+  // calculate terminal node edge length
+  rangerForest rf(terminalNodeIDs);
+  RfDistContainer nodeDists = rf.nodeDistance();
+  this->set_distance(nodeDists);
+  this->calc(xNodeIDs);
+}
+
+void rfDepthDistanceAPI::set_distance(RfDistContainer& nodeDists) {
+  rfDepthDistance dist;
+  dist.set_parameters(nodeDists);
+  this->dist_ = std::make_shared<rfDepthDistance>(dist);
+}
+
+
+/**
+ * RandomForests XY Depth Distance
+ */
+void rfDepthXYDistanceAPI::init(arma::mat& xNodeIDs, arma::mat& yNodeIDs, arma::umat& terminalNodeIDs) {
+  // calculate terminal node edge length
+  rangerForest rf(terminalNodeIDs);
+  RfDistContainer nodeDists = rf.nodeDistance();
+  this->set_distance(nodeDists);
+  this->calc(xNodeIDs, yNodeIDs);
+}
+
+void rfDepthXYDistanceAPI::set_distance(RfDistContainer& nodeDists) {
+  rfDepthDistance dist;
+  dist.set_parameters(nodeDists);
+  this->dist_ = std::make_shared<rfDepthDistance>(dist);
+}
+
+void rfDepthXYDistanceAPI::calc(arma::mat& xNodeIDs, arma::mat& yNodeIDs) {
+  int nrow = xNodeIDs.n_rows;
+  arma::mat output(nrow, yNodeIDs.n_rows);
+  output_ = output;
+  parallelDistanceNM parallelDistanceNM(xNodeIDs, yNodeIDs, this->dist_, nrow, output_);
+  parallelFor(0, nrow, parallelDistanceNM);
+};

@@ -31,3 +31,16 @@ arma::mat proximityMatrixRangerCPPNM(arma::mat& xNodeIDs, arma::mat& yNodeIDs) {
   return dist.get();
 }
 
+// [[Rcpp::export]]
+arma::vec depthMatrixRangerCPP(arma::mat& xNodeIDs, arma::umat& terminalNodeIDs) {
+  rfDepthDistanceAPI dist;
+  dist.init(xNodeIDs, terminalNodeIDs);
+  return dist.get();
+}
+
+// [[Rcpp::export]]
+arma::vec depthMatrixRangerCPPXY(arma::mat& xNodeIDs, arma::mat& yNodeIDs, arma::umat& terminalNodeIDs) {
+  rfDepthXYDistanceAPI dist;
+  dist.init(xNodeIDs, yNodeIDs, terminalNodeIDs);
+  return dist.get();
+}

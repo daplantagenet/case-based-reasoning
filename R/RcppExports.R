@@ -13,6 +13,14 @@ proximityMatrixRangerCPPNM <- function(xNodeIDs, yNodeIDs) {
     .Call('Similarity_proximityMatrixRangerCPPNM', PACKAGE = 'Similarity', xNodeIDs, yNodeIDs)
 }
 
+depthMatrixRangerCPP <- function(xNodeIDs, terminalNodeIDs) {
+    .Call('Similarity_depthMatrixRangerCPP', PACKAGE = 'Similarity', xNodeIDs, terminalNodeIDs)
+}
+
+depthMatrixRangerCPPXY <- function(xNodeIDs, yNodeIDs, terminalNodeIDs) {
+    .Call('Similarity_depthMatrixRangerCPPXY', PACKAGE = 'Similarity', xNodeIDs, yNodeIDs, terminalNodeIDs)
+}
+
 weighted_knn <- function(x, query, weights, sortDirection = 0L, k = 1L) {
     .Call('Similarity_weighted_knn', PACKAGE = 'Similarity', x, query, weights, sortDirection, k)
 }
