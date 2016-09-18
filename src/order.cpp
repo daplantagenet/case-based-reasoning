@@ -57,12 +57,12 @@ arma::umat orderMatrix(arma::mat& x, int sortDirection, int k) {
 #endif
 
 // [[Rcpp::export]]
-arma::umat getOrderMatrix(arma::mat& x, int sortDirection = 0, int k = 5) {
+arma::umat orderMatrixCPP(arma::mat& x, int sortDirection = 0, int k = 5) {
   return orderMatrix(x, sortDirection, k);
 }
 
 // [[Rcpp::export]]
-arma::uvec getOrderVector(arma::vec x, int sort_direction = 0, int k = 0) {
+arma::uvec orderVectorCPP(arma::vec x, int sort_direction = 0, int k = 0) {
   arma::uvec order = arma::sort_index(x, sort_direction) + 1;
   if (k > 0)
     order.resize(k);

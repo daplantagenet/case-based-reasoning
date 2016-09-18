@@ -12,6 +12,9 @@
 
 #include <memory>
 
+typedef tbb::concurrent_unordered_map<std::pair<int, int>, double> tbbUPMap;
+typedef tbb::concurrent_unordered_map<int, double> tbbUMap;
+
 // TODO: Representation of Results
 // column-wise, row-wise, or full
 #if RCPP_PARALLEL_USE_TBB
@@ -61,7 +64,7 @@ struct parallelDistanceNM : public RcppParallel::Worker {
     for (auto i=begin;i<end;++i) {
       arma::rowvec x = inputX_.row(i);
       for (auto j=1;j<nrow2;++j) {
-        arma::rowvec y = inputY_.row(j);
+        arma::rowvec y = inputX_.row(j);
         output_(i, j) = dist_->calc_distance(x, y);
       }
     }
@@ -85,7 +88,7 @@ struct parallelMatrixNorm : public RcppParallel::Worker {
   void operator() (std::size_t begin, std::size_t end) {
     for (auto i=begin;i<end;++i) {
       arma::rowvec x = inputX_.row(i);
-      arma::rowvec y = inputY_.row(i);
+      arma::rowvec y = inputX_.row(i);
       output_(i) = dist_->calc_distance(x, y);
     }
   }
@@ -96,36 +99,21 @@ struct parallelMatrixNorm : public RcppParallel::Worker {
 // no single threated implementation
 
 #endif
-
-// [[Rcpp::export]]
-arma::vec proximityMatrixRangerCPP(arma::mat& x, std::uint32_t nTrees) {
-  rangerProximity dist;
-  dist.set_parameters(nTrees);
-  return get_distance(x, std::make_shared<rangerProximity>(dist));
-}
-
-// [[Rcpp::export]]
-arma::vec proximityMatrixRangerCPPNM(arma::mat& x, arma::mat& y, std::uint32_t nTrees) {
-  rangerProximity dist;
-  dist.set_parameters(nTrees);
-  return get_distance(x, std::make_shared<rangerProximity>(dist));
-}
-
-// [[Rcpp::export]]
-arma::vec depthMatrixRangerCPP(arma::mat& x, arma::umat& terminalNodeIDs) {
-  // calculate terminal node edge length
-  rangerForest rf(terminalNodeIDs);
-  RfDistContainer nodeDists = rf.nodeDistance();
-  // setup rf depth distance container
-  rfDepthDistance dist;
-  dist.set_parameters(nodeDists);
-  // calculate distance
-  return get_distance(x, std::make_shared<rfDepthDistance>(dist));
-}
-
-// [[Rcpp::export]]
-Rcpp::DataFrame terminalNodeDistanceCPP(arma::umat& nodeIDs) {
-  rangerForest rf(nodeIDs);
-  RfDistContainer nodeDists = rf.nodeDistance();
-  return nodeDists.asDataFrame();
-}
+// // [[Rcpp::export]]
+// arma::vec proximityMatrixRangerCPPNM(arma::mat& x, arma::mat& y, std::uint32_t nTrees) {
+//   rangerProximity dist;
+//   dist.set_parameters(nTrees);
+//   return get_distance(x, std::make_shared<rangerProximity>(dist));
+// }
+// 
+// // [[Rcpp::export]]
+// arma::vec depthMatrixRangerCPP(arma::mat& x, arma::umat& terminalNodeIDs) {
+//   // calculate terminal node edge length
+//   rangerForest rf(terminalNodeIDs);
+//   RfDistContainer nodeDists = rf.nodeDistance();
+//   // setup rf depth distance container
+//   rfDepthDistance dist;
+//   dist.set_parameters(nodeDists);
+//   // calculate distance
+//   return get_distance(x, std::make_shared<rfDepthDistance>(dist));
+// }

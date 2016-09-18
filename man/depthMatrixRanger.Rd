@@ -9,4 +9,12 @@ depthMatrixRanger(x, rf)
 \description{
 Get mean node dist length
 }
+\examples{
+\dontrun{
+require(ranger)
+rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
+depthMatrixRanger(iris[, -5], rf)
+}
+
+}
 

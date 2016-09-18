@@ -6,6 +6,40 @@
 
 using namespace Rcpp;
 
+// terminalNodeDistanceCPP
+Rcpp::DataFrame terminalNodeDistanceCPP(arma::umat& terminalNodeIDs);
+RcppExport SEXP Similarity_terminalNodeDistanceCPP(SEXP terminalNodeIDsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::umat& >::type terminalNodeIDs(terminalNodeIDsSEXP);
+    rcpp_result_gen = Rcpp::wrap(terminalNodeDistanceCPP(terminalNodeIDs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// proximityMatrixRangerCPP
+arma::vec proximityMatrixRangerCPP(arma::mat& nodeIDs);
+RcppExport SEXP Similarity_proximityMatrixRangerCPP(SEXP nodeIDsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type nodeIDs(nodeIDsSEXP);
+    rcpp_result_gen = Rcpp::wrap(proximityMatrixRangerCPP(nodeIDs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// proximityMatrixRangerCPPNM
+arma::mat proximityMatrixRangerCPPNM(arma::mat& xNodeIDs, arma::mat& yNodeIDs);
+RcppExport SEXP Similarity_proximityMatrixRangerCPPNM(SEXP xNodeIDsSEXP, SEXP yNodeIDsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type xNodeIDs(xNodeIDsSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type yNodeIDs(yNodeIDsSEXP);
+    rcpp_result_gen = Rcpp::wrap(proximityMatrixRangerCPPNM(xNodeIDs, yNodeIDs));
+    return rcpp_result_gen;
+END_RCPP
+}
 // weighted_knn
 Rcpp::List weighted_knn(arma::mat x, arma::mat query, arma::vec weights, const int sortDirection, const int k);
 RcppExport SEXP Similarity_weighted_knn(SEXP xSEXP, SEXP querySEXP, SEXP weightsSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
@@ -21,102 +55,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// getOrderMatrix
-arma::umat getOrderMatrix(arma::mat& x, int sortDirection, int k);
-RcppExport SEXP Similarity_getOrderMatrix(SEXP xSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
+// orderMatrixCPP
+arma::umat orderMatrixCPP(arma::mat& x, int sortDirection, int k);
+RcppExport SEXP Similarity_orderMatrixCPP(SEXP xSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type sortDirection(sortDirectionSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    rcpp_result_gen = Rcpp::wrap(getOrderMatrix(x, sortDirection, k));
+    rcpp_result_gen = Rcpp::wrap(orderMatrixCPP(x, sortDirection, k));
     return rcpp_result_gen;
 END_RCPP
 }
-// getOrderVector
-arma::uvec getOrderVector(arma::vec x, int sort_direction, int k);
-RcppExport SEXP Similarity_getOrderVector(SEXP xSEXP, SEXP sort_directionSEXP, SEXP kSEXP) {
+// orderVectorCPP
+arma::uvec orderVectorCPP(arma::vec x, int sort_direction, int k);
+RcppExport SEXP Similarity_orderVectorCPP(SEXP xSEXP, SEXP sort_directionSEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type sort_direction(sort_directionSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    rcpp_result_gen = Rcpp::wrap(getOrderVector(x, sort_direction, k));
-    return rcpp_result_gen;
-END_RCPP
-}
-// weightedDistanceCPP
-arma::vec weightedDistanceCPP(arma::mat& x, arma::rowvec& weights);
-RcppExport SEXP Similarity_weightedDistanceCPP(SEXP xSEXP, SEXP weightsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::rowvec& >::type weights(weightsSEXP);
-    rcpp_result_gen = Rcpp::wrap(weightedDistanceCPP(x, weights));
-    return rcpp_result_gen;
-END_RCPP
-}
-// weightedDistanceCPPNM
-arma::vec weightedDistanceCPPNM(arma::mat& x, arma::mat& y, arma::rowvec& weights);
-RcppExport SEXP Similarity_weightedDistanceCPPNM(SEXP xSEXP, SEXP ySEXP, SEXP weightsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type y(ySEXP);
-    Rcpp::traits::input_parameter< arma::rowvec& >::type weights(weightsSEXP);
-    rcpp_result_gen = Rcpp::wrap(weightedDistanceCPPNM(x, y, weights));
-    return rcpp_result_gen;
-END_RCPP
-}
-// proximityMatrixRangerCPP
-arma::vec proximityMatrixRangerCPP(arma::mat& x, std::uint32_t nTrees);
-RcppExport SEXP Similarity_proximityMatrixRangerCPP(SEXP xSEXP, SEXP nTreesSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< std::uint32_t >::type nTrees(nTreesSEXP);
-    rcpp_result_gen = Rcpp::wrap(proximityMatrixRangerCPP(x, nTrees));
-    return rcpp_result_gen;
-END_RCPP
-}
-// proximityMatrixRangerCPPNM
-arma::vec proximityMatrixRangerCPPNM(arma::mat& x, arma::mat& y, std::uint32_t nTrees);
-RcppExport SEXP Similarity_proximityMatrixRangerCPPNM(SEXP xSEXP, SEXP ySEXP, SEXP nTreesSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type y(ySEXP);
-    Rcpp::traits::input_parameter< std::uint32_t >::type nTrees(nTreesSEXP);
-    rcpp_result_gen = Rcpp::wrap(proximityMatrixRangerCPPNM(x, y, nTrees));
-    return rcpp_result_gen;
-END_RCPP
-}
-// depthMatrixRangerCPP
-arma::vec depthMatrixRangerCPP(arma::mat& x, arma::umat& terminalNodeIDs);
-RcppExport SEXP Similarity_depthMatrixRangerCPP(SEXP xSEXP, SEXP terminalNodeIDsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::umat& >::type terminalNodeIDs(terminalNodeIDsSEXP);
-    rcpp_result_gen = Rcpp::wrap(depthMatrixRangerCPP(x, terminalNodeIDs));
-    return rcpp_result_gen;
-END_RCPP
-}
-// terminalNodeDistanceCPP
-Rcpp::DataFrame terminalNodeDistanceCPP(arma::umat& nodeIDs);
-RcppExport SEXP Similarity_terminalNodeDistanceCPP(SEXP nodeIDsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::umat& >::type nodeIDs(nodeIDsSEXP);
-    rcpp_result_gen = Rcpp::wrap(terminalNodeDistanceCPP(nodeIDs));
+    rcpp_result_gen = Rcpp::wrap(orderVectorCPP(x, sort_direction, k));
     return rcpp_result_gen;
 END_RCPP
 }

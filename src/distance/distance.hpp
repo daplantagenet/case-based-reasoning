@@ -9,7 +9,11 @@
 class distance {
 public:
   distance() {};
-  virtual double calc_distance(arma::rowvec& x, arma::rowvec& y) const {return 0.0;};
+  
+  virtual double calc_distance(arma::rowvec& x, arma::rowvec& y) const {
+    return 0.0;
+  };
+  
   void set_parameters() {};
 };
 
@@ -31,7 +35,7 @@ private:
 class euclidianDistance : public distance {
 public:
   virtual double calc_distance(arma::rowvec& x, arma::rowvec& y) const {
-    return arma::sqrt(arma::accu((x - y) % (x - y)));
+    return std::sqrt(arma::accu(arma::square((x - y))));
   };
   
   void set_parameters() {
@@ -42,7 +46,7 @@ public:
 class minkowskiDistance : public distance {
 public:
   virtual double calc_distance(arma::rowvec& x, arma::rowvec& y) const {
-    return arma::accu((x - y));
+    return arma::accu(arma::pow(x - y, p_));
   };
   
   void set_parameters(std::size_t p) {

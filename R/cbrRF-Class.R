@@ -104,16 +104,16 @@ cbrRF <- R6Class("cbrRF",
                      
                      # Learning
                      formel <- as.formula(paste0("Surv(", self$endPoint[1],", ", self$endPoint[2], ") ~ ", paste(self$learnVars, collapse="+")))
-                     rsf <- randomForestSRC::rfsrc(formel,
-                                                   data       = learnData,
-                                                   ntree      = ntree,
-                                                   mtry       = mtry,
-                                                   splitrule  = splitrule,
-                                                   proximity  = "all",
-                                                   na.action  = impute,
-                                                   importance = "none",
-                                                   forest     = T,
-                                                   do.trace   = verbose)
+                     rsf <- ranger::ranger(formel,
+                                           data       = learnData,
+                                           ntree      = ntree,
+                                           mtry       = mtry,
+                                           splitrule  = splitrule,
+                                           proximity  = "all",
+                                           na.action  = impute,
+                                           importance = "none",
+                                           forest     = T,
+                                           do.trace   = verbose)
                      plot(rsf)
                      
                      # if imputation is activated, then save it

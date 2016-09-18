@@ -4,15 +4,18 @@
 \alias{proximityMatrixRanger}
 \title{Get proximity matrix of an ranger object}
 \usage{
-proximityMatrixRanger(x, rf)
+proximityMatrixRanger(x, y = NULL, rf)
 }
 \arguments{
 \item{x}{a new dataset}
 
+\item{y}{a second new dataset (Default: NULL)}
+
 \item{rf}{\code{ranger} object}
 }
 \value{
-a \code{dist} object with pairwise proximity of observations in x
+a \code{dist} or a matrix object with pairwise proximity of 
+observations in x vs y (if not null)
 }
 \description{
 Get proximity matrix of an ranger object
@@ -21,7 +24,13 @@ Get proximity matrix of an ranger object
 \dontrun{
 require(ranger)
 rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-proximityMatrixRanger(iris[, -5], rf)
+proximityMatrixRanger(x = iris[, -5], rf = rf)
+
+set.seed(1234L)
+learn <- sample(1:150, 100)
+test <- (1:150)[-learn]
+rf <- ranger(Species ~ ., data = iris[learn, ], num.trees = 5, write.forest = TRUE)
+proximityMatrixRanger(x = iris[learn, -5], y = iris[test, -5], rf = rf)
 }
 
 }
