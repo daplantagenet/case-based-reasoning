@@ -39,7 +39,7 @@ arma::vec depthMatrixRangerCPP(arma::mat& xNodeIDs, arma::umat& terminalNodeIDs)
 }
 
 // [[Rcpp::export]]
-arma::vec depthMatrixRangerCPPXY(arma::mat& xNodeIDs, arma::mat& yNodeIDs, arma::umat& terminalNodeIDs) {
+arma::mat depthMatrixRangerCPPXY(arma::mat& xNodeIDs, arma::mat& yNodeIDs, arma::umat& terminalNodeIDs) {
   rfDepthXYDistanceAPI dist;
   dist.init(xNodeIDs, yNodeIDs, terminalNodeIDs);
   return dist.get();

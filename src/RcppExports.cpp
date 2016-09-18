@@ -53,7 +53,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // depthMatrixRangerCPPXY
-arma::vec depthMatrixRangerCPPXY(arma::mat& xNodeIDs, arma::mat& yNodeIDs, arma::umat& terminalNodeIDs);
+arma::mat depthMatrixRangerCPPXY(arma::mat& xNodeIDs, arma::mat& yNodeIDs, arma::umat& terminalNodeIDs);
 RcppExport SEXP Similarity_depthMatrixRangerCPPXY(SEXP xNodeIDsSEXP, SEXP yNodeIDsSEXP, SEXP terminalNodeIDsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

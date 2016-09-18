@@ -5,9 +5,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
-#include "ranger/rangerForest.hpp"
-#include "containers/nodeDistContainer.hpp"
-
 #include "distance/distance.hpp"
 
 #include <memory>
