@@ -10,6 +10,7 @@ License: GPL-2
 LazyData: TRUE
 Depends:
     R6,
+    Similarity,
     dplyr (>= 0.4.1),
     ranger,
     dplyr,

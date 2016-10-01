@@ -1,98 +1,53 @@
 cbrData <- R6Class("cbrData",
                    public = list(
-                     learning  = NA,
-                     queryData = NA,
-                     learnVars = NA,
-                     endPoint  = NA,
-                     refEQNew  = FALSE,
-                     impute    = FALSE,
-                     warnings  = "",
-                     info      = data.frame(x=c("Dropped cases with missing values in learning set:",
-                                                "Dropped cases with missing values in query set:",
-                                                "Imputation:",
-                                                "Variablen:",
-                                                "Variablen nach Selektion:"), 
-                                            y=NA),
+                     formula   = NULL,
+                     data      = NULL,
+                     queryData = NULL,
+                     distMat   = NULL,
+                     orderMat  = NULL,
+                     simCases  = NULL,
+                     impute    = F,
                      # initialize class
-                     initialize = function(learning, queryData, learnVars, endPoint, impute=FALSE) {
-                       # check for missing input
-                       if (missing(learning)) {
-                         stop("Please add data for learning the algorithm!")
+                     initialize = function(formula, data, queryData=NULL, impute=F) {
+                       formula <- formula(formula)
+                       if (class(formula) != "formula") {
+                         stop("Error: Invalid formula.")
                        }
-
-                       # check endpoint
-                       if (missing(endPoint)) {
-                         stop("Please add endpoint!")
-                       } 
-                       chkEP <- self$endPoint %in% names(learning)
-                       if (sum(chkEP) > 0)
-                         stop("Endpoint is not in data!")
-
-                       self$endPoint <- endPoint
-                       
-                       # are there variables for learning
-                       if (missing(learnVars)) {
-                         cat("All variables of the queryData data will be used for learning!\n")
-                         idEP <- which(names(learning) %in% self$endPoint)
-                         self$learnVars <- names(learning)[-idEP]
-                       } else {
-                         self$learnVars <- learnVars
-                       }
-          
-                       if (missing(impute))
-                         self$impute <- FALSE
-                       
-                       self$info$y[3] <- as.character(self$impute)
-                       self$info$y[5] <- "keine Variablenselektion durchgeführt!"
-                       
-                       # check data & add data to internal frame
-                       self$learning <- private$check_data(as.data.frame(learning), impute)
-
-                       # validation check query data
-                       if (missing(queryData)) {
-                         cat("No query data: use reference data for distance calculation!\n")
-                         self$queryData <- self$learning
-                         self$refEQNew <- TRUE
-                       } else {
-                         # validation check query data
-                         self$queryData <- private$check_data(as.data.frame(queryData), impute, isLearning=F)
-                       }
-                       # impute data; just RSF
+                       self$formula <- formula
+                       self$data <- as.data.table(data)
+                       self$queryData <- as.data.table(queryData)
                        self$impute <- impute
+                     },
+                     # get query data, if there are missing values,
+                     # return imputed data
+                     get_query_data = function () {
+                       return(self$queryData)
+                     },
+                     # get learning data, if it is imputed return imputed data
+                     # else data.frame without missing cases
+                     get_data = function () {
+                       return(self$data)
+                     },
+                     get_sim_cases = function() {
+                       return(self$simCases)
+                     },
+                     # return query + matched data
+                     get_matched_data = function() {
+                       if (is.null(self$simCases))
+                         stop("Model is not learned")
+                       
+                       queryData <- self$queryData
+                       queryData$group <- "Query Data"
+                       matchedData <- self$simCases
+                       matchedData$caseId <- NULL
+                       matchedData$scDist <- NULL
+                       matchedData$group <- "Matched Data"
+                       return(rbind(queryData, simCases))
                      }
                    ),
                    private = list(
-                     learningValid = FALSE,
-                     queryDataValid = FALSE,
                      # check data sets
                      check_data = function(x, impute=F, isLearning=T) {
-                       # check variable names verum data are in data
-                       inData <- !(self$learnVars %in% names(x))
-                       if (any(inData)) {
-                         if (isLearning) {
-                           private$learningValid <- FALSE
-                         } else {
-                           private$queryDataValid <- FALSE
-                         }
-                         missingVars <- self$learnVars[which(inData)]
-                         stop(paste0("Following learning variables are missing: ", paste(missingVars, collapse=",")))
-                       } else {
-                         if (isLearning) {
-                           private$learningValid <- TRUE
-                         } else {
-                           private$queryDataValid <- TRUE
-                         }
-                       }
-
-                       # if isLearning data
-                       if (isLearning) {
-                         if(any(!self$endPoint %in% names(x))) {
-                           self$endPoint <- NA
-                           private$learningValid <- FALSE
-                           stop("Endpoint variables are not in learning data")
-                         }
-                       }
-
                        # drop cases with missing values in the relevant variables
                        if (!impute) {
                          x <- private$drop_missing(x, isLearning)
@@ -116,7 +71,8 @@ cbrData <- R6Class("cbrData",
                      },
                      # drop missing values from data
                      drop_missing = function(x, isLearning=F) {
-                       rs <- rowSums(as.data.frame(is.na(x[, self$learnVars])))
+                       vars <- all.vars(self$formula)
+                       rs <- rowSums(as.data.frame(is.na(x[, vars])))
                        idDrop <- which(rs > 0)
                        cat(paste0("Dropped cases with missing values: ", length(idDrop), "\n"))
                        if (isLearning) {
@@ -124,10 +80,8 @@ cbrData <- R6Class("cbrData",
                        } else {
                          self$info$y[2] <- as.character(length(idDrop))
                        }
-                       
                        if (length(idDrop) > 0)
                          x <- x[-idDrop, ]
-
                        return(x)
                      },
                      # transform character variables to factor
@@ -147,6 +101,53 @@ cbrData <- R6Class("cbrData",
                      # drop levels from each variable
                      drop_levels = function() {
 
+                     },
+                     # data preparation:
+                     # we transform all factors to their corresponding
+                     # weights and set weight equal to 1 for factor
+                     # variables
+                     transform_data = function(newCases, learning, learnVars, weights) {
+                       nVars <- length(learnVars)
+                       trafoweights <- rep(0, nVars)
+                       for (j in 1:nVars) {
+                         if (is.factor(learning[, learnVars[j]])) {
+                           newCases[, learnVars[j]] <- weights[[learnVars[j]]][newCases[, learnVars[j]]]
+                           learning[, learnVars[j]] <- weights[[learnVars[j]]][learning[, learnVars[j]]]
+                           trafoweights[j] <- 1
+                         } else { # else keep weights
+                           trafoweights[j] <- weights[[learnVars[j]]]
+                         }
+                       }
+                       names(trafoweights) <- NULL
+                       return(list(newCases     = unname(as.matrix(newCases[, learnVars])),
+                                   learning     = unname(as.matrix(learning[, learnVars])),
+                                   trafoweights = trafoweights))
+                     },
+                     # calculate distance 
+                     get_distance_matrix=function() {
+                       # model specific
+                     },
+                     # get similar cases
+                     get_similar_cases=function(k = 1) {
+                       self$orderMat <- Similarity::orderCPP(as.matrix(self$distMat), k = k)
+                       similarCases <- do.call(rbind, apply(self$orderMat, 1,
+                                                            function(x, data=self$data) {
+                                                              data[x, ]
+                                                            }
+                                                            )
+                       )
+                       # get distances
+                       self$orderMat <- cbind(1:nrow(self$orderMat), self$orderMat)
+                       distance <-  as.numeric(apply(self$orderMat, 1,
+                                                     function(x, data=self$distMat) {
+                                                       data[x[2:length(x)], x[1]]
+                                                     }
+                       ))
+                       
+                       # mark similar cases: 1:n ids
+                       similarCases$caseId <- rep(1:nrow(queryData), each=nCases)
+                       similarCases$scDist <- distance
+                       self$similarCases <- similarCases
                      }
                    )
 )
