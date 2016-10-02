@@ -76,13 +76,13 @@ cbrRFModel <- R6Class("cbrRFModel",
                             self$distMat <- Similarity::proximityMatrixRanger(x  = private$to_int(self$data),
                                                                               y  = private$to_int(self$queryData), 
                                                                               rf = self$rangerObj)
+                            # transform to distance
+                            self$distMat <- sqrt(1 - self$distMat)
                           } else if (self$distMethod == "depth") {
                             self$distMat <- Similarity::depthMatrixRanger(x  = private$to_int(self$data),
                                                                           y  = private$to_int(self$queryData), 
                                                                           rf = self$rangerObj)
                           }
-                          # transform to distance
-                          self$distMat <- sqrt(1 - self$distMat)
                         }
                       )
 )
