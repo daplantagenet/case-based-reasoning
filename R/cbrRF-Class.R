@@ -16,73 +16,73 @@
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @keywords Cox Model
-cbrRF <- R6Class("cbrRF",
-                 inherit = cbrData,
-                 public=list(
-                   rangerObj  = NULL,
-                   distMat    = NULL,
-                   orderMat   = NULL,
-                   simCases   = NULL,
-                   distMethod = "depth",
-                   learn=function(ntree = 500, mtry = NULL, splitrule="logrank", minprop=.05, save.memory=T) {
-                     # split rule
-                     if (missing(splitrule)) {
-                       splitrule <- "logrank"
-                     }
-                     if (!splitrule %in% c("logrank", "C"))
-                       stop("Error: splitrule should be: logrank, C, or maxstat.")
-                     
-                     # Timing
-                     start <- Sys.time()
-                     cat("Start learning...\n")
-                     
-                     # new data available?
-                     variables <- c(self$endPoint, self$learnVars)
-                     self$data %>%
-                       dplyr::select_(.dots = all.vars(self$formula)) -> dtData
-                     
-                     # Learning
-                     self$rangerObj <- ranger::ranger(formula      = self$formula,
-                                                      data         = dtData,
-                                                      ntree        = ntree,
-                                                      mtry         = mtry,
-                                                      splitrule    = splitrule, 
-                                                      write.forest = T,
-                                                      save.memory  = save.memory)
-                     end <- Sys.time()
-                     duration <- round(as.numeric(end - start), 2)
-                     cat(paste0("Random Forest for Survival calculation finished in: ", duration, " seconds.\n"))
-                   },
-                   set_dist=function(distMethod = "depth") {
-                     # distance method
-                     if (!distMethod %in% c("proximity", "depth")) {
-                       stop("Error: distMethod should be: proximity or depth.")
-                     }
-                     self$distMethod <- distMethod
-                   }
-                 ),
-                 private = list(
-                   get_distance_matrix = function(distMethod = "depth") {
-                     # distance calculation
-                     if (!self$distMethod %in% c("proximity", "depth")) {
-                       stop("Error: distMethod should be: proximity or depth.")
-                     }
-                     
-                     if (is.null(self$rangerObj)) {
-                       stop("Error: Please fit model.")
-                     }
-                     
-                     if (self$distMethod == "proximity") {
-                       self$distMat <- imilarity::proximityMatrixRanger(x  = self$data,
-                                                                        y  = self$queryData, 
-                                                                        rf = self$rangerObj)
-                     } else if (self$distMethod == "depth") {
-                       self$distMat <- Similarity::depthMatrixRanger(x  = self$data,
-                                                                     y  = self$queryData, 
-                                                                     rf = self$rangerObj)
-                     }
-                     # transform to distance
-                     self$distMat <- sqrt(1 - self$distMat)
-                   }
-                 )
+cbrRFModel <- R6Class("cbrRFModel",
+                      inherit = cbrData,
+                      public=list(
+                        rangerObj  = NULL,
+                        distMat    = NULL,
+                        orderMat   = NULL,
+                        simCases   = NULL,
+                        distMethod = "depth",
+                        learn=function(ntree = 500, mtry = NULL, splitrule="logrank", minprop=.05, save.memory=T) {
+                          # split rule
+                          if (missing(splitrule)) {
+                            splitrule <- "logrank"
+                          }
+                          if (!splitrule %in% c("logrank", "C"))
+                            stop("Error: splitrule should be: logrank, C, or maxstat.")
+                          
+                          # Timing
+                          start <- Sys.time()
+                          cat("Start learning...\n")
+                          
+                          # new data available?
+                          variables <- c(self$endPoint, self$learnVars)
+                          self$data %>%
+                            dplyr::select_(.dots = all.vars(self$formula)) -> dtData
+                          
+                          # Learning
+                          self$rangerObj <- ranger::ranger(formula      = self$formula,
+                                                           data         = dtData,
+                                                           num.trees    = ntree,
+                                                           mtry         = mtry,
+                                                           splitrule    = splitrule, 
+                                                           write.forest = T,
+                                                           save.memory  = save.memory)
+                          end <- Sys.time()
+                          duration <- round(as.numeric(end - start), 2)
+                          cat(paste0("Random Forest for Survival calculation finished in: ", duration, " seconds.\n"))
+                        },
+                        set_dist=function(distMethod = "depth") {
+                          # distance method
+                          if (!distMethod %in% c("proximity", "depth")) {
+                            stop("Error: distMethod should be: proximity or depth.")
+                          }
+                          self$distMethod <- distMethod
+                        }
+                      ),
+                      private = list(
+                        get_distance_matrix = function(distMethod = "depth") {
+                          # distance calculation
+                          if (!self$distMethod %in% c("proximity", "depth")) {
+                            stop("Error: distMethod should be: proximity or depth.")
+                          }
+                          
+                          if (is.null(self$rangerObj)) {
+                            stop("Error: Please fit model.")
+                          }
+                          
+                          if (self$distMethod == "proximity") {
+                            self$distMat <- Similarity::proximityMatrixRanger(x  = private$to_int(self$data),
+                                                                              y  = private$to_int(self$queryData), 
+                                                                              rf = self$rangerObj)
+                          } else if (self$distMethod == "depth") {
+                            self$distMat <- Similarity::depthMatrixRanger(x  = private$to_int(self$data),
+                                                                          y  = private$to_int(self$queryData), 
+                                                                          rf = self$rangerObj)
+                          }
+                          # transform to distance
+                          self$distMat <- sqrt(1 - self$distMat)
+                        }
+                      )
 )

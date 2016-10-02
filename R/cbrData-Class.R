@@ -1,6 +1,8 @@
 cbrData <- R6Class("cbrData",
                    public = list(
                      formula   = NULL,
+                     terms     = NULL,
+                     endPoint  = NULL,
                      data      = NULL,
                      queryData = NULL,
                      distMat   = NULL,
@@ -13,9 +15,14 @@ cbrData <- R6Class("cbrData",
                          stop("Error: Invalid formula.")
                        }
                        self$formula <- formula
+                       self$terms <- attr(terms(formula, data=self$data), which = "term.labels")
+                       self$endPoint <- all.vars(formula)[1:2]
                        self$data <- as.data.table(data)
-                       if (!is.null(queryData))
-                        self$queryData <- as.data.table(queryData)
+                       self$data <- private$check_data(self$data)
+                       if (!is.null(queryData)) {
+                         self$queryData <- as.data.table(queryData) 
+                         self$queryData <- private$check_data(self$queryData, F) 
+                       }
                      },
                      # get query data, if there are missing values,
                      # return imputed data
@@ -49,7 +56,7 @@ cbrData <- R6Class("cbrData",
                        valSC <- cbrValidate$new()
                        return(valSC$validate(self$queryData,
                                              self$simCases,
-                                             all.vars(self$formula)[-c(1:2)],
+                                             self$terms,
                                              plot))
                      },
                      # calculate distance matrix
@@ -88,16 +95,14 @@ cbrData <- R6Class("cbrData",
                    ),
                    private = list(
                      # check data sets
-                     check_data = function(x, impute=F, isLearning=T) {
+                     check_data = function(x, isLearning=T) {
                        # drop cases with missing values in the relevant variables
-                       if (!impute) {
-                         x <- private$drop_missing(x, isLearning)
-                         if (nrow(x) == 0) {
-                           if (isLearning) {
-                             stop("Error: Learning data is empty after NA elimination.")
-                           } else {
-                             stop("Error: Query data is empty after NA elimination.")
-                           }
+                       x <- private$drop_missing(x, isLearning)
+                       if (nrow(x) == 0) {
+                         if (isLearning) {
+                           stop("Error: Learning data is empty after NA elimination.")
+                         } else {
+                           stop("Error: Query data is empty after NA elimination.")
                          }
                        }
                        # check character variables: need factors
@@ -108,15 +113,11 @@ cbrData <- R6Class("cbrData",
                      },
                      # drop missing values from data
                      drop_missing = function(x, isLearning=F) {
-                       vars <- all.vars(self$formula)
-                       rs <- rowSums(as.data.frame(is.na(x[, vars])))
+                       dtData <- x %>% 
+                         dplyr::select_(.dots = c(self$endPoint, self$terms))
+                       rs <- rowSums(is.na(dtData))
                        idDrop <- which(rs > 0)
                        cat(paste0("Dropped cases with missing values: ", length(idDrop), "\n"))
-                       if (isLearning) {
-                         self$info$y[1] <- as.character(length(idDrop))
-                       } else {
-                         self$info$y[2] <- as.character(length(idDrop))
-                       }
                        if (length(idDrop) > 0)
                          x <- x[-idDrop, ]
                        return(x)
@@ -124,10 +125,10 @@ cbrData <- R6Class("cbrData",
                      # transform character variables to factor
                      check_factor = function(x) {
                        trf <- c()
-                       for (var in self$learnVars) {
-                         if (is.character(x[, var])) {
+                       for (var in self$terms) {
+                         if (is.character(x[[var]])) {
                            trf <- c(trf, var)
-                           x[, var] <- factor(x[, var])
+                           x[[var]] <- factor(x[[var]])
                          }
                        }
                        if (length(trf) > 0) {
@@ -139,10 +140,21 @@ cbrData <- R6Class("cbrData",
                      drop_levels = function() {
 
                      },
-                     # data preparation:
+                     #' transforms data to integer representation;
+                     #' necessary for c++ functions
+                     to_int = function(x) {
+                       for (i in 1:ncol(x)) {
+                         if (is(x, "data.table")) {
+                           x[[i]] <- as.numeric(as.factor(x[[i]]))
+                         } else {
+                           x[, i] <- as.numeric(as.factor(x[, i]))
+                         }
+                       }
+                       return(x)
+                     },
+                     # transform_data:
                      # we transform all factors to their corresponding
-                     # weights and set weight equal to 1 for factor
-                     # variables
+                     # weights and set weight equal to 1 for factor variables
                      transform_data = function(queryData, data, learnVars, weights) {
                        nVars <- length(learnVars)
                        trafoWeights <- rep(0, nVars)

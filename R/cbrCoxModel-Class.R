@@ -53,7 +53,7 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                   on.exit(detach("design.options"))
                                   attach(list(), name="design.options")
                                   self$data %>%
-                                    dplyr::select_(.dots = all.vars(self$formula)) -> dtData
+                                    dplyr::select_(.dots = c(self$endPoint, self$terms)) -> dtData
                                   assign('dd', rms::datadist(dtData), pos='design.options')
                                   options(datadist="dd")
 
@@ -67,9 +67,9 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                   # Variable Selection
                                   vars <- rms::fastbw(fit  = coxFit,
                                                       type = "i")
-                                  cat(paste0("Initial variable set: ", paste(all.vars(self$formula), collapse = ", "), "\n"))
+                                  cat(paste0("Initial variable set: ", paste(c(self$endPoint, self$terms), collapse = ", "), "\n"))
                                   cat(paste0("Selected variable set: ", paste(vars$names.kept, collapse = ", "), "\n"))
-                                  vars <- all.vars(self$formula)
+                                  vars <- c(self$endPoint, self$terms)
                                   self$formula <- as.formula(paste0("Surv(", vars[1], ", ", vars[2], "~", paste(vars$names.kept, collapse = "+")))
 
                                   # end timing
@@ -87,7 +87,7 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                   on.exit(detach("design.options"))
                                   attach(list(), name="design.options")
                                   self$data %>%
-                                    dplyr::select_(.dots = all.vars(self$formula)) -> dtData
+                                    dplyr::select_(.dots = c(self$endPoint, self$terms)) -> dtData
                                   assign('dd', rms::datadist(dtData), pos='design.options')
                                   options(datadist="dd")
 
@@ -100,18 +100,17 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                   self$coxFit <- coxFit
                                   self$cph <- survival::cox.zph(self$coxFit, "rank")
                                   
-                                  vars <- all.vars(self$formula)[-c(1, 2)]
-                                  nVars <- length(vars) 
+                                  nVars <- length(self$terms) 
                                   weights <- vector("list", nVars)
-                                  names(weights) <- vars
+                                  names(weights) <- self$terms
                                   # get weights
                                   for (i in 1:nVars) {
-                                    if (is.factor(self$data[[vars[i]]])) {
-                                      nLev <- nlevels(self$data[[vars[i]]])
+                                    if (is.factor(self$data[[self$terms[i]]])) {
+                                      nLev <- nlevels(self$data[[self$terms[i]]])
                                       weightsTmp <- rep(NA, times = nLev)
-                                      names(weightsTmp) <- levels(self$data[[vars[i]]])
+                                      names(weightsTmp) <- levels(self$data[[self$terms[i]]])
                                       for (j in 1:nLev) {
-                                        myLevel <- paste(vars[i], "=", levels(self$data[[vars[i]]])[j], sep="")
+                                        myLevel <- paste(self$terms[i], "=", levels(self$data[[self$terms[i]]])[j], sep="")
                                         if (j==1) {
                                           weightsTmp[j] <- 0
                                         } else {
@@ -120,7 +119,7 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                       }
                                       weights[[i]] <- weightsTmp
                                     } else {  # else Faktor numeric
-                                      myLevel <- paste(vars[i])
+                                      myLevel <- paste(self$terms[i])
                                       weights[[i]] <- coxFit$coefficients[myLevel]
                                     }
                                   }
@@ -137,8 +136,7 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                   if (!is(self$weights, "list")) {
                                     self$learn()
                                   }
-                                  vars <- all.vars(self$formula)[-c(1, 2)]
-                                  n <- length(vars)
+                                  n <- length(self$terms)
                                   ggPlot <- list()
                                   for (i in 1:n) {
                                     df <- data.frame(x=self$cph$x, y=self$cph$y[, i])
@@ -146,7 +144,7 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                       ggplot2::geom_hline(yintercept=0, colour="grey") +
                                       ggplot2::geom_point() +
                                       ggplot2::geom_smooth(color="#2773ae", fill="#2773ae") +
-                                      ggplot2::ylab(paste0("Beta(t) of ", vars[i])) +
+                                      ggplot2::ylab(paste0("Beta(t) of ", self$terms[i])) +
                                       ggplot2::xlab("Time to Event") +
                                       cowplot::background_grid(major="xy", minor="xy")
                                     ggPlot <- c(ggPlot, list(g))
@@ -182,7 +180,7 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                   }
                                   trData <- private$transform_data(queryData = queryData, 
                                                                    data      = data.table::copy(self$data), 
-                                                                   learnVars = all.vars(self$formula)[-c(1:2)], 
+                                                                   learnVars = self$terms, 
                                                                    weights   = self$weights)
                                   
                                   self$distMat <- Similarity::wDistance(x       = trData$data, 
