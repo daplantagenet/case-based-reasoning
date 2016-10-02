@@ -9,21 +9,13 @@
 cbrRF
 }
 \arguments{
-\item{learning:}{data set for learning the RF model}
+\item{formula}{: formula for learning the Cox model}
 
-\item{queryData:}{Query data set. For each case in the verum data, we are 
-looking for the k (=1,…,l) similar cases. Learning and verum data set need 
-the same structure (variable names and scales)}
+\item{data}{: the dataset for learning the model}
 
-\item{learnVars}{(Default: all variables except endPoint): A character vector 
-variable names. This variables are used for learning the model. Do not 
-include time2event and event variable here.}
-
-\item{endPoint}{(Default: c("Time2Event", "Event")): A character vector of 
-length two. The first elements contains the variable name of the time 2 event 
-variable and the second the name of the event variable.}
-
-\item{impute}{(Default: FALSE): Missing value imputation.}
+\item{queryData}{(optional) : Query data set. For each case in the query data,
+we are looking for the k (=1,…,l) similar cases in the learning data.
+Learning and query datasets need the same structure (variable names and scales)}
 }
 \description{
 This class uses the proximity matrix of the random survival forest algorithm 

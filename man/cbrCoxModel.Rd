@@ -13,12 +13,9 @@ cbrCoxModel$new
 
 \item{data}{: the dataset for learning the model}
 
-\item{queryData}{(optional): Query data set. For each case in the query data,
+\item{queryData}{(optional) : Query data set. For each case in the query data,
 we are looking for the k (=1,…,l) similar cases in the learning data.
 Learning and query datasets need the same structure (variable names and scales)}
-
-\item{impute}{(Default: FALSE): Missing value imputation. Actually, not
-implemented for the regression model.}
 }
 \description{
 Regression beta coefficients are use for building a weighted distance measure between
@@ -38,7 +35,7 @@ If query data is ommitted, a n x n- distance matrix is returned.
 
 \item{\code{variable_selection}}{: performs a fast backward variable selection}
 
-\item{\code{learn}}{: Fit regression model on the learning data set}
+\item{\code{learn}}{: Fit cox model on the learning data set}
 
 \item{\code{check_ph}}{: Check proportional hazard assumption}
 
