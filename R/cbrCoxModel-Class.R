@@ -155,58 +155,6 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                   }
                                   return(cowplot::plot_grid(plotlist = ggPlot,
                                                             ncol     = 2))
-                                },
-                                # calculate distance matrix
-                                calc_distance_matrix = function() {
-                                  # learn if weights are empty
-                                  if (is.null(self$weights)) {
-                                    self$learn()
-                                  }
-                                  # Start calculation
-                                  start <- Sys.time()
-                                  cat("Start calculating distance matrix...\n")
-                                  # get distance matrix
-                                  self$distMat <- private$get_distance_matrix()
-                                  end <- Sys.time()
-                                  duration <- round(as.numeric(end - start), 2)
-                                  cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
-                                },
-                                # get similar cases from reference data
-                                calc_similar_cases = function(k = 1) {
-                                  if (is.null(self$queryData)) {
-                                    stop("no query data!")
-                                  }
-                                  start <- Sys.time()
-                                  cat("Start caclulating similar cases...\n")
-                                  # learn if weights are empty
-                                  if (is.null(self$weights))
-                                    self$learn()
-
-                                  if(private$check_weights()) {
-                                    stop("NA values in regression beta coefficients!")
-                                  }
-                                  # check nCases input
-                                  if (!is.numeric(k))
-                                    stop("nCases must be numeric!")
-                                  if (k <= 0)
-                                    stop("nCases must be positive integer value!")
-                                  # catch floating numbers
-                                  k <- as.integer(k)
-                                  private$calc_distance_matrix()
-                                  # calculate distance and order of cases based on distance calculation
-                                  private$calc_similar_cases(k)
-                                  end <- Sys.time()
-                                  duration <- round(as.numeric(end - start), 2)
-                                  cat(paste0("Similar cases calculation finished in: ", duration, " seconds.\n"))
-                                },
-                                validate_model = function(plot=T) {
-                                  if (is.null(nrow(self$simCases)))
-                                    stop("no similar cases")
-                                  valSC <- cbrValidate$new()
-                                  return(valSC$validate(self$queryData,
-                                                        self$simCases,
-                                                        self$learnVars,
-                                                        plot))
                                 }
                               ),
                               private = list(
@@ -224,6 +172,15 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                   if (is.null(self$weights)) {
                                     self$learn()
                                   }
+                                  
+                                  # learn if weights are empty
+                                  if (is.null(self$weights))
+                                    self$learn()
+                                  
+                                  if(private$check_weights()) {
+                                    stop("NA values in regression beta coefficients!")
+                                  }
+                                  
                                   self$distMat <- Similarity::wDistance(x       = self$data, 
                                                                         y       = self$queryData, 
                                                                         weights = self$weights) %>% 

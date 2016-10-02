@@ -6,9 +6,8 @@ cbrData <- R6Class("cbrData",
                      distMat   = NULL,
                      orderMat  = NULL,
                      simCases  = NULL,
-                     impute    = F,
                      # initialize class
-                     initialize = function(formula, data, queryData=NULL, impute=F) {
+                     initialize = function(formula, data, queryData=NULL) {
                        formula <- formula(formula)
                        if (class(formula) != "formula") {
                          stop("Error: Invalid formula.")
@@ -16,7 +15,6 @@ cbrData <- R6Class("cbrData",
                        self$formula <- formula
                        self$data <- as.data.table(data)
                        self$queryData <- as.data.table(queryData)
-                       self$impute <- impute
                      },
                      # get query data, if there are missing values,
                      # return imputed data
@@ -34,7 +32,7 @@ cbrData <- R6Class("cbrData",
                      # return query + matched data
                      get_matched_data = function() {
                        if (is.null(self$simCases))
-                         stop("Model is not learned")
+                         stop("Error: Model is not learned.")
                        
                        queryData <- self$queryData
                        queryData$group <- "Query Data"
@@ -43,6 +41,48 @@ cbrData <- R6Class("cbrData",
                        matchedData$scDist <- NULL
                        matchedData$group <- "Matched Data"
                        return(rbind(queryData, simCases))
+                     },
+                     validate_model = function(plot=T) {
+                       if (is.null(self$simCases))
+                         stop("Error: no similar cases.")
+                       valSC <- cbrValidate$new()
+                       return(valSC$validate(self$queryData,
+                                             self$simCases,
+                                             all.vars(self$formula)[-c(1:2)],
+                                             plot))
+                     },
+                     # calculate distance matrix
+                     calc_distance_matrix = function() {
+                       # Start calculation
+                       start <- Sys.time()
+                       cat("Start calculating distance matrix...\n")
+                       # get distance matrix
+                       private$get_distance_matrix()
+                       end <- Sys.time()
+                       duration <- round(as.numeric(end - start), 2)
+                       cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
+                     },
+                     # get similar cases from reference data
+                     calc_similar_cases = function(k = 1) {
+                       if (is.null(self$queryData)) {
+                         stop("Error: no query data.")
+                       }
+                       start <- Sys.time()
+                       cat("Start caclulating similar cases...\n")
+                       
+                       # check nCases input
+                       if (!is.numeric(k))
+                         stop("Error: k must be numeric.")
+                       if (k <= 0)
+                         stop("Error: k must be positive integer value.")
+                       # catch floating numbers
+                       k <- as.integer(k)
+                       private$get_distance_matrix()
+                       # calculate distance and order of cases based on distance calculation
+                       private$get_similar_cases(k)
+                       end <- Sys.time()
+                       duration <- round(as.numeric(end - start), 2)
+                       cat(paste0("Similar cases calculation finished in: ", duration, " seconds.\n"))
                      }
                    ),
                    private = list(
@@ -53,20 +93,16 @@ cbrData <- R6Class("cbrData",
                          x <- private$drop_missing(x, isLearning)
                          if (nrow(x) == 0) {
                            if (isLearning) {
-                             stop("Learning data is empty after NA elimination")
+                             stop("Error: Learning data is empty after NA elimination.")
                            } else {
-                             stop("Query data is empty after NA elimination")
+                             stop("Error: Query data is empty after NA elimination.")
                            }
                          }
                        }
-
                        # check character variables: need factors
                        x <- private$check_factor(x)
-
                        # check levels of factor variables
-
                        # more tests
-                       
                        return(x)
                      },
                      # drop missing values from data
