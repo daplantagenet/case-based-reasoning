@@ -143,6 +143,9 @@ cbrData <- R6Class("cbrData",
                      #' transforms data to integer representation;
                      #' necessary for c++ functions
                      to_int = function(x) {
+                       if (is.null(x))
+                         return(x)
+                       
                        for (i in 1:ncol(x)) {
                          if (is(x, "data.table")) {
                            x[[i]] <- as.numeric(as.factor(x[[i]]))
