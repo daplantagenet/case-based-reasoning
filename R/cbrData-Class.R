@@ -148,6 +148,19 @@ cbrData <- R6Class("cbrData",
                        similarCases$caseId <- rep(1:nrow(queryData), each=nCases)
                        similarCases$scDist <- distance
                        self$similarCases <- similarCases
+                     },
+                     # calculate distance and return n nearest distance and
+                     # row id of n nearest cases from reference data;
+                     calc_kNN = function(newCases, learning, learnVars, weights, nCases) {
+                       trfData <- private$transform_data(newCases, learning, learnVars, weights)
+                       return(
+                         cbr:::get_nearest_Elements(
+                           x             = trfData$learning,
+                           query         = trfData$newCases,
+                           weights       = trfData$trafoweights,
+                           sortDirection = 0L,
+                           k             = nCases)
+                       )
                      }
                    )
 )

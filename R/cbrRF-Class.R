@@ -30,8 +30,8 @@ cbrRF <- R6Class("cbrRF",
                    simCases   = NULL,
                    impData    = NULL,
                    impInd     = NULL,
-                   distMethod = "proximity",
-                   learn=function(nCores, ntree, mtry, splitrule, ntime, nsplit, verbose, distMethod) {
+                   distMethod = NULL,
+                   learn=function(ntree, mtry, splitrule, ntime, nsplit, verbose, distMethod = "proximity") {
                      # split rule
                      if (missing(splitrule)) {
                        splitrule <- "logrank"
@@ -70,17 +70,6 @@ cbrRF <- R6Class("cbrRF",
                          stop("distmethod should be: proximity or deep")
                        }
                        self$distMethod <- distMethod
-                     }
-                     
-                     # number of cores for calculation
-                     if (missing(nCores)) {
-                       options(rf.cores=parallel::detectCores() - 1, mc.cores=parallel::detectCores() - 1)
-                     } else {
-                       nCores <- as.integer(nCores)
-                       if (nCores >= parallel::detectCores()) {
-                         nCores <- parallel::detectCores() - 1
-                       }
-                       options(rf.cores=nCores, mc.cores=nCores)
                      }
                      
                      # Timing
