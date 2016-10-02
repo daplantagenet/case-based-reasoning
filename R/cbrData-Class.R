@@ -14,7 +14,8 @@ cbrData <- R6Class("cbrData",
                        }
                        self$formula <- formula
                        self$data <- as.data.table(data)
-                       self$queryData <- as.data.table(queryData)
+                       if (!is.null(queryData))
+                        self$queryData <- as.data.table(queryData)
                      },
                      # get query data, if there are missing values,
                      # return imputed data
@@ -40,7 +41,7 @@ cbrData <- R6Class("cbrData",
                        matchedData$caseId <- NULL
                        matchedData$scDist <- NULL
                        matchedData$group <- "Matched Data"
-                       return(rbind(queryData, simCases))
+                       return(rbind(queryData, matchedData))
                      },
                      validate_model = function(plot=T) {
                        if (is.null(self$simCases))
@@ -142,22 +143,30 @@ cbrData <- R6Class("cbrData",
                      # we transform all factors to their corresponding
                      # weights and set weight equal to 1 for factor
                      # variables
-                     transform_data = function(newCases, learning, learnVars, weights) {
+                     transform_data = function(queryData, data, learnVars, weights) {
                        nVars <- length(learnVars)
-                       trafoweights <- rep(0, nVars)
+                       trafoWeights <- rep(0, nVars)
                        for (j in 1:nVars) {
-                         if (is.factor(learning[, learnVars[j]])) {
-                           newCases[, learnVars[j]] <- weights[[learnVars[j]]][newCases[, learnVars[j]]]
-                           learning[, learnVars[j]] <- weights[[learnVars[j]]][learning[, learnVars[j]]]
-                           trafoweights[j] <- 1
+                         if (is.factor(data[[learnVars[j]]])) {
+                           if (!is.null(queryData)) {
+                            queryData[[learnVars[j]]] <- weights[[learnVars[j]]][queryData[[learnVars[j]]]]
+                           }
+                           data[[learnVars[j]]] <- weights[[learnVars[j]]][data[[learnVars[j]]]]
+                           trafoWeights[j] <- 1
                          } else { # else keep weights
-                           trafoweights[j] <- weights[[learnVars[j]]]
+                           trafoWeights[j] <- weights[[learnVars[j]]]
                          }
                        }
-                       names(trafoweights) <- NULL
-                       return(list(newCases     = unname(as.matrix(newCases[, learnVars])),
-                                   learning     = unname(as.matrix(learning[, learnVars])),
-                                   trafoweights = trafoweights))
+                       names(trafoWeights) <- NULL
+                       
+                       if(is.null(queryData)) {
+                         queryData <- NULL
+                       } else {
+                         queryData <- unname(as.matrix(queryData[, learnVars, with=F]))
+                       }
+                       return(list(queryData    = queryData,
+                                   data         = unname(as.matrix(data[, learnVars, with=F])),
+                                   trafoWeights = trafoWeights))
                      },
                      # calculate distance 
                      get_distance_matrix=function() {
@@ -181,13 +190,13 @@ cbrData <- R6Class("cbrData",
                        ))
                        
                        # mark similar cases: 1:n ids
-                       similarCases$caseId <- rep(1:nrow(queryData), each=nCases)
+                       similarCases$caseId <- rep(1:nrow(self$queryData), each=k)
                        similarCases$scDist <- distance
-                       self$similarCases <- similarCases
+                       self$simCases <- similarCases
                      },
                      # calculate distance and return n nearest distance and
                      # row id of n nearest cases from reference data;
-                     calc_kNN = function(newCases, learning, learnVars, weights, nCases) {
+                     calc_kNN = function(newCases, learning, learnVars, weights, k) {
                        trfData <- private$transform_data(newCases, learning, learnVars, weights)
                        return(
                          cbr:::get_nearest_Elements(
@@ -195,7 +204,7 @@ cbrData <- R6Class("cbrData",
                            query         = trfData$newCases,
                            weights       = trfData$trafoweights,
                            sortDirection = 0L,
-                           k             = nCases)
+                           k             = k)
                        )
                      }
                    )

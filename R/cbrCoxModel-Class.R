@@ -111,7 +111,7 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                       weightsTmp <- rep(NA, times = nLev)
                                       names(weightsTmp) <- levels(self$data[[vars[i]]])
                                       for (j in 1:nLev) {
-                                        myLevel <- paste(vars, "=", levels(self$data[[vars[i]]])[j], sep="")
+                                        myLevel <- paste(vars[i], "=", levels(self$data[[vars[i]]])[j], sep="")
                                         if (j==1) {
                                           weightsTmp[j] <- 0
                                         } else {
@@ -167,10 +167,6 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                 },
                                 # calculate weighted absolute distance 
                                 get_distance_matrix=function() {
-                                  if (is.null(self$weights)) {
-                                    self$learn()
-                                  }
-                                  
                                   # learn if weights are empty
                                   if (is.null(self$weights))
                                     self$learn()
@@ -179,9 +175,19 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                     stop("NA values in regression beta coefficients!")
                                   }
                                   
-                                  self$distMat <- Similarity::wDistance(x       = self$data, 
-                                                                        y       = self$queryData, 
-                                                                        weights = self$weights) %>% 
+                                  if (is.null(self$queryData)) {
+                                    queryData <- NULL
+                                  } else {
+                                    queryData <- data.table::copy(self$queryData)
+                                  }
+                                  trData <- private$transform_data(queryData = queryData, 
+                                                                   data      = data.table::copy(self$data), 
+                                                                   learnVars = all.vars(self$formula)[-c(1:2)], 
+                                                                   weights   = self$weights)
+                                  
+                                  self$distMat <- Similarity::wDistance(x       = trData$data, 
+                                                                        y       = trData$queryData, 
+                                                                        weights = trData$trafoWeights) %>% 
                                     as.matrix()
                                 }
                               )
