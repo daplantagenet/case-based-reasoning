@@ -12,17 +12,15 @@
 #'
 #' @param formula : formula for learning the Cox model
 #' @param data    : the dataset for learning the model
-#' @param queryData (optional): Query data set. For each case in the query data,
+#' @param queryData (optional) : Query data set. For each case in the query data,
 #'  we are looking for the k (=1,…,l) similar cases in the learning data.
 #'  Learning and query datasets need the same structure (variable names and scales)
-#' @param impute (Default: FALSE): Missing value imputation. Actually, not
-#' implemented for the regression model.
 #'
 #' @field new : Initialization of the cbrRegressionModel
 #'
 #' @field variable_selection : performs a fast backward variable selection
 #'
-#' @field learn : Fit regression model on the learning data set
+#' @field learn : Fit cox model on the learning data set
 #'
 #' @field check_ph : Check proportional hazard assumption
 #'

@@ -6,17 +6,11 @@
 #' from learning, calculating the distance matrix, and searching for similar
 #' cases. 
 #'
-#' @param learning: data set for learning the RF model
-#' @param queryData: Query data set. For each case in the verum data, we are 
-#' looking for the k (=1,…,l) similar cases. Learning and verum data set need 
-#' the same structure (variable names and scales)
-#' @param learnVars (Default: all variables except endPoint): A character vector 
-#' variable names. This variables are used for learning the model. Do not 
-#' include time2event and event variable here. 
-#' @param endPoint (Default: c("Time2Event", "Event")): A character vector of 
-#' length two. The first elements contains the variable name of the time 2 event 
-#' variable and the second the name of the event variable. 
-#' @param impute (Default: FALSE): Missing value imputation.
+#' @param formula : formula for learning the Cox model
+#' @param data    : the dataset for learning the model
+#' @param queryData (optional) : Query data set. For each case in the query data,
+#'  we are looking for the k (=1,…,l) similar cases in the learning data.
+#'  Learning and query datasets need the same structure (variable names and scales)
 #' @docType class
 #' @importFrom R6 R6Class
 #' @export
@@ -78,7 +72,17 @@ cbrRF <- R6Class("cbrRF",
                        stop("Error: Please fit model.")
                      }
                      
-                     
+                     if (self$distMethod == "proximity") {
+                       self$distMat <- imilarity::proximityMatrixRanger(x  = self$data,
+                                                                        y  = self$queryData, 
+                                                                        rf = self$rangerObj)
+                     } else if (self$distMethod == "depth") {
+                       self$distMat <- Similarity::depthMatrixRanger(x  = self$data,
+                                                                     y  = self$queryData, 
+                                                                     rf = self$rangerObj)
+                     }
+                     # transform to distance
+                     self$distMat <- sqrt(1 - self$distMat)
                    }
                  )
-                 )
+)
