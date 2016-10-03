@@ -186,19 +186,19 @@ $(document).ready(function () {
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)
 devtools::<span class="kw">install_github</span>(<span class="st">&quot;sipemu/Similarity&quot;</span>)
 devtools::<span class="kw">install_github</span>(<span class="st">&quot;sipemu/case-based-reasoning&quot;</span>)</code></pre>
-<p>The <strong>Similarity</strong>-package contains the C++-distance calculation functions for this package. The compilation should work on Ubuntu and Mac OS X out-of-the-box. On Windows you at least g++ verion 4.9.3.</p>
+<p>The <strong>Similarity</strong>-package contains the C++-distance calculation functions for this package. The compilation should work on Ubuntu and Mac OS X out-of-the-box. On Windows you need g++ verion 4.9.3 or greater (Windows- Binary: <a href="Similarity/">Similarity_01.zip</a>).</p>
 <p>Please use <a href="https://github.com/sipemu/case-based-reasoning/issues">Github issues</a> if you want to file bug reports or feature requests.</p>
 <div id="features" class="section level1">
 <h1><span class="header-section-number">1</span> Features</h1>
-<p>This R package provides until now two methods case based reasoning for survival data:</p>
+<p>This R package provides two methods case based reasoning for survival data:</p>
 <ul>
 <li><p>Cox-Regression</p></li>
 <li><p>Random Survival Forest (Proximity and Depth Measure)</p></li>
 </ul>
 <p>Besides the functionality of searching similar cases, some additional features are included:</p>
 <ul>
-<li><p>automatic validation of the key variables between verum and similar cases data set</p></li>
-<li><p>checking proportional hazard assumption for the cox regression. This point needs ome further investigation, e.g. how the distance is biased when linearity and PH assumption do not hold.</p></li>
+<li><p>automatic validation of the key variables between the query and similar cases dataset</p></li>
+<li><p>checking proportional hazard assumption for the Cox Model</p></li>
 <li><p>C++-functions for distance calculation</p></li>
 </ul>
 </div>
