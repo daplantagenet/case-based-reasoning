@@ -14,13 +14,13 @@ devtools::install_github("sipemu/Similarity")
 devtools::install_github("sipemu/case-based-reasoning")
 ```
 
-The **Similarity**-package contains the C++-distance calculation functions for this package. The compilation should work on Ubuntu and Mac OS X out-of-the-box. On Windows you at least g++ verion 4.9.3.
+The **Similarity**-package contains the C++-distance calculation functions for this package. The compilation should work on Ubuntu and Mac OS X out-of-the-box. On Windows you need g++ verion 4.9.3 or greater (Windows- Binary: [Similarity_01.zip](Similarity/)).
 
 Please use [Github issues](https://github.com/sipemu/case-based-reasoning/issues) if you want to file bug reports or feature requests.
 
 # Features
 
-This R package provides until now two methods case based reasoning for survival data:
+This R package provides two methods case based reasoning for survival data:
 
 - Cox-Regression
 
@@ -28,9 +28,9 @@ This R package provides until now two methods case based reasoning for survival 
 
 Besides the functionality of searching similar cases, some additional features are included:
 
-- automatic validation of the key variables between verum and similar cases data set
+- automatic validation of the key variables between the query and similar cases dataset
 
-- checking proportional hazard assumption for the cox regression. This point needs ome further investigation, e.g. how the distance is biased when linearity and PH assumption do not hold. 
+- checking proportional hazard assumption for the Cox Model
 
 - C++-functions for distance calculation
 
