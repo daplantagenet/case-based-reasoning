@@ -9,22 +9,17 @@ Following diagramm shows the abstract workflow.
 ```{r, eval=TRUE, echo=FALSE}
 DiagrammeR("
   graph TB;
-    A[Initialize CBR Object]-->B[Calculate Similar Cases]
     B-->C[Validate]
     B-->D[Extract Data]
-    A-->E[Calculate Distance Matrix]
-    E-->F[Manifold Learning]
-    A-->|Cox-Model|G[Check Linearity & Proportional Hazard]
-    G-->B
-    G-->E
-    B-->|NOT working|F;
+    A[Initialize CBR Object]-->E[Calculate Distance Matrix]
+    E-->B[Calculate Similar Cases]
+    A-->|Cox-Model|G[Proportional Hazard];
     
     style A fill:#fff, stroke:#2773ae, stroke-width:2px, color:#ffffff;
     style B fill:#fff, stroke:#2773ae, stroke-width:2px;
     style C fill:#fff, stroke:#2773ae, stroke-width:2px;
     style D fill:#fff, stroke:#2773ae, stroke-width:2px;
-    style E fill:#fff, stroke:#2773ae, stroke-width:2px;
-    style F fill:#fff, stroke:#2773ae, stroke-width:2px;
+    style E fill:#fff, stroke:#507E4E, stroke-width:2px;
     style G fill:#fff, stroke:#2773ae, stroke-width:2px;
 ")
 ```
@@ -32,34 +27,16 @@ DiagrammeR("
 ## Overview
 
 ```{r, eval=TRUE, echo=FALSE}
-nodes_class <- create_nodes(nodes=c("cbrData", "cbrCoxModel", "cbrRF", "cbrSimCases", "cbrSimCases", "cbrValidate", "cbrValidate"),
-                      shape=c("rectangle", "rectangel", "rectangle", "rectangle", "rectangle", "rectangle", "rectangle"))
+nodes_class <- create_nodes(nodes=c("cbrData", "cbrCoxModel", "cbrRFModel"),
+                      shape=c("rectangle", "rectangel", "rectangle"))
 
-edges_class <- create_edges(from  = c("cbrData", "cbrData", "cbrCoxModel", "cbrRF", "cbrCoxModel", "cbrRF"),
+edges_class <- create_edges(from  = c("cbrData", "cbrData"),
                             relationship = "requires",
                             relationship = "requires",
-                            to    = c("cbrCoxModel", "cbrRF", "cbrSimCases", "cbrSimCases", "cbrValidate", "cbrValidate"))
+                            to    = c("cbrCoxModel", "cbrRFModel"))
 
 render_graph(create_graph(nodes_class, edges_class))
-# 
-# 
-# nodes_private_data <- create_nodes(nodes=c("cbrData", "public", "learning", "verumData", "learnVars", "endPoint", "refEQNew", "impute", "initialize", "private"),
-#                                    label = TRUE,
-#                                    type  = "lower",
-#                                    shape = c("rectangel", "rectangle", "circle", "circle", "circle", "circle", "circle", "circle", "circle", "rectangle"))
-# 
-# edges_private_data <- create_edges(from=c("cbrData", "cbrData", "public", "public", "public", "public", "public", "public", "public"),
-#                                    to = c("public", "private", "learning", "verumData", "learnVars", "endPoint", "refEQNew", "impute", "initialize"))
-# 
-# all_nodes <- combine_nodes(nodes_class, nodes_private_data)
-# all_edges <- combine_edges(edges_class, edges_private_data)
-# 
-# render_graph(create_graph(all_nodes, all_edges))
-
 ```
-
-
-## cbrData-Class
 
 
 

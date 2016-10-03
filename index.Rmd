@@ -7,15 +7,14 @@
   
 The R package **case-based-reasoning** provides an R interface case based reasoning on survival data.
 
-You may install the development version using 
+This package can be installed from github by: 
 ```{r, eval=FALSE}
 install.packages("devtools")
+devtools::install_github("sipemu/Similarity")
 devtools::install_github("sipemu/case-based-reasoning")
 ```
 
-If you want multicore support for RandomForest package, please follow the instruction of the following link:
-  
-  http://www.ccs.miami.edu/~hishwaran/rfsrc.html
+The **Similarity**-package contains the C++-distance calculation functions for this package. The compilation should work on Ubuntu and Mac OS X out-of-the-box. On Windows you at least g++ verion 4.9.3.
 
 Please use [Github issues](https://github.com/sipemu/case-based-reasoning/issues) if you want to file bug reports or feature requests.
 
@@ -25,29 +24,19 @@ This R package provides until now two methods case based reasoning for survival 
 
 - Cox-Regression
 
-- Random Survival Forest (Proximity Measure)
+- Random Survival Forest (Proximity and Depth Measure)
 
 Besides the functionality of searching similar cases, some additional features are included:
 
-- missing value imputation (at the moment just: RSF)
-
-- Shiny App for visualization of manifold learning (e.g. tSNE) based on the distance matrix of our two methods (this app needs a R6 class as input, namely: cbrCoxModel, cbrRFProxy)
-
 - automatic validation of the key variables between verum and similar cases data set
 
-- checking linearity and proportional hazard assumption for the cox regression. This point needs ome further investigation, e.g. how the distance is biased when linearity and PH assumption do not hold. 
+- checking proportional hazard assumption for the cox regression. This point needs ome further investigation, e.g. how the distance is biased when linearity and PH assumption do not hold. 
 
-- C++-functions for fast (weighted) distance and order matrix calculations
+- C++-functions for distance calculation
 
 
 # Near future implementations:
 
-- RandomForest depth distance calculation
-
 - analysis of missing values and imputation for the Cox model
-
-- more methods for manifold learning, e.g. Spectral Embedding, LLE, LTSA, Hessian LLE, MDS, and ISOMAP
-
-- automatic searching for clusters after manifold learning based on included categorial variables, e.g. silhouette coefficient
 
 <br>

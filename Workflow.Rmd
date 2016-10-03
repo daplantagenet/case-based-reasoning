@@ -22,10 +22,9 @@ DiagrammeR("
     A[Initialize CBR Object]
     B[Variable Selection]
     C[Model Fitting]
-    D[Check Linearity & Proportional Hazard]
+    D[Check Proportional Hazard]
     E[Calculate Distance Matrix];
     F[Get Similar Cases];
-    G[Manifold Learning];
     H[Extract Data]
     
     A-->|Cox-Model<br>-optional-|B;
@@ -34,8 +33,6 @@ DiagrammeR("
     C-->|Cox-Model<br>-optional-|D;
     C-->E;
     E-->F;
-    E-->G;
-    F-->G;
     F-->H;
 
     style A fill:#fff, stroke:#2773ae, stroke-width:2px;
@@ -44,7 +41,6 @@ DiagrammeR("
     style D fill:#fff, stroke:#2773ae, stroke-width:2px;
     style E fill:#fff, stroke:#507E4E, stroke-width:2px;
     style F fill:#fff, stroke:#2773ae, stroke-width:2px;
-    style G fill:#fff, stroke:#2773ae, stroke-width:2px;
     style H fill:#fff, stroke:#2773ae, stroke-width:2px;
 ")
 ```

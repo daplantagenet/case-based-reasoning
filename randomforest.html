@@ -7,11 +7,11 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
 
 
-<title>Shiny App for Manifold Learning</title>
+
+<title>Random Survival Forest Model</title>
 
 <script src="libs/jquery/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -62,25 +62,7 @@ code > span.er { font-weight: bold; }
 </style>
 
 
-
-</head>
-
-<body>
-
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-  height: auto;
-}
+<style type="text/css">
 h1 {
   font-size: 34px;
 }
@@ -101,6 +83,30 @@ h5 {
 }
 h6 {
   font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -168,17 +174,47 @@ $(document).ready(function () {
 <div class="fluid-row" id="header">
 
 
-<h1 class="title">Shiny App for Manifold Learning</h1>
+
+<h1 class="title toc-ignore">Random Survival Forest Model</h1>
 
 </div>
 
 
 <hr />
-<p>Beside of searching for similar cases and matching datasets, you may do a dimension reduction on the distance matrix. Actually, just t-SNE (t-distributed Stochastic Neighbor Embedding using Barnes-Hut Implementation (see <code>Rtsne</code> R package)) is activated. More are comming. For this task you may call a shiny app for interactive analysis. As input you need a <code>cbrCoxModel</code> or a <code>cbrRFProxy</code> object.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbrDistViz</span>(sc)</code></pre>
-<p>This opens a shiny app and you may then search for clusters in the by t-SNE reduced data set.</p>
-<p><img src="img/shiny-cbr.png" style="width: 1024px"></p>
-<p><strong>Note</strong>: On big data sets, the t-SNE may need some time. Do not close the shiny window.</p>
+<div id="initialization" class="section level1">
+<h1><span class="header-section-number">1</span> Initialization</h1>
+<p>In the second example, we present the Random Forest model for a distance measure approximation applied on the <code>ovarian</code> data set from the <code>survival</code> package. This package offers two ways for distance/similarity calculation (see documentation):</p>
+<ul>
+<li><p>proximity</p></li>
+<li><p>depth</p></li>
+</ul>
+<p>Let’s initialize the R6 data object.</p>
+<p><br></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survival)
+<span class="kw">library</span>(cbr)
+
+<span class="co"># all variables should be numeric or factor</span>
+ovarian$resid.ds &lt;-<span class="st"> </span><span class="kw">factor</span>(ovarian$resid.ds)
+ovarian$rx &lt;-<span class="st"> </span><span class="kw">factor</span>(ovarian$rx)
+ovarian$ecog.ps &lt;-<span class="st"> </span><span class="kw">factor</span>(ovarian$ecog.ps)
+
+<span class="co"># initialize R6 object</span>
+sc &lt;-<span class="st"> </span>cbrRFModel$<span class="kw">new</span>(<span class="dt">formula =</span> <span class="kw">Surv</span>(futime, fustat) ~<span class="st"> </span>age +<span class="st"> </span>resid.ds +<span class="st"> </span>rx +<span class="st"> </span>ecog.ps, <span class="dt">data=</span>ovarian, <span class="dt">queryData=</span>ovarian)</code></pre>
+<pre><code>## Dropped cases with missing values: 0
+## Dropped cases with missing values: 0</code></pre>
+<p>All cases with missing values in the learning and end point variables are dropped (<code>na.omit</code>) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. <code>character</code> variables will be transformed to <code>factor</code>.</p>
+<p>Optionally, you may want to adjust some parameters in the fitting step of the random forest algorithm. Possible arguments are: , <code>ntree</code>, <code>mtry</code>, and <code>splitrule</code>. The documentation of this parameters can be found in the ranger R-package. Furthermore, you are able to choose the two distance measures:</p>
+<ul>
+<li>proximity matrix</li>
+<li>depth matrix</li>
+</ul>
+<p>This can be done by</p>
+<pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">set_dist</span>(<span class="dt">distMethod =</span> <span class="st">&quot;proximity&quot;</span>)</code></pre>
+<p>or</p>
+<pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">set_dist</span>(<span class="dt">distMethod =</span> <span class="st">&quot;depth&quot;</span>) <span class="co"># the default value</span></code></pre>
+<p>All other steps (excluding checking for proportional hazard assumption are the same as for the Cox-Model).</p>
+<p><br></p>
+</div>
 
 <script>
 // manage active state of menu based on current page

@@ -20,34 +20,25 @@ ovarian$rx <- factor(ovarian$rx)
 ovarian$ecog.ps <- factor(ovarian$ecog.ps)
 
 # initialize R6 object
-sc <- cbrCoxModel$new(learning=ovarian, verumData=ovarian, learnVars=c("age", "resid.ds", "rx", "ecog.ps"), endPoint=c("futime", "fustat"), impute=F)
+sc <- cbrCoxModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps, data=ovarian, queryData=ovarian)
 ```
-If `impute` is set to `FALSE` (for the Cox model the `ìmpute` variable is always set to `FALSE`) then all cases with missing values in the learning and end point variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. The variables should be `numeric` or `factor`. `character` variables will be transformed to `factor`.
-
+All cases with missing values in the learning and end point variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. `character` variables will be transformed to `factor`.
 
 # Similar Cases 
 
-After the initialization, we may get for each case in verum data the most similar case from the learning data. 
+After the initialization, we may want to get for each case in the query data the most similar case from the learning data. 
 ```{r}
-sc$getSimilarCases(nCases = 1)
+sc$calc_similar_cases(k = 1)
 ```
 You may extract then the similar cases and the verum data and put them together:
 ```{r, eval=FALSE}
-verum <- sc$getVerumData()
-verum$group <- "Verum"
-simCases <- sc$simCases
-simCases$caseId <- NULL
-simCases$scDist <- NULL
-simCases$group <- "Similar Cases"
-df <- rbind(verum, simCases)
+simCases <- sc$get_matched_data()
 ```
-**Note 1:** In the initialization step, we dropped all cases with missing values in the variables of ` learnVars` and ` endPoint`. The function `sc$getVerumData()` returns the data set without the cases with missing values in the learning vars, except in the randomForest model where you have the option to impute missing values.
+**Note 1:** In the initialization step, we dropped all cases with missing values in the variables of ` data` and ` endPoint`. The function `sc$get_data()` returns the dataset without missing values in the dependent and independent variables.
 
-**Note 2:** The ` data.frame` returned from ` sc$simCases` has an additional column `caseId`. By this column you may map the similar cases to cases in verum data, e.g. if you had chosen ` nCases = 3`, then the first three elements in the column `caseId` will be ` 1` (following three ` 2` and so on). This means that this three cases are the three most similar cases to case ` 1` in verum data.
+**Note 2:** The ` data.table` returned from ` sc$simCases` has an additional column `caseId`. By this column you may map the similar cases to cases in data, e.g. if you had chosen ` k = 3`, then the first three elements in the column `caseId` will be ` 1` (following three ` 2` and so on). This means that this three cases are the three most similar cases to case ` 1` in verum data.
 
-## Check Linearity and Proportional Hazard Assumption
-
-There is one function for checking the proportional hazard assumption for all dependent variables. Actually, it is not able to correct for non-linearity in the distance calculation.
+## Check Proportional Hazard Assumption
 
 ```{r, warning=FALSE, message=FALSE}
 pp <- sc$check_ph()
@@ -56,9 +47,9 @@ pp
 
 ## Validation of the matching Variables
 
-You may want to check the distibution of the ` learnVars` variables of the verum and similar cases data set:
+You may want to check the distibution of the ` independent` variables of the query data and similar cases dataset:
 ```{r}
-pp <- sc$validate()
+pp <- sc$validate_model()
 pp
 ```
 <br>
@@ -70,15 +61,11 @@ The function ` sc$validate()` returns an ` gg` and ` ggplot` object.
 Alternatively, you may just be interested in the distance matrix, then you go this way:
 
 ```{r}
-sc <- cbrCoxModel$new(learning=ovarian, verumData=ovarian, learnVars=names(ovarian)[-c(1, 2)], endPoint=c("futime", "fustat"), impute=F)
-sc$getDistanceMatrix()
+sc <- cbrCoxModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps, data=ovarian)
+sc$calc_distance_matrix()
 ```
-` sc$getFullDistanceMatrix()` calculates the full distance matrix. This matrix the dimension: cases of learning data versus cases of verum data. In the above example we used the same data set for learning and as verum data. Such case can also be achieved by:
-```{r, eval=FALSE}
-sc <- cbrCoxModel$new(learning=ovarian, learnVars=names(ovarian)[-c(1, 2)], endPoint=c("futime", "fustat"), impute=F)
+` sc$getFullDistanceMatrix()` calculates the full distance matrix. This matrix the dimension: cases of data versus cases of query data. If the query dataset is bot available, this functions calculates a n times n distance matrix of all pairs in data. 
 
-sc$getDistanceMatrix()
-```
-The distance matrix is saved internally in the sc object: ` sc$distMat`.
+The distance matrix is saved internally in the cbrCoxModel object: ` sc$distMat`.
 
 <br>

@@ -7,7 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
 
 
 
@@ -62,25 +62,7 @@ code > span.er { font-weight: bold; }
 </style>
 
 
-
-</head>
-
-<body>
-
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-  height: auto;
-}
+<style type="text/css">
 h1 {
   font-size: 34px;
 }
@@ -101,6 +83,30 @@ h5 {
 }
 h6 {
   font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -168,42 +174,38 @@ $(document).ready(function () {
 <div class="fluid-row" id="header">
 
 
-<h1 class="title">CBR: Case-Based-Reasoning for Survival Data</h1>
+
+<h1 class="title toc-ignore">CBR: Case-Based-Reasoning for Survival Data</h1>
 
 </div>
 
 
 <hr />
 <p>The R package <strong>case-based-reasoning</strong> provides an R interface case based reasoning on survival data.</p>
-<p>You may install the development version using</p>
+<p>This package can be installed from github by:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)
+devtools::<span class="kw">install_github</span>(<span class="st">&quot;sipemu/Similarity&quot;</span>)
 devtools::<span class="kw">install_github</span>(<span class="st">&quot;sipemu/case-based-reasoning&quot;</span>)</code></pre>
-<p>If you want multicore support for RandomForest package, please follow the instruction of the following link:</p>
-<p><a href="http://www.ccs.miami.edu/~hishwaran/rfsrc.html" class="uri">http://www.ccs.miami.edu/~hishwaran/rfsrc.html</a></p>
+<p>The <strong>Similarity</strong>-package contains the C++-distance calculation functions for this package. The compilation should work on Ubuntu and Mac OS X out-of-the-box. On Windows you at least g++ verion 4.9.3.</p>
 <p>Please use <a href="https://github.com/sipemu/case-based-reasoning/issues">Github issues</a> if you want to file bug reports or feature requests.</p>
 <div id="features" class="section level1">
 <h1><span class="header-section-number">1</span> Features</h1>
 <p>This R package provides until now two methods case based reasoning for survival data:</p>
 <ul>
 <li><p>Cox-Regression</p></li>
-<li><p>Random Survival Forest (Proximity Measure)</p></li>
+<li><p>Random Survival Forest (Proximity and Depth Measure)</p></li>
 </ul>
 <p>Besides the functionality of searching similar cases, some additional features are included:</p>
 <ul>
-<li><p>missing value imputation (at the moment just: RSF)</p></li>
-<li><p>Shiny App for visualization of manifold learning (e.g. tSNE) based on the distance matrix of our two methods (this app needs a R6 class as input, namely: cbrCoxModel, cbrRFProxy)</p></li>
 <li><p>automatic validation of the key variables between verum and similar cases data set</p></li>
-<li><p>checking linearity and proportional hazard assumption for the cox regression. This point needs ome further investigation, e.g. how the distance is biased when linearity and PH assumption do not hold.</p></li>
-<li><p>C++-functions for fast (weighted) distance and order matrix calculations</p></li>
+<li><p>checking proportional hazard assumption for the cox regression. This point needs ome further investigation, e.g. how the distance is biased when linearity and PH assumption do not hold.</p></li>
+<li><p>C++-functions for distance calculation</p></li>
 </ul>
 </div>
 <div id="near-future-implementations" class="section level1">
 <h1><span class="header-section-number">2</span> Near future implementations:</h1>
 <ul>
-<li><p>RandomForest depth distance calculation</p></li>
-<li><p>analysis of missing values and imputation for the Cox model</p></li>
-<li><p>more methods for manifold learning, e.g. Spectral Embedding, LLE, LTSA, Hessian LLE, MDS, and ISOMAP</p></li>
-<li><p>automatic searching for clusters after manifold learning based on included categorial variables, e.g. silhouette coefficient</p></li>
+<li>analysis of missing values and imputation for the Cox model</li>
 </ul>
 <p><br></p>
 </div>

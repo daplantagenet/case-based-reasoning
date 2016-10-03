@@ -10,7 +10,7 @@ In the second example, we present the Random Forest model for a distance measure
 
 - proximity
 
-- pathway 
+- depth 
 
 Let's initialize the R6 data object. 
 
@@ -18,24 +18,33 @@ Let's initialize the R6 data object.
 ```{r, warning=FALSE, message=FALSE}
 library(survival)
 library(cbr)
+
+# all variables should be numeric or factor
 ovarian$resid.ds <- factor(ovarian$resid.ds)
 ovarian$rx <- factor(ovarian$rx)
 ovarian$ecog.ps <- factor(ovarian$ecog.ps)
 
 # initialize R6 object
-sc <- cbrRF$new(learning=ovarian, verumData=ovarian, learnVars=c("age", "resid.ds", "rx", "ecog.ps"), endPoint=c("futime", "fustat"), impute=T)
-```
-If `impute` is set to `FALSE` (for the Cox model the `ìmpute` variable is always set to `FALSE`) then all cases with missing values in the learning and end point variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. The variables should be `numeric` or `factor`. `character` variables will be transformed to `factor`.
-
-
-# Learning RandomForest
-
-Optionally, you may want to adjust some parameters in the fitting step of the random forest algorithm. Possible arguments are: `nCores`, `ntree`, `mtry`, `splitrule`, `ntime`, `nsplit`, and `verbose`. The documentation of this parameters can be found in the randomForestSRC R-package.
-
-```{r}
-sc$learn()
+sc <- cbrRFModel$new(formula = Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps, data=ovarian, queryData=ovarian)
 ```
 
-All other steps (excluding checking for linearity and proportional hazard assumption are the same as for the Cox-model).
+All cases with missing values in the learning and end point variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. `character` variables will be transformed to `factor`.
+
+Optionally, you may want to adjust some parameters in the fitting step of the random forest algorithm. Possible arguments are: , `ntree`, `mtry`, and `splitrule`. The documentation of this parameters can be found in the ranger R-package. Furthermore, you are able to choose the two distance measures:
+
++ proximity matrix 
++ depth matrix
+
+This can be done by
+
+```{r, warning=FALSE, message=FALSE}
+sc$set_dist(distMethod = "proximity")
+```
+or
+```{r, warning=FALSE, message=FALSE}
+sc$set_dist(distMethod = "depth") # the default value
+```
+
+All other steps (excluding checking for proportional hazard assumption are the same as for the Cox-Model). 
 
 <br>

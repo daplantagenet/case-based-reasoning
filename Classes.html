@@ -7,7 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
 
 
 
@@ -46,25 +46,7 @@ p code {
 
 
 
-
-</head>
-
-<body>
-
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-  height: auto;
-}
+<style type="text/css">
 h1 {
   font-size: 34px;
 }
@@ -85,6 +67,30 @@ h5 {
 }
 h6 {
   font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -153,26 +159,27 @@ $(document).ready(function () {
 
 
 
+
 </div>
 
 
 <div id="workflow" class="section level1">
 <h1><span class="header-section-number">1</span> Workflow</h1>
 <p>Following diagramm shows the abstract workflow.</p>
-<p><div id="htmlwidget-5716" style="width:672px;height:480px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5716">{
+<div id="htmlwidget-927ec88a166bf954e46a" style="width:672px;height:480px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-927ec88a166bf954e46a">{
   "x": {
-    "diagram": "\n  graph TB;\n    A[Initialize CBR Object]-->B[Calculate Similar Cases]\n    B-->C[Validate]\n    B-->D[Extract Data]\n    A-->E[Calculate Distance Matrix]\n    E-->F[Manifold Learning]\n    A-->|Cox-Model|G[Check Linearity & Proportional Hazard]\n    G-->B\n    G-->E\n    B-->|NOT working|F;\n    \n    style A fill:#fff, stroke:#2773ae, stroke-width:2px, color:#ffffff;\n    style B fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style C fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style D fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style E fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style F fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style G fill:#fff, stroke:#2773ae, stroke-width:2px;\n"
+    "diagram": "\n  graph TB;\n    B-->C[Validate]\n    B-->D[Extract Data]\n    A[Initialize CBR Object]-->E[Calculate Distance Matrix]\n    E-->B[Calculate Similar Cases]\n    A-->|Cox-Model|G[Proportional Hazard];\n    \n    style A fill:#fff, stroke:#2773ae, stroke-width:2px, color:#ffffff;\n    style B fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style C fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style D fill:#fff, stroke:#2773ae, stroke-width:2px;\n    style E fill:#fff, stroke:#507E4E, stroke-width:2px;\n    style G fill:#fff, stroke:#2773ae, stroke-width:2px;\n"
   },
   "evals": [],
   "jsHooks": []
-}</script></p>
+}</script>
 <div id="overview" class="section level2">
 <h2><span class="header-section-number">1.1</span> Overview</h2>
-<p><div id="htmlwidget-4929" style="width:672px;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4929">{
+<div id="htmlwidget-e2aad06f99e8b55df8d8" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e2aad06f99e8b55df8d8">{
   "x": {
-    "diagram": "digraph {\n\n  \"cbrData\" [label = \"cbrData\", shape = \"rectangle\"] \n  \"cbrCoxModel\" [label = \"cbrCoxModel\", shape = \"rectangel\"] \n  \"cbrRF\" [label = \"cbrRF\", shape = \"rectangle\"] \n  \"cbrSimCases\" [label = \"cbrSimCases\", shape = \"rectangle\"] \n  \"cbrSimCases\" [label = \"cbrSimCases\", shape = \"rectangle\"] \n  \"cbrValidate\" [label = \"cbrValidate\", shape = \"rectangle\"] \n  \"cbrValidate\" [label = \"cbrValidate\", shape = \"rectangle\"] \n  \"cbrData\"->\"cbrCoxModel\" \n  \"cbrData\"->\"cbrRF\" \n  \"cbrCoxModel\"->\"cbrSimCases\" \n  \"cbrRF\"->\"cbrSimCases\" \n  \"cbrCoxModel\"->\"cbrValidate\" \n  \"cbrRF\"->\"cbrValidate\" \n}",
+    "diagram": "digraph {\n\n  \"cbrData\" [label = \"cbrData\", shape = \"rectangle\"] \n  \"cbrCoxModel\" [label = \"cbrCoxModel\", shape = \"rectangel\"] \n  \"cbrRFModel\" [label = \"cbrRFModel\", shape = \"rectangle\"] \n  \"cbrData\"->\"cbrCoxModel\" \n  \"cbrData\"->\"cbrRFModel\" \n}",
     "config": {
       "engine": null,
       "options": null
@@ -180,10 +187,7 @@ $(document).ready(function () {
   },
   "evals": [],
   "jsHooks": []
-}</script></p>
-</div>
-<div id="cbrdata-class" class="section level2">
-<h2><span class="header-section-number">1.2</span> cbrData-Class</h2>
+}</script>
 </div>
 </div>
 
