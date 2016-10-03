@@ -64,7 +64,7 @@ Alternatively, you may just be interested in the distance matrix, then you go th
 sc <- cbrCoxModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps, data=ovarian)
 sc$calc_distance_matrix()
 ```
-` sc$getFullDistanceMatrix()` calculates the full distance matrix. This matrix the dimension: cases of data versus cases of query data. If the query dataset is bot available, this functions calculates a n times n distance matrix of all pairs in data. 
+` sc$calc_distance_matrix()` calculates the full distance matrix. This matrix the dimension: cases of data versus cases of query data. If the query dataset is bot available, this functions calculates a n times n distance matrix of all pairs in data. 
 
 The distance matrix is saved internally in the cbrCoxModel object: ` sc$distMat`.
 

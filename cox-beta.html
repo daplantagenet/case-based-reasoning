@@ -205,8 +205,8 @@ sc &lt;-<span class="st"> </span>cbrCoxModel$<span class="kw">new</span>(<span c
 <pre class="sourceCode r"><code class="sourceCode r">sc$<span class="kw">calc_similar_cases</span>(<span class="dt">k =</span> <span class="dv">1</span>)</code></pre>
 <pre><code>## Start caclulating similar cases...
 ## Start learning...
-## Learning finished in: 0.02 seconds.
-## Similar cases calculation finished in: 0.04 seconds.</code></pre>
+## Learning finished in: 0.03 seconds.
+## Similar cases calculation finished in: 0.05 seconds.</code></pre>
 <p>You may extract then the similar cases and the verum data and put them together:</p>
 <pre class="sourceCode r"><code class="sourceCode r">simCases &lt;-<span class="st"> </span>sc$<span class="kw">get_matched_data</span>()</code></pre>
 <p><strong>Note 1:</strong> In the initialization step, we dropped all cases with missing values in the variables of <code>data</code> and <code>endPoint</code>. The function <code>sc$get_data()</code> returns the dataset without missing values in the dependent and independent variables.</p>
@@ -239,7 +239,7 @@ pp</code></pre>
 ## Start learning...
 ## Learning finished in: 0.01 seconds.
 ## Distance matrix calculation finished in: 0.02 seconds.</code></pre>
-<p><code>sc$getFullDistanceMatrix()</code> calculates the full distance matrix. This matrix the dimension: cases of data versus cases of query data. If the query dataset is bot available, this functions calculates a n times n distance matrix of all pairs in data.</p>
+<p><code>sc$calc_distance_matrix()</code> calculates the full distance matrix. This matrix the dimension: cases of data versus cases of query data. If the query dataset is bot available, this functions calculates a n times n distance matrix of all pairs in data.</p>
 <p>The distance matrix is saved internally in the cbrCoxModel object: <code>sc$distMat</code>.</p>
 <p><br></p>
 </div>

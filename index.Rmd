@@ -14,7 +14,7 @@ devtools::install_github("sipemu/Similarity")
 devtools::install_github("sipemu/case-based-reasoning")
 ```
 
-The **Similarity**-package contains the C++-distance calculation functions for this package. The compilation should work on Ubuntu and Mac OS X out-of-the-box. On Windows you need g++ verion 4.9.3 or greater (Windows- Binary: [Similarity_01.zip](Similarity/)).
+The **Similarity**-package contains the C++-distance calculation functions for this package. The compilation should work on Ubuntu and Mac OS X out-of-the-box. On Windows you need g++ verion 4.9.3 or greater (Windows- Binary: [Similarity_0.1.zip](Similarity/Similarity_0.1.zip)).
 
 Please use [Github issues](https://github.com/sipemu/case-based-reasoning/issues) if you want to file bug reports or feature requests.
 
