@@ -69,7 +69,7 @@ cbrRFModel <- R6Class("cbrRFModel",
                           }
                           
                           if (is.null(self$rangerObj)) {
-                            stop("Error: Please fit model.")
+                            self$learn()
                           }
                           
                           if (self$distMethod == "proximity") {
