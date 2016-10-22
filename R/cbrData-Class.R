@@ -8,6 +8,7 @@ cbrData <- R6Class("cbrData",
                      distMat   = NULL,
                      orderMat  = NULL,
                      simCases  = NULL,
+                     k         = NULL,
                      # initialize class
                      initialize = function(formula, data, queryData=NULL) {
                        formula <- formula(formula)
@@ -43,12 +44,16 @@ cbrData <- R6Class("cbrData",
                          stop("Error: Model is not learned.")
                        
                        queryData <- self$queryData
+                       queryData$scCaseId <- 1:nrow(queryData)
                        queryData$group <- "Query Data"
                        matchedData <- self$simCases
+                       matchedData$scCaseId <- rep(1:nrow(queryData), each = self$k)
                        matchedData$caseId <- NULL
                        matchedData$scDist <- NULL
                        matchedData$group <- "Matched Data"
-                       return(rbind(queryData, matchedData))
+                       rbind(queryData, matchedData) %>% 
+                         dplyr::arrange(scCaseId) %>% 
+                         dplyr::select(-scCaseId)
                      },
                      validate_model = function(plot=T) {
                        if (is.null(self$simCases))
@@ -83,6 +88,8 @@ cbrData <- R6Class("cbrData",
                          stop("Error: k must be numeric.")
                        if (k <= 0)
                          stop("Error: k must be positive integer value.")
+                       
+                       self$k <- k
                        # catch floating numbers
                        k <- as.integer(k)
                        private$get_distance_matrix()
