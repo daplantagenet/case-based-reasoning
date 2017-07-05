@@ -12,4 +12,4 @@ http://sipemu.github.io/case-based-reasoning/
 
 ## License
 
-TODO
+GPL-2
