@@ -16,17 +16,17 @@
 #'  we are looking for the k (=1,…,l) similar cases in the learning data.
 #'  Learning and query datasets need the same structure (variable names and scales)
 #'
-#' @field new : Initialization of the cbrRegressionModel
+#' @field new Initialization of the cbrRegressionModel
 #'
 #' @field variable_selection : performs a fast backward variable selection
 #'
-#' @field learn : Fit cox model on the learning data set
+#' @field learn Fit cox model on the learning data set
 #'
-#' @field check_ph : Check proportional hazard assumption
+#' @field check_ph Check proportional hazard assumption
 #'
-#' @field calc_distance_matrix : Calculates full n x m / (n x n)-distance matrix
+#' @field calc_distance_matrix Calculates full n x m / (n x n)-distance matrix
 #'
-#' @field calc_similar_cases : get for each case in verum data nCases (=1,...,l < n)
+#' @field calc_similar_cases get for each case in verum data nCases (=1,...,l < n)
 #' similar cases from the learning data; (1:nCases matching)
 #'
 #' @usage cbrCoxModel$new
@@ -118,7 +118,7 @@ cbrCoxModel <- R6Class("cbrRegressionModel",
                                         }
                                       }
                                       weights[[i]] <- weightsTmp
-                                    } else {  # else Faktor numeric
+                                    } else {  # else numeric
                                       myLevel <- paste(self$terms[i])
                                       weights[[i]] <- coxFit$coefficients[myLevel]
                                     }
