@@ -12,4 +12,3 @@ cbrValidate
 R6 Validation Class for case based reasoning
 }
 \keyword{validation}
-

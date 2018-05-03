@@ -36,157 +36,156 @@
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @keywords Beta
-cbrCoxModel <- R6Class("cbrRegressionModel",
-                              inherit = cbrData,
-                              public=list(
-                                weights    = NULL,
-                                coxFit     = NULL,
-                                cph        = NULL,
-                                modelValid = NULL,
-                                # fast backward variable selection with penalization
-                                variable_selection = function() {
-                                  # Timing
-                                  start <- Sys.time()
-                                  cat("Start learning...\n")
-
-                                  #  datadist scoping
-                                  on.exit(detach("design.options"))
-                                  attach(list(), name="design.options")
-                                  self$data %>%
-                                    dplyr::select_(.dots = c(self$endPoint, self$terms)) -> dtData
-                                  assign('dd', rms::datadist(dtData), pos='design.options')
-                                  options(datadist="dd")
-
-                                  # Cox Regression
-                                  coxFit <- rms::cph(formula = self$formula,
-                                                     data    = dtData,
-                                                     x       = TRUE,
-                                                     y       = TRUE,
-                                                     surv    = T)
-
-                                  # Variable Selection
-                                  vars <- rms::fastbw(fit  = coxFit,
-                                                      type = "i")
-                                  cat(paste0("Initial variable set: ", paste(c(self$endPoint, self$terms), collapse = ", "), "\n"))
-                                  cat(paste0("Selected variable set: ", paste(vars$names.kept, collapse = ", "), "\n"))
-                                  vars <- c(self$endPoint, self$terms)
-                                  self$formula <- as.formula(paste0("Surv(", vars[1], ", ", vars[2], "~", paste(vars$names.kept, collapse = "+")))
-
-                                  # end timing
-                                  options(datadist=NULL)
-                                  end <- Sys.time()
-                                  duration <- round(as.numeric(end - start), 2)
-                                  cat(paste0("Learning finished in: ", duration, " seconds.\n"))
-                                },
-                                # fit model
-                                learn = function() {
-                                  # Timing
-                                  start <- Sys.time()
-                                  cat("Start learning...\n")
-                                  #  datadist scoping
-                                  on.exit(detach("design.options"))
-                                  attach(list(), name="design.options")
-                                  self$data %>%
-                                    dplyr::select_(.dots = c(self$endPoint, self$terms)) -> dtData
-                                  assign('dd', rms::datadist(dtData), pos='design.options')
-                                  options(datadist="dd")
-
-                                  # Cox Regression
-                                  coxFit <- rms::cph(formula = self$formula,
-                                                     data    = dtData,
-                                                     x       = TRUE,
-                                                     y       = TRUE,
-                                                     surv    = T)
-                                  self$coxFit <- coxFit
-                                  self$cph <- survival::cox.zph(self$coxFit, "rank")
-                                  
-                                  nVars <- length(self$terms) 
-                                  weights <- vector("list", nVars)
-                                  names(weights) <- self$terms
-                                  # get weights
-                                  for (i in 1:nVars) {
-                                    if (is.factor(self$data[[self$terms[i]]])) {
-                                      nLev <- nlevels(self$data[[self$terms[i]]])
-                                      weightsTmp <- rep(NA, times = nLev)
-                                      names(weightsTmp) <- levels(self$data[[self$terms[i]]])
-                                      for (j in 1:nLev) {
-                                        myLevel <- paste(self$terms[i], "=", levels(self$data[[self$terms[i]]])[j], sep="")
-                                        if (j==1) {
-                                          weightsTmp[j] <- 0
-                                        } else {
-                                          weightsTmp[j] <- coxFit$coefficients[myLevel]
-                                        }
-                                      }
-                                      weights[[i]] <- weightsTmp
-                                    } else {  # else numeric
-                                      myLevel <- paste(self$terms[i])
-                                      weights[[i]] <- coxFit$coefficients[myLevel]
-                                    }
-                                  }
-                                  self$weights <- weights
-                                  # end timing
-                                  options(datadist=NULL)
-                                  end <- Sys.time()
-                                  duration <- round(as.numeric(end - start), 2)
-                                  cat(paste0("Learning finished in: ", duration, " seconds.\n"))
-                                },
-                                # check proportional hazard
-                                check_ph=function() {
-                                  # learn if weights are empty
-                                  if (!is(self$weights, "list")) {
-                                    self$learn()
-                                  }
-                                  n <- length(self$terms)
-                                  ggPlot <- list()
-                                  for (i in 1:n) {
-                                    df <- data.frame(x=self$cph$x, y=self$cph$y[, i])
-                                    g <- ggplot2::ggplot(df, aes(x=x, y=y)) +
-                                      ggplot2::geom_hline(yintercept=0, colour="grey") +
-                                      ggplot2::geom_point() +
-                                      ggplot2::geom_smooth(color="#2773ae", fill="#2773ae") +
-                                      ggplot2::ylab(paste0("Beta(t) of ", self$terms[i])) +
-                                      ggplot2::xlab("Time to Event") +
-                                      cowplot::background_grid(major="xy", minor="xy")
-                                    ggPlot <- c(ggPlot, list(g))
-                                  }
-                                  return(cowplot::plot_grid(plotlist = ggPlot,
-                                                            ncol     = 2))
-                                }
-                              ),
-                              private = list(
-                                # check weights on NA
-                                check_weights = function() {
-                                  wNA <- unlist(lapply(self$weights, function(x) any(is.na(x))))
-                                  if (any(wNA)) {
-                                    cat(paste0("Variables: ", names(wNA)[which(wNA)], " have NA weights.\n"))
-                                    return(TRUE)
-                                  }
-                                  return(FALSE)
-                                },
-                                # calculate weighted absolute distance 
-                                get_distance_matrix=function() {
-                                  # learn if weights are empty
-                                  if (is.null(self$weights))
-                                    self$learn()
-                                  
-                                  if(private$check_weights()) {
-                                    stop("NA values in regression beta coefficients!")
-                                  }
-                                  
-                                  if (is.null(self$queryData)) {
-                                    queryData <- NULL
-                                  } else {
-                                    queryData <- data.table::copy(self$queryData)
-                                  }
-                                  trData <- private$transform_data(queryData = queryData, 
-                                                                   data      = data.table::copy(self$data), 
-                                                                   learnVars = self$terms, 
-                                                                   weights   = self$weights)
-                                  
-                                  self$distMat <- Similarity::wDistance(x       = trData$data, 
-                                                                        y       = trData$queryData, 
-                                                                        weights = trData$trafoWeights) %>% 
-                                    as.matrix()
-                                }
-                              )
+cbrCoxModel <- R6Class(classname = "cbrRegressionModel",
+                       inherit = cbrData,
+                       public=list(
+                         weights    = NULL,
+                         coxFit     = NULL,
+                         cph        = NULL,
+                         modelValid = NULL,
+                         # fast backward variable selection with penalization
+                         variable_selection = function() {
+                           # Timing
+                           start <- Sys.time()
+                           cat("Start learning...\n")
+                           
+                           #  datadist scoping
+                           on.exit(detach("design.options"))
+                           attach(list(), name="design.options")
+                           self$data %>%
+                             dplyr::select_(.dots = c(self$endPoint, self$terms)) -> dtData
+                           assign('dd', rms::datadist(dtData), pos='design.options')
+                           options(datadist="dd")
+                           
+                           # Cox Regression
+                           coxFit <- rms::cph(formula = self$formula,
+                                              data    = dtData,
+                                              x       = TRUE,
+                                              y       = TRUE,
+                                              surv    = T)
+                           
+                           # Variable Selection
+                           vars <- rms::fastbw(fit = coxFit, type = "i")
+                           cat(paste0("Initial variable set: ", paste(c(self$endPoint, self$terms), collapse = ", "), "\n"))
+                           cat(paste0("Selected variable set: ", paste(vars$names.kept, collapse = ", "), "\n"))
+                           vars <- c(self$endPoint, self$terms)
+                           self$formula <- as.formula(paste0("Surv(", vars[1], ", ", vars[2], "~", paste(vars$names.kept, collapse = "+")))
+                           
+                           # end timing
+                           options(datadist=NULL)
+                           end <- Sys.time()
+                           duration <- round(as.numeric(end - start), 2)
+                           cat(paste0("Learning finished in: ", duration, " seconds.\n"))
+                         },
+                         # fit model
+                         learn = function() {
+                           # Timing
+                           start <- Sys.time()
+                           cat("Start learning...\n")
+                           #  datadist scoping
+                           on.exit(detach("design.options"))
+                           attach(list(), name="design.options")
+                           self$data %>%
+                             dplyr::select_(.dots = c(self$endPoint, self$terms)) -> dtData
+                           assign('dd', rms::datadist(dtData), pos='design.options')
+                           options(datadist="dd")
+                           
+                           # Cox Regression
+                           coxFit <- rms::cph(formula = self$formula,
+                                              data    = dtData,
+                                              x       = TRUE,
+                                              y       = TRUE,
+                                              surv    = T)
+                           self$coxFit <- coxFit
+                           self$cph <- survival::cox.zph(self$coxFit, "rank")
+                           
+                           nVars <- length(self$terms) 
+                           weights <- vector("list", nVars)
+                           names(weights) <- self$terms
+                           # get weights
+                           for (i in 1:nVars) {
+                             if (is.factor(self$data[[self$terms[i]]])) {
+                               nLev <- nlevels(self$data[[self$terms[i]]])
+                               weightsTmp <- rep(NA, times = nLev)
+                               names(weightsTmp) <- levels(self$data[[self$terms[i]]])
+                               for (j in 1:nLev) {
+                                 myLevel <- paste(self$terms[i], "=", levels(self$data[[self$terms[i]]])[j], sep="")
+                                 if (j==1) {
+                                   weightsTmp[j] <- 0
+                                 } else {
+                                   weightsTmp[j] <- coxFit$coefficients[myLevel]
+                                 }
+                               }
+                               weights[[i]] <- weightsTmp
+                             } else {  # else numeric
+                               myLevel <- paste(self$terms[i])
+                               weights[[i]] <- coxFit$coefficients[myLevel]
+                             }
+                           }
+                           self$weights <- weights
+                           # end timing
+                           options(datadist=NULL)
+                           end <- Sys.time()
+                           duration <- round(as.numeric(end - start), 2)
+                           cat(paste0("Learning finished in: ", duration, " seconds.\n"))
+                         },
+                         # check proportional hazard
+                         check_ph=function() {
+                           # learn if weights are empty
+                           if (!is(self$weights, "list")) {
+                             self$learn()
+                           }
+                           n <- length(self$terms)
+                           ggPlot <- list()
+                           for (i in 1:n) {
+                             df <- data.frame(x=self$cph$x, y=self$cph$y[, i])
+                             g <- ggplot2::ggplot(df, aes(x=x, y=y)) +
+                               ggplot2::geom_hline(yintercept=0, colour="grey") +
+                               ggplot2::geom_point() +
+                               ggplot2::geom_smooth(color="#2773ae", fill="#2773ae") +
+                               ggplot2::ylab(paste0("Beta(t) of ", self$terms[i])) +
+                               ggplot2::xlab("Time to Event") +
+                               cowplot::background_grid(major="xy", minor="xy")
+                             ggPlot <- c(ggPlot, list(g))
+                           }
+                           return(cowplot::plot_grid(plotlist = ggPlot,
+                                                     ncol     = 2))
+                         }
+                       ),
+                       private = list(
+                         # check weights on NA
+                         check_weights = function() {
+                           wNA <- unlist(lapply(self$weights, function(x) any(is.na(x))))
+                           if (any(wNA)) {
+                             cat(paste0("Variables: ", names(wNA)[which(wNA)], " have NA weights.\n"))
+                             return(TRUE)
+                           }
+                           return(FALSE)
+                         },
+                         # calculate weighted absolute distance 
+                         get_distance_matrix=function() {
+                           # learn if weights are empty
+                           if (is.null(self$weights))
+                             self$learn()
+                           
+                           if(private$check_weights()) {
+                             stop("NA values in regression beta coefficients!")
+                           }
+                           
+                           if (is.null(self$queryData)) {
+                             queryData <- NULL
+                           } else {
+                             queryData <- data.table::copy(self$queryData)
+                           }
+                           trData <- private$transform_data(queryData = queryData, 
+                                                            data      = data.table::copy(self$data), 
+                                                            learnVars = self$terms, 
+                                                            weights   = self$weights)
+                           
+                           self$distMat <- cbr:::wDistance(x       = trData$data, 
+                                                           y       = trData$queryData, 
+                                                           weights = trData$trafoWeights) %>% 
+                             as.matrix()
+                         }
+                       )
 )

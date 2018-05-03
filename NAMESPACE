@@ -2,6 +2,11 @@
 
 export(cbrCoxModel)
 export(cbrRFModel)
+export(depthMatrixRanger)
+export(proximityMatrixRanger)
+export(rangerTreeAsMat)
+export(terminalNodeDistance)
+export(terminalNodeIdsRanger)
 import(R6)
 import(data.table)
 importFrom(R6,R6Class)

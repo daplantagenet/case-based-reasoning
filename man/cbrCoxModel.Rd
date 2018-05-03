@@ -31,18 +31,18 @@ If query data is ommitted, a n x n- distance matrix is returned.
 \section{Fields}{
 
 \describe{
-\item{\code{new}}{: Initialization of the cbrRegressionModel}
+\item{\code{new}}{Initialization of the cbrRegressionModel}
 
 \item{\code{variable_selection}}{: performs a fast backward variable selection}
 
-\item{\code{learn}}{: Fit cox model on the learning data set}
+\item{\code{learn}}{Fit cox model on the learning data set}
 
-\item{\code{check_ph}}{: Check proportional hazard assumption}
+\item{\code{check_ph}}{Check proportional hazard assumption}
 
-\item{\code{calc_distance_matrix}}{: Calculates full n x m / (n x n)-distance matrix}
+\item{\code{calc_distance_matrix}}{Calculates full n x m / (n x n)-distance matrix}
 
-\item{\code{calc_similar_cases}}{: get for each case in verum data nCases (=1,...,l < n)
+\item{\code{calc_similar_cases}}{get for each case in verum data nCases (=1,...,l < n)
 similar cases from the learning data; (1:nCases matching)}
 }}
-\keyword{Beta}
 
+\keyword{Beta}

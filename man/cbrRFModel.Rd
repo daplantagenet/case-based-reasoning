@@ -26,4 +26,3 @@ cases.
 }
 \keyword{Cox}
 \keyword{Model}
-

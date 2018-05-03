@@ -10,13 +10,19 @@ License: GPL-2
 LazyData: TRUE
 Depends:
     R6,
-    Similarity,
-    dplyr (>= 0.4.1),
     ranger,
     dplyr,
     data.table,
     magrittr,
     rms
+Imports:
+    Rcpp,
+    RcppArmadillo,
+    RcppParallel
+Suggests:
+    testthat
+LinkingTo: Rcpp, RcppParallel, RcppArmadillo
+SystemRequirements: C++11
 LazyLoad: yes
 ByteCompile: yes
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

@@ -14,4 +14,3 @@ transforms data to integer representation;
 necessary for c++ functions
 }
 \keyword{datasets}
-
