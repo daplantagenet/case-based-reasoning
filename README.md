@@ -2,7 +2,14 @@
 
 # Case Based Reasoning for Survival Data
 
-http://sipemu.github.io/case-based-reasoning/
+### Installation
+
+```
+devtools::install_github("sipemu/case-based-reasoning")
+```
+### More
+
+[Website](http://sipemu.github.io/case-based-reasoning/)
 
 ### Literatur
 
