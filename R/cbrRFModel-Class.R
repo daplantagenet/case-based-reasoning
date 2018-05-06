@@ -62,7 +62,7 @@ cbrRFModel <- R6Class("cbrRFModel",
                                                            num.trees    = self$methodArgs$ntree,
                                                            mtry         = self$methodArgs$mtry,
                                                            splitrule    = self$methodArgs$splitrule, 
-                                                           num.threads  = NULL, self$methodArgs$nCores,
+                                                           num.threads  = NULL, # self$methodArgs$nCores,
                                                            write.forest = T,
                                                            save.memory  = self$methodArgs$save.memory)
                           end <- Sys.time()
