@@ -10,7 +10,7 @@ cbrData <- R6Class("cbrData",
                      simCases  = NULL,
                      k         = NULL,
                      # initialize class
-                     initialize = function(formula, data, queryData=NULL) {
+                     initialize = function(formula) {
                        formula <- formula(formula)
                        if (class(formula) != "formula") {
                          stop("Error: Invalid formula.")
@@ -18,12 +18,12 @@ cbrData <- R6Class("cbrData",
                        self$formula <- formula
                        self$terms <- attr(terms(formula, data=self$data), which = "term.labels")
                        self$endPoint <- all.vars(formula)[1:2]
-                       self$data <- as.data.table(data)
-                       self$data <- private$check_data(self$data)
-                       if (!is.null(queryData)) {
-                         self$queryData <- as.data.table(queryData) 
-                         self$queryData <- private$check_data(self$queryData, F) 
-                       }
+                       # self$data <- as.data.table(data)
+                       # self$data <- private$check_data(self$data)
+                       # if (!is.null(queryData)) {
+                       #   self$queryData <- as.data.table(queryData) 
+                       #   self$queryData <- private$check_data(self$queryData, F) 
+                       # }
                      },
                      # get query data, if there are missing values,
                      # return imputed data
