@@ -1,108 +1,77 @@
 cbrData <- R6Class("cbrData",
                    public = list(
+                     # variables
                      formula   = NULL,
                      terms     = NULL,
                      endPoint  = NULL,
-                     data      = NULL,
-                     queryData = NULL,
+                     # distance matrix
                      distMat   = NULL,
                      orderMat  = NULL,
-                     simCases  = NULL,
-                     k         = NULL,
                      # initialize class
                      initialize = function(formula) {
                        formula <- formula(formula)
-                       if (class(formula) != "formula") {
-                         stop("Error: Invalid formula.")
-                       }
+                       testthat::expect_is(formula, "formula", "Invalid formula.")
                        self$formula <- formula
                        self$terms <- attr(terms(formula, data=self$data), which = "term.labels")
                        self$endPoint <- all.vars(formula)[1:2]
-                       # self$data <- as.data.table(data)
-                       # self$data <- private$check_data(self$data)
-                       # if (!is.null(queryData)) {
-                       #   self$queryData <- as.data.table(queryData) 
-                       #   self$queryData <- private$check_data(self$queryData, F) 
-                       # }
                      },
-                     # get query data, if there are missing values,
-                     # return imputed data
-                     get_query_data = function () {
-                       return(self$queryData)
-                     },
-                     # get learning data, if it is imputed return imputed data
-                     # else data.frame without missing cases
-                     get_data = function () {
-                       return(self$data)
-                     },
-                     get_sim_cases = function() {
-                       return(self$simCases)
-                     },
-                     # return query + matched data
-                     get_matched_data = function() {
-                       if (is.null(self$simCases))
-                         stop("Error: Model is not learned.")
-                       
-                       queryData <- self$queryData
-                       queryData$scCaseId <- 1:nrow(queryData)
-                       queryData$group <- "Query Data"
-                       matchedData <- self$simCases
-                       matchedData$scCaseId <- rep(1:nrow(queryData), each = self$k)
-                       matchedData$caseId <- NULL
-                       matchedData$scDist <- NULL
-                       matchedData$group <- "Matched Data"
-                       rbind(queryData, matchedData) %>% 
-                         dplyr::arrange(scCaseId) %>% 
-                         dplyr::select(-scCaseId)
-                     },
-                     validate_model = function(plot=T) {
-                       if (is.null(self$simCases))
-                         stop("Error: no similar cases.")
-                       valSC <- cbrValidate$new()
-                       return(valSC$validate(self$queryData,
-                                             self$simCases,
-                                             self$terms,
-                                             plot))
+                     fit = function(dtData) {
+                       # virtual function
                      },
                      # calculate distance matrix
-                     calc_distance_matrix = function() {
+                     calc_distance_matrix = function(dtData, queryData = NULL) {
                        # Start calculation
                        start <- Sys.time()
                        cat("Start calculating distance matrix...\n")
                        # get distance matrix
-                       private$get_distance_matrix()
+                       dtData %>% 
+                        private$get_distance_matrix(queryData = queryData) -> distanceMatrix
                        end <- Sys.time()
                        duration <- round(as.numeric(end - start), 2)
                        cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
+                       distanceMatrix
                      },
                      # get similar cases from reference data
-                     calc_similar_cases = function(k = 1) {
-                       if (is.null(self$queryData)) {
-                         stop("Error: no query data.")
+                     get_similar_cases = function(dtData, queryData, k = 1, addDistance = T, merge = T) {
+                       
+                       # check nCases input
+                       testthat::expect_is(k, "numeric")
+                       testthat::expect_true(k >= 0, "numeric")
+                       # catch floating numbers
+                       k <- as.integer(k)
+                       
+                       if (missing(queryData)) {
+                         queryData <- data.table::copy(queryData)
                        }
+                       
                        start <- Sys.time()
                        cat("Start caclulating similar cases...\n")
                        
-                       # check nCases input
-                       if (!is.numeric(k))
-                         stop("Error: k must be numeric.")
-                       if (k <= 0)
-                         stop("Error: k must be positive integer value.")
+                       # calculate distance matrix
+                       dtData %>% 
+                         private$get_distance_matrix(queryData = queryData) -> distanceMatrix
                        
-                       self$k <- k
-                       # catch floating numbers
-                       k <- as.integer(k)
-                       private$get_distance_matrix()
                        # calculate distance and order of cases based on distance calculation
-                       private$get_similar_cases(k)
+                       queryData %>% 
+                         private$extract_similar_cases(distanceMatrix = distanceMatrix, 
+                                                       k              = k, 
+                                                       addDistance    = addDistance, 
+                                                       merge          = merge) -> similarCases
                        end <- Sys.time()
                        duration <- round(as.numeric(end - start), 2)
                        cat(paste0("Similar cases calculation finished in: ", duration, " seconds.\n"))
+                       
+                       similarCases
                      }
                    ),
                    private = list(
                      # check data sets
                      check_data = function(x, isLearning=T) {
+                       if (is(x, "data.table")) {
+                         x <- data.table::copy(x)
+                       } else {
+                         x <- data.table::copy(data.table::as.data.table(x))
+                       }
                        # drop cases with missing values in the relevant variables
                        x <- private$drop_missing(x, isLearning)
                        if (nrow(x) == 0) {
@@ -143,10 +112,6 @@ cbrData <- R6Class("cbrData",
                        }
                        return(x)
                      },
-                     # drop levels from each variable
-                     drop_levels = function() {
-
-                     },
                      #' transforms data to integer representation;
                      #' necessary for c++ functions
                      to_int = function(x) {
@@ -162,72 +127,46 @@ cbrData <- R6Class("cbrData",
                        }
                        return(x)
                      },
-                     # transform_data:
-                     # we transform all factors to their corresponding
-                     # weights and set weight equal to 1 for factor variables
-                     transform_data = function(queryData, data, learnVars, weights) {
-                       nVars <- length(learnVars)
-                       trafoWeights <- rep(0, nVars)
-                       for (j in 1:nVars) {
-                         if (is.factor(data[[learnVars[j]]])) {
-                           if (!is.null(queryData)) {
-                            queryData[[learnVars[j]]] <- weights[[learnVars[j]]][queryData[[learnVars[j]]]]
-                           }
-                           data[[learnVars[j]]] <- weights[[learnVars[j]]][data[[learnVars[j]]]]
-                           trafoWeights[j] <- 1
-                         } else { # else keep weights
-                           trafoWeights[j] <- weights[[learnVars[j]]]
-                         }
-                       }
-                       names(trafoWeights) <- NULL
-                       
-                       if(is.null(queryData)) {
-                         queryData <- NULL
-                       } else {
-                         queryData <- unname(as.matrix(queryData[, learnVars, with=F]))
-                       }
-                       return(list(queryData    = queryData,
-                                   data         = unname(as.matrix(data[, learnVars, with=F])),
-                                   trafoWeights = trafoWeights))
-                     },
                      # calculate distance 
-                     get_distance_matrix=function() {
+                     get_distance_matrix=function(dtData, queryData = NULL) {
                        # model specific
                      },
                      # get similar cases
-                     get_similar_cases=function(k = 1) {
-                       self$orderMat <- Similarity::orderCPP(as.matrix(self$distMat), k = k)
-                       similarCases <- do.call(rbind, apply(self$orderMat, 1,
-                                                            function(x, data=self$data) {
-                                                              data[x, ]
-                                                            }
-                                                            )
-                       )
+                     extract_similar_cases=function(dtData, distanceMatrix, k = 1, addDistance = T, merge = T) {
+                       n <- nrow(distanceMatrix)
+                       m <- nrow(distanceMatrix)
+                       
+                       distanceMatrix %>% 
+                         cbr::orderCPP(as.matrix(self$distMat), k = k) -> orderedMatrix
+                       similarCases <- do.call(rbind, apply(orderedMatrix, 1, function(x, data=dtData) {data[x, ]}))
+                       
                        # get distances
-                       self$orderMat <- cbind(1:nrow(self$orderMat), self$orderMat)
-                       distance <-  as.numeric(apply(self$orderMat, 1,
-                                                     function(x, data=self$distMat) {
-                                                       data[x[2:length(x)], x[1]]
-                                                     }
-                       ))
+                       # add column ids
+                       if (addDistance) {
+                         orderedMatrix <- cbind(1:nrow(orderedMatrix), orderedMatrix)
+                         distance <- as.numeric(apply(orderedMatrix, 1, function(x, data=distanceMatrix) {data[x[2:length(x)], x[1]]}))
+                         similarCases$scDist <- distance
+                       }
                        
                        # mark similar cases: 1:n ids
-                       similarCases$caseId <- rep(1:nrow(self$queryData), each=k)
-                       similarCases$scDist <- distance
-                       self$simCases <- similarCases
+                       similarCases$caseId <- rep(1:m, each=k)
+                       
+                       if (merge) {
+                         dtData %>% 
+                          private$merge_matched_data(similarCases = similarCases, k = k) -> similarCases
+                       }
+                       similarCases
                      },
-                     # calculate distance and return n nearest distance and
-                     # row id of n nearest cases from reference data;
-                     calc_kNN = function(newCases, learning, learnVars, weights, k) {
-                       trfData <- private$transform_data(newCases, learning, learnVars, weights)
-                       return(
-                         cbr:::get_nearest_Elements(
-                           x             = trfData$learning,
-                           query         = trfData$newCases,
-                           weights       = trfData$trafoweights,
-                           sortDirection = 0L,
-                           k             = k)
-                       )
+                     # return query + matched data
+                     merge_matched_data = function(queryData, similarCases, k) {
+                       # scCaseId: finally sort data.frame such that matched cases are close
+                       queryData$scCaseId <- 1:nrow(queryData)
+                       queryData$group <- "Query Data"
+                       matchedData <- similarCases
+                       matchedData$scCaseId <- rep(1:nrow(queryData), each = k)
+                       matchedData$group <- "Matched Data"
+                       rbind(queryData, matchedData) %>% 
+                         dplyr::arrange(scCaseId)
                      }
                    )
 )
