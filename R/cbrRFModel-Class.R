@@ -44,6 +44,9 @@ cbrRFModel <- R6Class("cbrRFModel",
                         },
                         fit=function(dtData) {
                           
+                          dtData <- as.data.table(dtData)
+                          dtData <- private$check_data(dtData)
+                          
                           # Timing
                           start <- Sys.time()
                           cat("Start learning...\n")
