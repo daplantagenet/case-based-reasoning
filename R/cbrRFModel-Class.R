@@ -25,7 +25,7 @@ cbrRFModel <- R6Class("cbrRFModel",
                         orderMat   = NULL,
                         simCases   = NULL,
                         distMethod = "depth",
-                        initialize = function(formula, ntree = 500, mtry = NULL, splitrule="maxstat", minprop=.35, save.memory=T, ...) {
+                        initialize = function(formula, ntree = 500, mtry = NULL, splitrule="maxstat", minprop=.35, save.memory=T, nCores = 4, ...) {
                           # split rule
                           if (missing(splitrule)) {
                             splitrule <- "logrank"
@@ -38,6 +38,7 @@ cbrRFModel <- R6Class("cbrRFModel",
                             mtry = mtry,
                             splitrule = splitrule,
                             minprop = minprop,
+                            nCores = nCores,
                             save.memory = save.memory
                           )
                           self$methodArgs <- args
@@ -58,12 +59,12 @@ cbrRFModel <- R6Class("cbrRFModel",
                           # Learning
                           self$rangerObj <- ranger::ranger(formula      = self$formula,
                                                            data         = dtData,
-                                                           num.trees    = ntree,
-                                                           mtry         = mtry,
-                                                           splitrule    = splitrule, 
-                                                           num.threads  = 6,
+                                                           num.trees    = self$methodArgs$ntree,
+                                                           mtry         = self$methodArgs$mtry,
+                                                           splitrule    = self$methodArgs$splitrule, 
+                                                           num.threads  = NULL, self$methodArgs$nCores,
                                                            write.forest = T,
-                                                           save.memory  = save.memory)
+                                                           save.memory  = self$methodArgs$save.memory)
                           end <- Sys.time()
                           duration <- round(as.numeric(end - start), 2)
                           cat(paste0("Random Forest for Survival calculation finished in: ", duration, " seconds.\n"))
