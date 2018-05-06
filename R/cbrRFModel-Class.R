@@ -20,25 +20,36 @@ cbrRFModel <- R6Class("cbrRFModel",
                       inherit = cbrData,
                       public=list(
                         rangerObj  = NULL,
+                        methodArgs = NULL,
                         distMat    = NULL,
                         orderMat   = NULL,
                         simCases   = NULL,
                         distMethod = "depth",
-                        learn=function(ntree = 500, mtry = NULL, splitrule="logrank", minprop=.05, save.memory=T) {
+                        initialize = function(formula, ntree = 500, mtry = NULL, splitrule="maxstat", minprop=.35, save.memory=T, ...) {
                           # split rule
                           if (missing(splitrule)) {
                             splitrule <- "logrank"
                           }
-                          if (!splitrule %in% c("logrank", "C"))
-                            stop("Error: splitrule should be: logrank, C, or maxstat.")
+                          splitrule <- match.arg(splitrule, c("logrank", "maxstat", "C"))
+                          
+                          super$initialize(formula)
+                          args <- list(
+                            ntree = ntree,
+                            mtry = mtry,
+                            splitrule = splitrule,
+                            minprop = minprop,
+                            save.memory = save.memory
+                          )
+                          self$methodArgs <- args
+                        },
+                        fit=function(dtData) {
                           
                           # Timing
                           start <- Sys.time()
                           cat("Start learning...\n")
-                          
                           # new data available?
                           variables <- c(self$endPoint, self$learnVars)
-                          self$data %>%
+                          dtData %>%
                             dplyr::select_(.dots = all.vars(self$formula)) -> dtData
                           
                           # Learning
@@ -55,10 +66,7 @@ cbrRFModel <- R6Class("cbrRFModel",
                           cat(paste0("Random Forest for Survival calculation finished in: ", duration, " seconds.\n"))
                         },
                         set_dist=function(distMethod = "depth") {
-                          # distance method
-                          if (!distMethod %in% c("proximity", "depth")) {
-                            stop("Error: distMethod should be: proximity or depth.")
-                          }
+                          distMethod <- match.arg(distMethod, c("proximity", "depth"))
                           self$distMethod <- distMethod
                         }
                       ),
