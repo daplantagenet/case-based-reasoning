@@ -1,13 +1,13 @@
-Package: cbr
+Package: CaseBasedReasoning
 Type: Package
-Title: Case-Based-Resoning
+Title: Case-Based-Resoning for Survival Data
 Version: 0.1
 Date: 2018-05-07
-Author: Dr. Simon Mueller <info@muon-stat.com>
+Author: Dr. Simon Mueller <info@muon-stat.com>, PD Dr. Juergen Dippon <juergen.dippon@mathematik.uni-stuttgart.de>
 Maintainer: Dr. Simon Mueller <info@muon-stat.com>
 Description: Case Based Reasoning for survival data
 URL: https://github.com/sipemu/case-based-reasoning
-License: GPL-2
+License: AGPL
 LazyData: TRUE
 Depends:
     R6,

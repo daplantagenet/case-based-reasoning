@@ -47,7 +47,3 @@ Besides the functionality of searching similar cases, some additional features a
 [1] http://www.biostat.jhsph.edu/~estuart/StuRub_MatchingChapter_07.pdf
 
 [2] http://www.biomedcentral.com/1472-6947/14/24
-
-## License
-
-GPL-2

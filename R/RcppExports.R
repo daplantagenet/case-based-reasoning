@@ -2,14 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 orderMatrixCPP <- function(x, sortDirection, k = 5L) {
-    .Call('_cbr_orderMatrixCPP', PACKAGE = 'cbr', x, sortDirection, k)
+    .Call('_CaseBasedReasoning_orderMatrixCPP', PACKAGE = 'CaseBasedReasoning', x, sortDirection, k)
 }
 
 orderVectorCPP <- function(x, sortDirection, k = 0L) {
-    .Call('_cbr_orderVectorCPP', PACKAGE = 'cbr', x, sortDirection, k)
+    .Call('_CaseBasedReasoning_orderVectorCPP', PACKAGE = 'CaseBasedReasoning', x, sortDirection, k)
 }
 
 terminalNodeIDRanger <- function(x, childNodes1, childNodes2, splitValues, splitVarIds) {
-    .Call('_cbr_terminalNodeIDRanger', PACKAGE = 'cbr', x, childNodes1, childNodes2, splitValues, splitVarIds)
+    .Call('_CaseBasedReasoning_terminalNodeIDRanger', PACKAGE = 'CaseBasedReasoning', x, childNodes1, childNodes2, splitValues, splitVarIds)
 }
 

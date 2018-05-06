@@ -1,4 +1,7 @@
-cbrData <- R6Class("cbrData",
+#' Root class for common functionality of this package
+#' 
+#' @keywords data-preparation
+CBRBase <- R6Class("CBRBase",
                    public = list(
                      # variables
                      formula   = NULL,
@@ -25,7 +28,7 @@ cbrData <- R6Class("cbrData",
                        cat("Start calculating distance matrix...\n")
                        # get distance matrix
                        dtData %>% 
-                        private$get_distance_matrix(queryData = queryData) -> distanceMatrix
+                         private$get_distance_matrix(queryData = queryData) -> distanceMatrix
                        end <- Sys.time()
                        duration <- round(as.numeric(end - start), 2)
                        cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
@@ -153,7 +156,7 @@ cbrData <- R6Class("cbrData",
                        
                        if (merge) {
                          dtData %>% 
-                          private$merge_matched_data(similarCases = similarCases, k = k) -> similarCases
+                           private$merge_matched_data(similarCases = similarCases, k = k) -> similarCases
                        }
                        similarCases
                      },

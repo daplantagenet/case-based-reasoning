@@ -1,10 +1,10 @@
 #' case based reasoning
 #' @docType package
-#' @name cbr
+#' @name CaseBasedReasoning
 #' @import R6
 #' @import data.table
 #' @import Rcpp
 #' @import RcppArmadillo
 #' @importFrom RcppParallel RcppParallelLibs
-#' @useDynLib cbr
+#' @useDynLib CaseBasedReasoning
 NULL

@@ -37,7 +37,7 @@
 #' @format An \code{\link{R6Class}} generator object
 #' @keywords Beta
 CoxBetaModel <- R6Class(classname = "CoxBetaModel",
-                        inherit = cbrData,
+                        inherit = CBRBase,
                         public=list(
                           weights    = NULL,
                           coxFit     = NULL,

@@ -16,8 +16,8 @@
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @keywords Cox Model
-RFModel <- R6Class("RFModel",
-                   inherit = cbrData,
+RFModel <- R6Class(classname = "RFModel",
+                   inherit = CBRBase,
                    public=list(
                      rangerObj  = NULL,
                      methodArgs = NULL,

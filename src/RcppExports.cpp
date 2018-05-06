@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // orderMatrixCPP
 arma::umat orderMatrixCPP(arma::mat& x, const int sortDirection, int k);
-RcppExport SEXP _cbr_orderMatrixCPP(SEXP xSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
+RcppExport SEXP _CaseBasedReasoning_orderMatrixCPP(SEXP xSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -21,7 +21,7 @@ END_RCPP
 }
 // orderVectorCPP
 arma::uvec orderVectorCPP(arma::vec x, const int sortDirection, int k);
-RcppExport SEXP _cbr_orderVectorCPP(SEXP xSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
+RcppExport SEXP _CaseBasedReasoning_orderVectorCPP(SEXP xSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -34,7 +34,7 @@ END_RCPP
 }
 // terminalNodeIDRanger
 arma::vec terminalNodeIDRanger(arma::mat& x, arma::vec& childNodes1, arma::vec& childNodes2, arma::vec& splitValues, arma::vec& splitVarIds);
-RcppExport SEXP _cbr_terminalNodeIDRanger(SEXP xSEXP, SEXP childNodes1SEXP, SEXP childNodes2SEXP, SEXP splitValuesSEXP, SEXP splitVarIdsSEXP) {
+RcppExport SEXP _CaseBasedReasoning_terminalNodeIDRanger(SEXP xSEXP, SEXP childNodes1SEXP, SEXP childNodes2SEXP, SEXP splitValuesSEXP, SEXP splitVarIdsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -49,13 +49,13 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_cbr_orderMatrixCPP", (DL_FUNC) &_cbr_orderMatrixCPP, 3},
-    {"_cbr_orderVectorCPP", (DL_FUNC) &_cbr_orderVectorCPP, 3},
-    {"_cbr_terminalNodeIDRanger", (DL_FUNC) &_cbr_terminalNodeIDRanger, 5},
+    {"_CaseBasedReasoning_orderMatrixCPP", (DL_FUNC) &_CaseBasedReasoning_orderMatrixCPP, 3},
+    {"_CaseBasedReasoning_orderVectorCPP", (DL_FUNC) &_CaseBasedReasoning_orderVectorCPP, 3},
+    {"_CaseBasedReasoning_terminalNodeIDRanger", (DL_FUNC) &_CaseBasedReasoning_terminalNodeIDRanger, 5},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_cbr(DllInfo *dll) {
+RcppExport void R_init_CaseBasedReasoning(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }
