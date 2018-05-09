@@ -7,7 +7,7 @@ std::shared_ptr<Distance> DistanceFactory::createDistanceFunction(Rcpp::List& at
   std::string distName = attrs["method"];
   std::shared_ptr<IDistance> distanceFunction = NULL;
   
-  if (isEqualStr(distName, "RangerProximity")) {
+  if (isEqualStr(distName, "Proximity")) {
     int nTrees = 0;
     if (arguments.containsElementNamed("nTrees")) {
       nTrees = Rcpp::as<int >(arguments["nTrees"])
@@ -15,7 +15,7 @@ std::shared_ptr<Distance> DistanceFactory::createDistanceFunction(Rcpp::List& at
       Rcpp::stop("Parameter nTrees is neccessary for Proximity Distance.");
     }
     distanceFunction = std::make_shared<DistanceRFProximity>(nTrees);
-  } else if (isEqualStr(distName, "RangerDepth")) {
+  } else if (isEqualStr(distName, "Depth")) {
 
     distanceFunction = std::make_shared<DistanceRFDepth>();
   }

@@ -43,11 +43,11 @@ struct ParallelTerminalNodes : public RcppParallel::Worker {
 };
 
 // [[Rcpp::export]]
-arma::vec terminalNodeIDRanger(arma::mat& x,
-                               arma::vec& childNodes1, 
-                               arma::vec& childNodes2, 
-                               arma::vec& splitValues, 
-                               arma::vec& splitVarIds) {
+arma::vec cpp_terminalNodeIDRanger(arma::mat& x,
+                                   arma::vec& childNodes1, 
+                                   arma::vec& childNodes2, 
+                                   arma::vec& splitValues, 
+                                   arma::vec& splitVarIds) {
   int nrow = x.n_rows;
   arma::vec output(nrow);
   output.fill(0);
