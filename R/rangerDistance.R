@@ -28,6 +28,10 @@ terminalNodeIdsRanger <- function(x, rf) {
 }
 
 
+distanceRF <- function(x, y = NULL, rf, method = "") {
+  
+}
+
 #' Get proximity matrix of an ranger object
 #'
 #' @param x a new dataset

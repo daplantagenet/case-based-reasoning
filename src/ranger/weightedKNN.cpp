@@ -2,11 +2,11 @@
 #include <RcppArmadillo.h>
 
 // [[Rcpp::export]]
-Rcpp::List weighted_knn(arma::mat x,
-                        arma::mat query,
-                        arma::vec weights,
-                        const char sortDirection,
-                        const std::size_t k) {
+Rcpp::List cpp_weighted_knn(arma::mat x,
+                            arma::mat query,
+                            arma::vec weights,
+                            const char sortDirection,
+                            const std::size_t k) {
   
   std::size_t nVars = weights.size();
   std::size_t nQuery = query.n_rows;
