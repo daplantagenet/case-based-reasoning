@@ -7,6 +7,7 @@
 
 # C++ .o or .dll files
 src/*.o
+src/*.so
 src/*.dll
 
 # Example code in package build process
