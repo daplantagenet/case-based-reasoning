@@ -7,7 +7,7 @@
 #include <memory>
 
 #include "Distance.h"
-#include "ranger/RangerForestDistance.h"
+#include "ranger/RangerForestNodeDistance.h"
 #include "containers/RFDistanceContainer.h"
 
 class DistanceFactory {
@@ -19,7 +19,6 @@ public:
   explicit DistanceFactory(arma::mat &dataMatrix) : dataMatrix(dataMatrix), isDataMatrix(true) {};
   explicit DistanceFactory(std::vector<arma::mat> &dataMatrixList) : dataMatrixList(dataMatrixList), isDataMatrix(false) {};
   std::shared_ptr<Distance> createDistanceFunction(Rcpp::List& attr, Rcpp::List& arguments);
-  arma::vec get() {return output_;};
 };
 
 #endif

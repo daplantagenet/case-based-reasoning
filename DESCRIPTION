@@ -1,41 +1,11 @@
-<<<<<<< HEAD
-Package: cbr
-Type: Package
-Title: Case-Based-Resoning
-Version: 0.1
-Date: 2016-09-10
-Author: Dr. Simon Mueller <info@muon-stat.com>
-Maintainer: Dr. Simon Mueller <info@muon-stat.com>
-Description: Case Based Reasoning
-License: GPL-2
-LazyData: TRUE
-Depends:
-    R6,
-    ranger,
-    dplyr,
-    data.table,
-    magrittr,
-    rms
-Imports:
-    Rcpp,
-    RcppArmadillo,
-    RcppParallel
-Suggests:
-    testthat
-LinkingTo: Rcpp, RcppParallel, RcppArmadillo
-SystemRequirements: C++11
-LazyLoad: yes
-ByteCompile: yes
-RoxygenNote: 6.0.1
-=======
 Package: CaseBasedReasoning
 Type: Package
-Title: Case-Based-Resoning for Survival Data
+Title: Case-Based Resoning
 Version: 0.1
 Date: 2018-05-07
 Author: Dr. Simon Mueller <info@muon-stat.com>, PD Dr. Juergen Dippon <juergen.dippon@mathematik.uni-stuttgart.de>
 Maintainer: Dr. Simon Mueller <info@muon-stat.com>
-Description: Case Based Reasoning for survival data
+Description: Case Based Reasoning an machine learning approach
 URL: https://github.com/sipemu/case-based-reasoning
 License: AGPL
 LazyData: TRUE
@@ -57,4 +27,3 @@ SystemRequirements: C++11
 LazyLoad: yes
 ByteCompile: yes
 RoxygenNote: 6.0.1
->>>>>>> 1d4213d69cd9ee46e409be573717b96a75494b2e

@@ -4,7 +4,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include<RcppArmadillo.h>
 
-#include "containers/nodeDistContainer.h"
+#include "containers/RFDistanceContainer.h"
 
 class Distance {
 public:

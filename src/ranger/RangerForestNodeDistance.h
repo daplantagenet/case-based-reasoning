@@ -1,7 +1,7 @@
 #define STRICT_R_HEADERS
 
-#ifndef RANGERFOREST_H
-#define RANGERFOREST_H
+#ifndef RANGERFORESTNODEDISTANCE_H
+#define RANGERFORESTNODEDISTANCE_H
 
 // [[Rcpp::depends(RcppParallel)]]
 #include <RcppParallel.h>

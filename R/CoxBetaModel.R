@@ -1,4 +1,4 @@
-#' Cox-Regression Model
+#' Cox-Beta Model
 #'
 #' Regression beta coefficients are use for building a weighted distance measure between
 #' the learning and verum data set. The learning data set is used for learning the Cox
