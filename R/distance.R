@@ -24,7 +24,7 @@
 #' }
 #' 
 #' @export
-distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity") {
+distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", threads = NULL) {
   method <- match.arg(method, c("Proximity", "Depth"))
   testthat::expect_is(rfObject, "ranger")
   testthat::expect_false(object = is.null(rfObject$forest), 
@@ -43,7 +43,21 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity") {
   }
   input <- list(xNodes, yNodes)
   
-  cpp_parallelDistance(dataList = input)
+  # Arguments
+  arguments <- list()
+  arguments["method"] <- method
+  
+  # Attributes
+  N <- ifelse(is.list(x), length(x), nrow(x))
+  attrs <- list(Size = N, Labels = names(x), Diag = diag, Upper = upper,
+                method = METHODS[methodIdx], call = match.call(), class = "dist")
+  
+  # set number of threads
+  if (!is.null(threads)) {
+    RcppParallel::setThreadOptions(numThreads = threads)
+  }
+  
+  cpp_parallelDistance(dataList = input, attrs = attrs, arguments = arguments)
 }
 
 
@@ -70,5 +84,5 @@ distanceTerminalNodes <- function(rfObject) {
                          info   = "Ranger object does not contain a forest.")
   rfObject %>% 
     forestToMatrix() %>% 
-    cpp_terminalNodeIDRanger()
+    cpp_TerminalNodeDistance()
 }

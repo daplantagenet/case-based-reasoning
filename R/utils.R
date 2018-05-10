@@ -17,17 +17,17 @@
 #' }
 #' 
 #' @export
-terminalNodeIDs <- function(x, rf) {
+terminalNodeIDs <- function(x, rfObject) {
   testthat::expect_is(rfObject, "ranger")
   testthat::expect_false(object = is.null(rfObject$forest), 
                          info   = "Ranger object does not contain a forest.")
   x <- as.matrix(x)
   res=sapply(1:rf$num.trees, function(tree) {
-    terminalNodeIDRanger(x = x, 
-                         childNodes1 = rf$forest$child.nodeIDs[[tree]][[1]], 
-                         childNodes2 = rf$forest$child.nodeIDs[[tree]][[2]], 
-                         splitValues = as.double(rf$forest$split.values[[tree]]),
-                         splitVarIds = rf$forest$split.varIDs[[tree]])
+    cpp_terminalNodeID(x = x, 
+                       childNodes1 = rf$forest$child.nodeIDs[[tree]][[1]], 
+                       childNodes2 = rf$forest$child.nodeIDs[[tree]][[2]], 
+                       splitValues = as.double(rf$forest$split.values[[tree]]),
+                       splitVarIds = rf$forest$split.varIDs[[tree]])
   }, simplify = F)
   res <- do.call(cbind, res)
   as.matrix(res)
