@@ -22,8 +22,8 @@ node id.
 \examples{
 \dontrun{
 library(ranger)
-rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-terminalNodeIDs(iris[, -5], rf)
+rf.fit <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
+terminalNodeIDs(iris[, -5], rf.fit)
 }
 
 }

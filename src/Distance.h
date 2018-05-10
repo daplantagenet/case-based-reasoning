@@ -8,8 +8,8 @@
 
 class Distance {
 public:
-  virtual ~Distance() {};
-  virtual double calc_distance(const arma::mat& X, const arma::mat& Y) const { return 0.0;};
+  Distance() {};
+  virtual double calc_distance(const arma::mat& X, const arma::mat& Y) {return 0.0;};
   
   void set_parameters() {};
 };

@@ -60,12 +60,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_TerminalNodeDistance
+Rcpp::DataFrame cpp_TerminalNodeDistance(arma::umat& nodeIDs);
+RcppExport SEXP _CaseBasedReasoning_cpp_TerminalNodeDistance(SEXP nodeIDsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::umat& >::type nodeIDs(nodeIDsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_TerminalNodeDistance(nodeIDs));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_CaseBasedReasoning_cpp_parallelDistance", (DL_FUNC) &_CaseBasedReasoning_cpp_parallelDistance, 3},
     {"_CaseBasedReasoning_cpp_order_matrix", (DL_FUNC) &_CaseBasedReasoning_cpp_order_matrix, 3},
     {"_CaseBasedReasoning_cpp_order_vector", (DL_FUNC) &_CaseBasedReasoning_cpp_order_vector, 3},
     {"_CaseBasedReasoning_cpp_terminalNodeID", (DL_FUNC) &_CaseBasedReasoning_cpp_terminalNodeID, 5},
+    {"_CaseBasedReasoning_cpp_TerminalNodeDistance", (DL_FUNC) &_CaseBasedReasoning_cpp_TerminalNodeDistance, 1},
     {NULL, NULL, 0}
 };
 

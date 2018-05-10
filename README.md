@@ -2,9 +2,9 @@
 [![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/cbr?)](https://cran.r-project.org/web/packages/cbr/)
 [![Build Status](https://travis-ci.org/sipemu/case-based-reasoning.svg?branch=master)](https://travis-ci.org/sipemu/case-based-reasoning)
 
-# Case Based Reasoning for Survival Data
+# Case Based Reasoning
 
-The R package case-based-reasoning provides an R interface case based reasoning on survival data.
+The R package case-based-reasoning provides an R interface case based reasoning using machine learning.
 
 ## Installation
 
@@ -23,11 +23,11 @@ devtools::install_github("sipemu/case-based-reasoning")
 
 ## Features
 
-This R package provides two methods case based reasoning for survival data:
+This R package provides two methods case based reasoning by using an endpoint:
 
-- Cox-Regression
+- Linear, logistic, and Cox regression
 
-- Random Survival Forest (Proximity and Depth Measure)
+- Proximity and Depth Measure extracted from a fitted random forest
 
 Besides the functionality of searching similar cases, some additional features are included:
 

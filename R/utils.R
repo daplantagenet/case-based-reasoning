@@ -12,8 +12,8 @@
 #' @examples
 #' \dontrun{
 #' library(ranger)
-#' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-#' terminalNodeIDs(iris[, -5], rf)
+#' rf.fit <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
+#' terminalNodeIDs(iris[, -5], rf.fit)
 #' }
 #' 
 #' @export
@@ -22,12 +22,12 @@ terminalNodeIDs <- function(x, rfObject) {
   testthat::expect_false(object = is.null(rfObject$forest), 
                          info   = "Ranger object does not contain a forest.")
   x <- as.matrix(x)
-  res=sapply(1:rf$num.trees, function(tree) {
-    cpp_terminalNodeID(x = x, 
-                       childNodes1 = rf$forest$child.nodeIDs[[tree]][[1]], 
-                       childNodes2 = rf$forest$child.nodeIDs[[tree]][[2]], 
-                       splitValues = as.double(rf$forest$split.values[[tree]]),
-                       splitVarIds = rf$forest$split.varIDs[[tree]])
+  res=sapply(1:rfObject$num.trees, function(tree) {
+    CaseBasedReasoning:::cpp_terminalNodeID(x = x, 
+                                            childNodes1 = rfObject$forest$child.nodeIDs[[tree]][[1]], 
+                                            childNodes2 = rfObject$forest$child.nodeIDs[[tree]][[2]], 
+                                            splitValues = as.double(rfObject$forest$split.values[[tree]]),
+                                            splitVarIds = rfObject$forest$split.varIDs[[tree]])
   }, simplify = F)
   res <- do.call(cbind, res)
   as.matrix(res)

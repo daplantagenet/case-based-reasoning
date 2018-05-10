@@ -17,7 +17,7 @@ public:
   explicit DistanceRFProximity(std::uint32_t nTrees) {
     nTrees_ = nTrees;
   }
-  virtual double calc_Distance(const arma::mat& X, const arma::mat& Y) const {
+  virtual double calc_Distance(const arma::mat& X, const arma::mat& Y) {
     unsigned int n = X.n_cols;
     int similarity = 0;
     for (std::size_t i=0;i<n;++i) {
@@ -42,7 +42,7 @@ public:
     nodeDists_ = nodeDist;
     nTrees_ = nodeDist.getNTree();
   }
-  virtual double calc_Distance(const arma::mat& X, const arma::mat& Y) const {
+  virtual double calc_Distance(const arma::mat& X, const arma::mat& Y) {
     double sum = 0.0;
     double d = 0.0;
     std::size_t nTree = 0;

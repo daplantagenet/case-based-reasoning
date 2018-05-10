@@ -38,17 +38,6 @@ struct ParallelDistanceVec : public Worker {
 };
 
 
-void setVectorAttributes(Rcpp::NumericVector& rvec, Rcpp::List& attrs) {
-  rvec.attr("Size") = attrs["Size"];
-  rvec.attr("Labels") = attrs["Labels"];
-  rvec.attr("Diag") = Rcpp::as<bool>(attrs["Diag"]);
-  rvec.attr("Upper") = Rcpp::as<bool>(attrs["Upper"]);
-  rvec.attr("method") = attrs["method"];
-  rvec.attr("call") = attrs["call"];
-  rvec.attr("class") = "dist";
-}
-
-
 // [[Rcpp::export]]
 Rcpp::NumericVector cpp_parallelDistance(Rcpp::List dataList, Rcpp::List attrs, Rcpp::List arguments) {
   // Convert list to vector of double matrices
@@ -61,7 +50,6 @@ Rcpp::NumericVector cpp_parallelDistance(Rcpp::List dataList, Rcpp::List attrs, 
   // output
   unsigned long nrow = listVec.at(0).n_rows;
   Rcpp::NumericVector output(nrow * (nrow - 1) / 2);
-  setVectorAttributes(output, attrs);
   
   // perform distance calculation
   ParallelDistanceVec* distanceWorker = new ParallelDistanceVec(listVec, distanceFunction, output);

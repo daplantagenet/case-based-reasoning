@@ -17,3 +17,7 @@ cpp_terminalNodeID <- function(x, childNodes1, childNodes2, splitValues, splitVa
     .Call('_CaseBasedReasoning_cpp_terminalNodeID', PACKAGE = 'CaseBasedReasoning', x, childNodes1, childNodes2, splitValues, splitVarIds)
 }
 
+cpp_TerminalNodeDistance <- function(nodeIDs) {
+    .Call('_CaseBasedReasoning_cpp_TerminalNodeDistance', PACKAGE = 'CaseBasedReasoning', nodeIDs)
+}
+
