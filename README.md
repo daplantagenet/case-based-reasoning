@@ -46,14 +46,14 @@ Besides the functionality of searching similar cases, some additional features a
 
 #### Main
 
-- [Dippon et al. A statistical approach to case based reasoning, with application to breast cancer data](http://dl.acm.org/citation.cfm?id=608456) (2002),
+- Dippon et al. [A statistical approach to case based reasoning, with application to breast cancer data](http://dl.acm.org/citation.cfm?id=608456) (2002),
 
-- [Klenk et al.](http://www.vis.uni-stuttgart.de/~klenksn/paper/medicaldb.pdf) (2009), and
+- Klenk et al. [Missing Link](http://www.vis.uni-stuttgart.de/~klenksn/paper/medicaldb.pdf) (2009), and
 
-- [Friedel et al. Postoperative Survival of Lung Cancer Patients: Are There Predictors beyond TNM?](http://ar.iiarjournals.org/content/33/4/1609.short) (2012).
+- Friedel et al. [Postoperative Survival of Lung Cancer Patients: Are There Predictors beyond TNM?](http://ar.iiarjournals.org/content/33/4/1609.short) (2012).
 
 #### Other
 
-- [Stuart, e. et al. Matching methods for causal inference: Designing observational studies](http://www.biostat.jhsph.edu/~estuart/StuRub_MatchingChapter_07.pdf)
+- Stuart, E. et al. [Matching methods for causal inference: Designing observational studies](http://www.biostat.jhsph.edu/~estuart/StuRub_MatchingChapter_07.pdf)
 
-- [Defossez et al. Temporal representation of care trajectories of cancer patients using data from a regional information system: an application in breast cancer](http://www.biomedcentral.com/1472-6947/14/24)
+- Defossez et al. [Temporal representation of care trajectories of cancer patients using data from a regional information system: an application in breast cancer](http://www.biomedcentral.com/1472-6947/14/24)
