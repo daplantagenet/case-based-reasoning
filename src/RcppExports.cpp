@@ -7,15 +7,27 @@
 using namespace Rcpp;
 
 // cpp_parallelDistance
-Rcpp::NumericVector cpp_parallelDistance(Rcpp::List dataList, Rcpp::List attrs, Rcpp::List arguments);
-RcppExport SEXP _CaseBasedReasoning_cpp_parallelDistance(SEXP dataListSEXP, SEXP attrsSEXP, SEXP argumentsSEXP) {
+Rcpp::NumericVector cpp_parallelDistance(arma::mat& x, Rcpp::List arguments);
+RcppExport SEXP _CaseBasedReasoning_cpp_parallelDistance(SEXP xSEXP, SEXP argumentsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type dataList(dataListSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type attrs(attrsSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type arguments(argumentsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_parallelDistance(dataList, attrs, arguments));
+    rcpp_result_gen = Rcpp::wrap(cpp_parallelDistance(x, arguments));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_parallelDistanceXY
+Rcpp::NumericVector cpp_parallelDistanceXY(arma::mat& x, arma::mat& y, Rcpp::List arguments);
+RcppExport SEXP _CaseBasedReasoning_cpp_parallelDistanceXY(SEXP xSEXP, SEXP ySEXP, SEXP argumentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type arguments(argumentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_parallelDistanceXY(x, y, arguments));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -73,7 +85,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_CaseBasedReasoning_cpp_parallelDistance", (DL_FUNC) &_CaseBasedReasoning_cpp_parallelDistance, 3},
+    {"_CaseBasedReasoning_cpp_parallelDistance", (DL_FUNC) &_CaseBasedReasoning_cpp_parallelDistance, 2},
+    {"_CaseBasedReasoning_cpp_parallelDistanceXY", (DL_FUNC) &_CaseBasedReasoning_cpp_parallelDistanceXY, 3},
     {"_CaseBasedReasoning_cpp_order_matrix", (DL_FUNC) &_CaseBasedReasoning_cpp_order_matrix, 3},
     {"_CaseBasedReasoning_cpp_order_vector", (DL_FUNC) &_CaseBasedReasoning_cpp_order_vector, 3},
     {"_CaseBasedReasoning_cpp_terminalNodeID", (DL_FUNC) &_CaseBasedReasoning_cpp_terminalNodeID, 5},

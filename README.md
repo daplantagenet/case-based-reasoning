@@ -11,7 +11,7 @@ The R package case-based-reasoning provides an R interface case based reasoning 
 #### CRAN
 
 ```
-install.packages("cbr")
+install.packages("CaseBasedReasoning")
 ```
 
 #### GITHUB
@@ -44,6 +44,16 @@ Besides the functionality of searching similar cases, some additional features a
 
 ### Reference
 
-[1] http://www.biostat.jhsph.edu/~estuart/StuRub_MatchingChapter_07.pdf
+#### Main
 
-[2] http://www.biomedcentral.com/1472-6947/14/24
+- [Dippon et al. A statistical approach to case based reasoning, with application to breast cancer data](http://dl.acm.org/citation.cfm?id=608456) (2002),
+
+- [Klenk et al.](http://www.vis.uni-stuttgart.de/~klenksn/paper/medicaldb.pdf) (2009), and
+
+- [Friedel et al. Postoperative Survival of Lung Cancer Patients: Are There Predictors beyond TNM?](http://ar.iiarjournals.org/content/33/4/1609.short) (2012).
+
+#### Other
+
+- [Stuart, e. et al. Matching methods for causal inference: Designing observational studies](http://www.biostat.jhsph.edu/~estuart/StuRub_MatchingChapter_07.pdf)
+
+- [Defossez et al. Temporal representation of care trajectories of cancer patients using data from a regional information system: an application in breast cancer](http://www.biomedcentral.com/1472-6947/14/24)

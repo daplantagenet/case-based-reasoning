@@ -12,12 +12,12 @@
 //-------------------------------------
 class DistanceRFProximity : public Distance {
 private:
-  std::uint32_t nTrees_;
+  int nTrees_;
 public:
-  explicit DistanceRFProximity(std::uint32_t nTrees) {
+  explicit DistanceRFProximity(int nTrees) {
     nTrees_ = nTrees;
   }
-  virtual double calc_Distance(const arma::mat& X, const arma::mat& Y) {
+  virtual double calc_Distance(const arma::rowvec& X, const arma::rowvec& Y) {
     unsigned int n = X.n_cols;
     int similarity = 0;
     for (std::size_t i=0;i<n;++i) {
@@ -25,8 +25,10 @@ public:
         ++similarity;
       }
     }
+    Rcpp::Rcout << "sim: " << similarity << std::endl;
     return similarity * 1. / nTrees_;
   };
+  std::string getClassName() { return "DistanceRFProximity";}
 };
 
 
@@ -42,7 +44,7 @@ public:
     nodeDists_ = nodeDist;
     nTrees_ = nodeDist.getNTree();
   }
-  virtual double calc_Distance(const arma::mat& X, const arma::mat& Y) {
+  virtual double calc_Distance(const arma::rowvec& X, const arma::rowvec& Y) {
     double sum = 0.0;
     double d = 0.0;
     std::size_t nTree = 0;

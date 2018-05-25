@@ -19,8 +19,8 @@ appear in a tree -1 is inserted
 \examples{
 \dontrun{
 require(ranger)
-rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-terminalNodeDistance(rf)
+rf.fit <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
+distanceTerminalNodes(rf.fit)
 }
 
 }

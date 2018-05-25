@@ -6,12 +6,13 @@
 
 #include "containers/RFDistanceContainer.h"
 
+// typedef double (*funcPtr)(const arma::mat &X, const arma::mat &Y);
+
 class Distance {
 public:
-  Distance() {};
-  virtual double calc_distance(const arma::mat& X, const arma::mat& Y) {return 0.0;};
-  
-  void set_parameters() {};
+  virtual ~Distance() {};
+  virtual double calc_distance(const arma::rowvec& X, const arma::rowvec& Y) {return 0.0;};
+  virtual std::string getClassName() { return "Distance";}
 };
 
 #endif

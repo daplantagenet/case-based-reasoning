@@ -5,7 +5,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
-#include "Distance.h"
+#include "DistanceRF.h"
 #include "DistanceFactory.h"
 
 #include <memory> 
@@ -18,20 +18,24 @@ unsigned long matToVecIdx(const unsigned long i, const unsigned long j, const un
 }
 
 struct ParallelDistanceVec : public Worker {
-  std::vector<arma::mat> input_;
+  const arma::mat input_;
   std::shared_ptr<Distance> distance_;
   std::size_t nrow_ = 0;
   Rcpp::NumericVector& output_;
   
-  ParallelDistanceVec(std::vector<arma::mat> input, std::shared_ptr<Distance>& distance, Rcpp::NumericVector& output) 
+  ParallelDistanceVec(const arma::mat input, 
+                      std::shared_ptr<Distance> distance, 
+                      Rcpp::NumericVector& output) 
     : input_(input), distance_(distance), output_(output) {
-    nrow_ = input_.at(0).n_rows;
+    nrow_ = input_.n_rows;
+    Rcpp::Rcout << distance_->getClassName() << std::endl;
+    Rcpp::Rcout << nrow_ << std::endl;
   }
   
   void operator() (std::size_t begin, std::size_t end) {
     for (std::size_t i=begin;i<end;++i) {
       for (std::size_t j=i+1;j<nrow_;++j) {
-        output_[matToVecIdx(i, j, nrow_)] = distance_->calc_distance(input_.at(0).row(i), input_.at(1).row(j));
+        output_[matToVecIdx(i, j, nrow_)] = distance_->calc_distance(input_.row(i), input_.row(j));
       }
     }
   }
@@ -39,23 +43,60 @@ struct ParallelDistanceVec : public Worker {
 
 
 // [[Rcpp::export]]
-Rcpp::NumericVector cpp_parallelDistance(Rcpp::List dataList, Rcpp::List attrs, Rcpp::List arguments) {
-  // Convert list to vector of double matrices
-  std::vector<arma::mat> listVec;
-  for (List::iterator it = dataList.begin(); it != dataList.end(); ++it) {
-    listVec.push_back(as<arma::mat >(*it));
-  }
-  std::shared_ptr<Distance> distanceFunction = DistanceFactory(listVec).createDistanceFunction(attrs, arguments);
+Rcpp::NumericVector cpp_parallelDistance(arma::mat& x, Rcpp::List arguments) {
+  DistanceFactory distanceFunction(arguments);
+  Rcpp::Rcout << distanceFunction.getClassName() << std::endl;
   
   // output
-  unsigned long nrow = listVec.at(0).n_rows;
+  unsigned long nrow = x.n_rows;
   Rcpp::NumericVector output(nrow * (nrow - 1) / 2);
   
   // perform distance calculation
-  ParallelDistanceVec* distanceWorker = new ParallelDistanceVec(listVec, distanceFunction, output);
-  parallelFor(0, nrow, (*distanceWorker));
-  delete distanceWorker;
-  distanceWorker = NULL;
+  ParallelDistanceVec parallelDistanceVec(x, std::make_shared<DistanceFactory>(distanceFunction), output);
+  parallelFor(0, nrow, parallelDistanceVec);
+  
+  return output;
+}
+
+
+struct ParallelDistanceVecXY : public Worker {
+  const arma::mat x_;
+  const arma::mat y_;
+  std::shared_ptr<Distance> distance_;
+  std::size_t nrow_ = 0;
+  Rcpp::NumericMatrix& output_;
+  
+  ParallelDistanceVecXY(const arma::mat x, 
+                        const arma::mat y, 
+                        std::shared_ptr<Distance> distance, 
+                        Rcpp::NumericMatrix& output) 
+    : x_(x), y_(y), distance_(distance), output_(output) {
+    nrow_ = y_.n_rows;
+  }
+  
+  void operator() (std::size_t begin, std::size_t end) {
+    for (std::size_t i=begin;i<end;++i) {
+      for (std::size_t j=0;j<nrow_;++j) {
+        output_[i, j] = distance_->calc_distance(x_.row(i), y_.row(j));
+      }
+    }
+  }
+};
+
+
+// [[Rcpp::export]]
+Rcpp::NumericVector cpp_parallelDistanceXY(arma::mat& x, arma::mat& y, Rcpp::List arguments) {
+  DistanceFactory distanceFunction(arguments);
+  Rcpp::Rcout << distanceFunction.getClassName() << std::endl;
+  
+  // output
+  unsigned long nrowX = x.n_rows;
+  unsigned long nrowY = y.n_rows;
+  Rcpp::NumericMatrix output(nrowX, nrowY);
+  
+  // perform distance calculation
+  ParallelDistanceVecXY parallelDistanceVecXY(x, y, std::make_shared<DistanceFactory>(distanceFunction), output);
+  parallelFor(0, nrowX, parallelDistanceVecXY);
   
   return output;
 }

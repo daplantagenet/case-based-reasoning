@@ -13,7 +13,7 @@
 #' library(ranger)
 #' # proximity pairwise distances
 #' rf.fit <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-#' distanceRandomForest(x = iris[, -5], rfObject = rf.fit, method = "Proximity")
+#' distanceRandomForest(x = iris[, -5], rfObject = rf.fit, method = "Proximity", threads = 1)
 #' 
 #' # depth distance for train versus test subset
 #' set.seed(1234L)
@@ -29,7 +29,26 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", di
   testthat::expect_is(rfObject, "ranger")
   testthat::expect_false(object = is.null(rfObject$forest), 
                          info   = "Ranger object does not contain a forest.")
-  # Data Preparation
+  
+  # set number of threads
+  if (!is.null(threads)) {
+    RcppParallel::setThreadOptions(numThreads = threads)
+  }
+  
+  # Arguments
+  arguments <- list()
+  arguments["method"] <- method
+  # Distance calculation
+  if (method == "Proximity") {
+    .proximityMatrix(x = x, y = y, rfObject = rfObject, arguments = arguments)
+  } else if (method == "Depth") {
+    .depthMatrix(x = x, y = y, rfObject = rfObject, arguments = arguments)
+  }
+}
+
+
+.proximityMatrix <- function(x, y=NULL, rfObject, arguments) {
+  arguments["nTrees"] <- rfObject$num.trees
   x %>% 
     as.matrix() %>% 
     terminalNodeIDs(rfObject) -> xNodes
@@ -38,30 +57,37 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", di
     y %>% 
       as.matrix() %>% 
       terminalNodeIDs(rfObject) -> yNodes
+    d <- cpp_parallelDistanceXY(xNodes, yNodes, arguments)
+    n <- nrow(x)
+    # convert to dist object
+    asDistObject(d, n, "Proximity")
   } else {
-    yNodes <- xNodes
+    cpp_parallelDistance(x = xNodes, arguments = arguments)
   }
-  input <- list(xNodes, yNodes)
-  
-  # Arguments
-  arguments <- list()
-  arguments["method"] <- method
-  
-  if (method == "Proximity") {
-    arguments["nTrees"] <- rfObject$num.trees
+}
+
+
+.depthMatrix <- function(x, y=NULL, rfObject, arguments) {
+  # get x terminal nodes
+  x %>% 
+    as.matrix() %>% 
+    terminalNodeIDs(rfObject) -> xNodes
+  # transform forest to matrix
+  rfObject %>% 
+    forestToMatrix() %>% 
+    arguments["terminalNodeIDs"]
+  if (is.null(y)) {
+    d <- cpp_parallelDistance(x = xNodes, arguments = arguments)
+    n <- nrow(x)
+    # convert to dist object
+    asDistObject(d, n, "Depth")
+  } else {
+    # get y terminal nodes
+    y %>% 
+      as.matrix() %>% 
+      terminalNodeIDs(rfObject) -> yNodes
+    depthMatrixRangerCPPXY(xNodes, yNodes, rfTrees)
   }
-  
-  # Attributes
-  N <- ifelse(is.list(x), length(x), nrow(x))
-  attrs <- list(Size = N, Labels = names(x), Diag = diag, Upper = upper,
-                method = method, call = match.call(), class = "dist")
-  
-  # set number of threads
-  if (!is.null(threads)) {
-    RcppParallel::setThreadOptions(numThreads = threads)
-  }
-  
-  cpp_parallelDistance(dataList = input, attrs = attrs, arguments = arguments)
 }
 
 
