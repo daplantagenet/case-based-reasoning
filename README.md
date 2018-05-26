@@ -27,7 +27,7 @@ This R package provides two methods case based reasoning by using an endpoint:
 
 - Linear, logistic, and Cox regression
 
-- Proximity and Depth Measure extracted from a fitted random forest
+- Proximity and Depth Measure extracted from a fitted random forest ([ranger](https://github.com/imbs-hl/ranger) package)
 
 Besides the functionality of searching similar cases, some additional features are included:
 
@@ -42,9 +42,9 @@ Besides the functionality of searching similar cases, some additional features a
 
 
 
-### Reference
+## Reference
 
-#### Main
+### Main
 
 - Dippon et al. [A statistical approach to case based reasoning, with application to breast cancer data](http://dl.acm.org/citation.cfm?id=608456) (2002),
 
@@ -52,7 +52,7 @@ Besides the functionality of searching similar cases, some additional features a
 
 - Friedel et al. [Postoperative Survival of Lung Cancer Patients: Are There Predictors beyond TNM?](http://ar.iiarjournals.org/content/33/4/1609.short) (2012).
 
-#### Other
+### Other
 
 - Stuart, E. et al. [Matching methods for causal inference: Designing observational studies](http://www.biostat.jhsph.edu/~estuart/StuRub_MatchingChapter_07.pdf)
 
