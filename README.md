@@ -40,9 +40,41 @@ Besides the functionality of searching similar cases, some additional features a
 
 ## Example: Cox-Beta-Model
 
+### Initialization
+
+In the first example, we use the Cox-Model and the `ovarian` data set from the 
+`survival` package. In the first step we initialize the R6 data object. 
+
+```
+library(tidyverse)
+library(survival)
+library(CaseBasedReasoning)
+ovarian$resid.ds <- factor(ovarian$resid.ds)
+ovarian$rx <- factor(ovarian$rx)
+ovarian$ecog.ps <- factor(ovarian$ecog.ps)
+
+# initialize R6 object
+coxBeta <- CoxBetaModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps)
+```
+
+### Similar Cases 
+
+After the initialization, we may want to get for each case in the query data the most similar case from the learning data. 
+```{r}
+# fit model 
+ovarian %>% 
+  coxBeta$fit()
+# get similar cases
+ovarian %>%
+  coxBeta$get_similar_cases(k = 3) -> matchedData
+```
+
+**Note 1:** In the initialization step, we dropped all cases with missing values in the variables of ` data` and ` endPoint`. 
+
+**Note 2:** The `data.table` returned from `coxBeta$get_similar_cases` has an additional column `caseId`. By this column you may map the similar cases to cases in data, e.g. if you had chosen ` k = 3`, then the first three elements in the column `caseId` will be ` 1` (following three ` 2` and so on). This means that this three cases are the three most similar cases to case ` 1` in verum data.
 
 
-## Reference
+## References
 
 ### Main
 

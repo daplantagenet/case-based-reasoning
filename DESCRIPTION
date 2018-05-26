@@ -2,7 +2,7 @@ Package: CaseBasedReasoning
 Type: Package
 Title: Case-Based Resoning
 Version: 0.1
-Date: 2018-05-07
+Date: 2018-05-26
 Author: Dr. Simon Mueller <info@muon-stat.com>, PD Dr. Juergen Dippon <juergen.dippon@mathematik.uni-stuttgart.de>
 Maintainer: Dr. Simon Mueller <info@muon-stat.com>
 Description: Case Based Reasoning an machine learning approach

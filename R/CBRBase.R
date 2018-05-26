@@ -43,8 +43,13 @@ CBRBase <- R6Class("CBRBase",
                        # catch floating numbers
                        k <- as.integer(k)
                        
+                       if (!is(dtData, "data.table")) {
+                         dtData <- data.table::as.data.table(dtData)
+                       }
+                       
                        if (missing(queryData)) {
-                         queryData <- data.table::copy(queryData)
+                         cat("No query data.\n") 
+                         queryData <- data.table::copy(dtData)
                        }
                        
                        start <- Sys.time()
@@ -136,11 +141,12 @@ CBRBase <- R6Class("CBRBase",
                      },
                      # get similar cases
                      extract_similar_cases=function(dtData, distanceMatrix, k = 1, addDistance = T, merge = T) {
-                       n <- nrow(distanceMatrix)
                        m <- nrow(distanceMatrix)
                        
                        distanceMatrix %>% 
-                         cbr::orderCPP(as.matrix(self$distMat), k = k) -> orderedMatrix
+                         as.matrix() %>% 
+                         cpp_orderMatrix(sortDirection = 0,
+                                         k             = k) -> orderedMatrix
                        similarCases <- do.call(rbind, apply(orderedMatrix, 1, function(x, data=dtData) {data[x, ]}))
                        
                        # get distances
@@ -165,9 +171,13 @@ CBRBase <- R6Class("CBRBase",
                        # scCaseId: finally sort data.frame such that matched cases are close
                        queryData$scCaseId <- 1:nrow(queryData)
                        queryData$group <- "Query Data"
+                       queryData$scDist <- 0.0
+                       queryData$caseId <- 0
                        matchedData <- similarCases
                        matchedData$scCaseId <- rep(1:nrow(queryData), each = k)
                        matchedData$group <- "Matched Data"
+                       queryData %>% 
+                         dplyr::select_(.dots = names(matchedData)) -> queryData
                        rbind(queryData, matchedData) %>% 
                          dplyr::arrange(scCaseId)
                      }

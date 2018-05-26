@@ -4,6 +4,7 @@
 #' @param y a second data.frame
 #' @param rfObject \code{ranger} object
 #' @param method distance calculation method
+#' @param threads number of threads to use
 #' 
 #' @return a \code{dist} or a matrix object with pairwise distance of 
 #' observations in x vs y (if not null)
@@ -12,19 +13,19 @@
 #' \dontrun{
 #' library(ranger)
 #' # proximity pairwise distances
-#' rf.fit <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
+#' rf.fit <- ranger(Species ~ ., data = iris, num.trees = 500, write.forest = TRUE)
 #' distanceRandomForest(x = iris[, -5], rfObject = rf.fit, method = "Proximity", threads = 1)
 #' 
 #' # depth distance for train versus test subset
 #' set.seed(1234L)
 #' learn <- sample(1:150, 100)
 #' test <- (1:150)[-learn]
-#' rf.fit <- ranger(Species ~ ., data = iris[learn, ], num.trees = 5, write.forest = TRUE)
+#' rf.fit <- ranger(Species ~ ., data = iris[learn, ], num.trees = 500, write.forest = TRUE)
 #' distanceRandomForest(x = iris[learn, -5], y = iris[test, -5], rfObject = rf.fit, method = "Depth")
 #' }
 #' 
 #' @export
-distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", diag = FALSE, upper = FALSE, threads = NULL) {
+distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", threads = NULL) {
   method <- match.arg(method, c("Proximity", "Depth"))
   testthat::expect_is(rfObject, "ranger")
   testthat::expect_false(object = is.null(rfObject$forest), 
@@ -35,58 +36,85 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", di
     RcppParallel::setThreadOptions(numThreads = threads)
   }
   
-  # Arguments
-  arguments <- list()
-  arguments["method"] <- method
   # Distance calculation
   if (method == "Proximity") {
-    .proximityMatrix(x = x, y = y, rfObject = rfObject, arguments = arguments)
+    .proximityMatrix(x = x, y = y, rfObject = rfObject)
   } else if (method == "Depth") {
-    .depthMatrix(x = x, y = y, rfObject = rfObject, arguments = arguments)
+    .depthMatrix(x = x, y = y, rfObject = rfObject)
   }
 }
 
 
-.proximityMatrix <- function(x, y=NULL, rfObject, arguments) {
-  arguments["nTrees"] <- rfObject$num.trees
+
+#' Get proximity matrix of an ranger object
+#'
+#' @param x a new dataset
+#' @param y a second new dataset (Default: NULL)
+#' @param rf \code{ranger} object
+#' 
+#' @return a \code{dist} or a matrix object with pairwise proximity of 
+#' observations in x vs y (if not null)
+#'      
+#' @examples
+#' \dontrun{
+#' require(ranger)
+#' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
+#' proximityMatrixRanger(x = iris[, -5], rf = rf)
+#' 
+#' set.seed(1234L)
+#' learn <- sample(1:150, 100)
+#' test <- (1:150)[-learn]
+#' rf <- ranger(Species ~ ., data = iris[learn, ], num.trees = 500, write.forest = TRUE)
+#' proximityMatrixRanger(x = iris[learn, -5], y = iris[test, -5], rf = rf)
+#' }
+#' 
+.proximityMatrix <- function(x, y = NULL, rfObject) {
   x %>% 
     as.matrix() %>% 
-    terminalNodeIDs(rfObject) -> xNodes
-  if (!is.null(y)) {
-    testthat::expect_equal(colnames(x), colnames(y))
-    y %>% 
-      as.matrix() %>% 
-      terminalNodeIDs(rfObject) -> yNodes
-    d <- cpp_parallelDistanceXY(xNodes, yNodes, arguments)
-    n <- nrow(x)
-    # convert to dist object
-    asDistObject(d, n, "Proximity")
-  } else {
-    cpp_parallelDistance(x = xNodes, arguments = arguments)
-  }
-}
-
-
-.depthMatrix <- function(x, y=NULL, rfObject, arguments) {
-  # get x terminal nodes
-  x %>% 
-    as.matrix() %>% 
-    terminalNodeIDs(rfObject) -> xNodes
-  # transform forest to matrix
-  rfObject %>% 
-    forestToMatrix() %>% 
-    arguments["terminalNodeIDs"]
+    terminalNodeIdsRanger(rf) -> xNodes
   if (is.null(y)) {
-    d <- cpp_parallelDistance(x = xNodes, arguments = arguments)
+    d <- cpp_proximityMatrix(xNodes)
     n <- nrow(x)
     # convert to dist object
-    asDistObject(d, n, "Depth")
+    asDistObject(d, n, "RFProximity")
   } else {
-    # get y terminal nodes
     y %>% 
       as.matrix() %>% 
-      terminalNodeIDs(rfObject) -> yNodes
-    depthMatrixRangerCPPXY(xNodes, yNodes, rfTrees)
+      terminalNodeIdsRanger(rf) -> yNodes
+    cpp_proximityMatrixRangerXY(xNodes, yNodes)
+  }
+}
+
+
+#' Get depth distance matrix
+#' 
+#' @param x a new dataset
+#' @param y a new dataset
+#' @param rf \code{ranger} object
+#' 
+#' @examples
+#' \dontrun{
+#' require(ranger)
+#' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
+#' depthMatrixRanger(x=iris[, -5], rf=rf)
+#' }
+#' 
+.depthMatrix <- function(x, y=NULL, rfObject) {
+  x %>% 
+    as.matrix() %>% 
+    terminalNodeIdsRanger(rfObject) -> xNodes
+  rfObject %>% 
+    forestToMatrix() -> rfTrees
+  if (is.null(y)) {
+    d <- cpp_depthMatrix(xNodes, rfTrees) 
+    n <- nrow(x)
+    # convert to dist object
+    asDistObject(d, n, "RFDepth")
+  } else {
+    y %>% 
+      as.matrix() %>% 
+      terminalNodeIdsRanger(rf) -> yNodes
+    cpp_depthMatrixRangerXY(xNodes, yNodes, rfTrees)
   }
 }
 
@@ -115,4 +143,33 @@ distanceTerminalNodes <- function(rfObject) {
   rfObject %>% 
     forestToMatrix() %>% 
     CaseBasedReasoning:::cpp_TerminalNodeDistance()
+}
+
+
+#' Weighted Distance calculation
+#' 
+#' @param x a new dataset
+#' @param y a second new dataset
+#' @param weights a vector of weights
+#' 
+#' @return a \code{dist} or \code{matrix} object
+#' 
+#' @examples
+#' \dontrun{
+#' require(ranger)
+#' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
+#' terminalNodeIdsRanger(iris[, -5], rf)
+#' }
+#' 
+#' @export
+weightedDistance <- function(x, y=NULL, weights=NULL) {
+  if (is.null(weights)) {
+    weights <- seq(1, ncol(x))
+  }
+  if (is.null(y)) {
+    d <- cpp_weightedDistance(x, weights) 
+    return(asDistObject(d, nrow(x), "weightedDistance"))
+  } else {
+    return(cpp_weightedDistanceXY(x, y, weights))
+  }
 }
