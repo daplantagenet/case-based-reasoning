@@ -1,5 +1,5 @@
 ---
-title: "Case Based Reasoning: Cox-Beta-Model"
+title: "Case Based Reasoning: RandomForest-Model"
 author: "Dr. Simon Müller"
 date: "`r Sys.Date()`"
 output:
@@ -10,7 +10,7 @@ output:
     highlight: tango
     css: kable.css
 vignette: >
-  %\VignetteIndexEntry{Case Based Reasoning: Cox-Beta-Model}
+  %\VignetteIndexEntry{Case Based Reasoning: RandomForest-Model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
