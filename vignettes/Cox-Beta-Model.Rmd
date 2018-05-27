@@ -24,17 +24,15 @@ In the first example, we use the Cox-Model and the `ovarian` data set from the
 `survival` package. In the first step we initialize the R6 data object. 
 
 ```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
 library(survival)
-library(ggplot2)
-library(cbr)
-
-# all variables should be numeric or factor
+library(CaseBasedReasoning)
 ovarian$resid.ds <- factor(ovarian$resid.ds)
 ovarian$rx <- factor(ovarian$rx)
 ovarian$ecog.ps <- factor(ovarian$ecog.ps)
 
 # initialize R6 object
-scCoxBeta <- cbrCoxModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps)
+coxBeta <- CoxBetaModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps)
 ```
 All cases with missing values in the learning and end point variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. `character` variables will be transformed to `factor`.
 
@@ -42,20 +40,23 @@ All cases with missing values in the learning and end point variables are droppe
 
 After the initialization, we may want to get for each case in the query data the most similar case from the learning data. 
 ```{r}
-scCoxBeta$calc_similar_cases(k = 1)
+# fit model 
+ovarian %>% 
+  coxBeta$fit()
+# get similar cases
+ovarian %>%
+  coxBeta$get_similar_cases(k = 3) -> matchedData
 ```
 You may extract then the similar cases and the verum data and put them together:
-```{r, eval=FALSE}
-simCases <- sc$get_matched_data()
-```
+
 **Note 1:** In the initialization step, we dropped all cases with missing values in the variables of ` data` and ` endPoint`. The function `sc$get_data()` returns the dataset without missing values in the dependent and independent variables.
 
-**Note 2:** The ` data.table` returned from ` sc$simCases` has an additional column `caseId`. By this column you may map the similar cases to cases in data, e.g. if you had chosen ` k = 3`, then the first three elements in the column `caseId` will be ` 1` (following three ` 2` and so on). This means that this three cases are the three most similar cases to case ` 1` in verum data.
+**Note 2:** The `data.table` returned from `sc$get_similar_cases` has an additional column `caseId`. By this column you may map the similar cases to cases in data, e.g. if you had chosen ` k = 3`, then the first three elements in the column `caseId` will be ` 1` (following three ` 2` and so on). This means that this three cases are the three most similar cases to case ` 1` in verum data.
 
-## Check Proportional Hazard Assumption
+## Check Proportional Hazard Assumption:
 
 ```{r, warning=FALSE, message=FALSE}
-pp <- sc$check_ph()
+pp <- coxBeta$check_ph()
 pp
 ```
 
@@ -78,7 +79,7 @@ Alternatively, you may just be interested in the distance matrix, then you go th
 sc <- cbrCoxModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps, data=ovarian)
 sc$calc_distance_matrix()
 ```
-` sc$calc_distance_matrix()` calculates the full distance matrix. This matrix the dimension: cases of data versus cases of query data. If the query dataset is bot available, this functions calculates a n times n distance matrix of all pairs in data. 
+` coxBeta$calc_distance_matrix()` calculates the full distance matrix. This matrix the dimension: cases of data versus cases of query data. If the query dataset is bot available, this functions calculates a n times n distance matrix of all pairs in data. 
 
 The distance matrix is saved internally in the cbrCoxModel object: ` sc$distMat`.
 
