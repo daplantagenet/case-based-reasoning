@@ -69,9 +69,17 @@ ovarian %>%
   coxBeta$get_similar_cases(k = 3) -> matchedData
 ```
 
-**Note 1:** In the initialization step, we dropped all cases with missing values in the variables of ` data` and ` endPoint`. 
+You may extract then the similar cases and the verum data and put them together:
 
-**Note 2:** The `data.table` returned from `coxBeta$get_similar_cases` has an additional column `caseId`. By this column you may map the similar cases to cases in data, e.g. if you had chosen ` k = 3`, then the first three elements in the column `caseId` will be ` 1` (following three ` 2` and so on). This means that this three cases are the three most similar cases to case ` 1` in verum data.
+**Note 1:** In the initialization step, we dropped all cases with missing values in the variables of ` data` and ` endPoint`. So, you need to make sure that NA handling is done by you.
+
+**Note 2:** The `data.table` returned from `coxBeta$get_similar_cases` has four additional columns:
+
+1. `caseId`: By this column you may map the similar cases to cases in data, e.g. if you had chosen ` k = 3`, then the first three elements in the column `caseId` will be ` 1` (following three ` 2` and so on). This means that this three cases are the three most similar cases to case ` 0` in verum data.
+2. `scDist`: The calculated distance
+3. `scCaseId`: Grouping number of query with matched data
+4. `group`: Grouping matched or query data
+
 
 ### Distance Matrix
 
@@ -85,6 +93,30 @@ ovarian %>%
 The distance matrix is saved internally in the cbrCoxModel object: ` coxBeta$distMat`.
 
 
+## Contribution
+
+### Responsible for Mathematical Model Development and Programming
+
+- [PD Dr. J&uuml;rgen Dippon](http://www.isa.uni-stuttgart.de/LstStoch/Dippon/), Institut f&uuml;r Stochastik und Anwendungen, Universit&auml;t Stuttgart
+
+- [Dr. Simon M&uuml;ller](http://muon-stat.com/), TTI GmbH - MUON-STAT
+
+<br>
+
+### Medical Advisor
+
+- Dr. Peter Fritz
+
+- Professor Dr. Friedel
+
+
+### Funding
+
+![Robert-Bosch-Stifung](img/RBS_Logo.png)
+
+The work was funded by the Robert Bosch Foundation. Special thanks go to Professor Dr. Friedel ([Thoraxchirugie - Klinik Schillerhöhe](http://www.rbk.de/standorte/klinik-schillerhoehe/abteilungen/thoraxchirurgie/team.html)).
+
+
 ## References
 
 ### Main
@@ -96,6 +128,8 @@ The distance matrix is saved internally in the cbrCoxModel object: ` coxBeta$dis
 - Friedel et al. [Postoperative Survival of Lung Cancer Patients: Are There Predictors beyond TNM?](http://ar.iiarjournals.org/content/33/4/1609.short) (2012).
 
 ### Other
+
+- Englund and Verikas [A novel approach to estimate proximity in a random forest: An exploratory study](https://www.researchgate.net/publication/257404436_A_novel_approach_to_estimate_proximity_in_a_random_forest_An_exploratory_study)
 
 - Stuart, E. et al. [Matching methods for causal inference: Designing observational studies](http://www.biostat.jhsph.edu/~estuart/StuRub_MatchingChapter_07.pdf)
 

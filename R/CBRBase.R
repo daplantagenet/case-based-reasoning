@@ -62,8 +62,9 @@ CBRBase <- R6Class("CBRBase",
                          private$get_distance_matrix(queryData = queryData) -> distanceMatrix
                        
                        # calculate distance and order of cases based on distance calculation
-                       queryData %>% 
-                         private$extract_similar_cases(distanceMatrix = distanceMatrix, 
+                       dtData %>% 
+                         private$extract_similar_cases(queryData      = queryData,
+                                                       distanceMatrix = distanceMatrix, 
                                                        k              = k, 
                                                        addDistance    = addDistance, 
                                                        merge          = merge) -> similarCases
@@ -142,28 +143,32 @@ CBRBase <- R6Class("CBRBase",
                        # model specific
                      },
                      # get similar cases
-                     extract_similar_cases=function(dtData, distanceMatrix, k = 1, addDistance = T, merge = T) {
-                       m <- nrow(distanceMatrix)
+                     extract_similar_cases=function(dtData, queryData, distanceMatrix, k = 1, addDistance = T, merge = T) {
+                       m <- ncol(distanceMatrix)
                        
+                       # get closest elements
                        distanceMatrix %>% 
                          as.matrix() %>% 
                          cpp_orderMatrix(sortDirection = 0,
                                          k             = k) -> orderedMatrix
-                       similarCases <- do.call(rbind, apply(orderedMatrix, 1, function(x, data=dtData) {data[x, ]}))
                        
-                       # get distances
-                       # add column ids
-                       if (addDistance) {
-                         orderedMatrix <- cbind(1:nrow(orderedMatrix), orderedMatrix)
-                         distance <- as.numeric(apply(orderedMatrix, 1, function(x, data=distanceMatrix) {data[x[2:length(x)], x[1]]}))
-                         similarCases$scDist <- distance
-                       }
+                       colID <- 1:ncol(orderedMatrix)
+                       orderedMatrix %>% 
+                         as.data.frame() %>% 
+                         purrr::map2(.y = colID, .f = function(rowIDs, colID, dtData, distanceMatrix) {
+                           dtTmp <- dtData[rowIDs, ]
+                           if (addDistance) {
+                             dtTmp$scDist <- distanceMatrix[rowIDs, colID]
+                           }
+                           dtTmp
+                         }, dtData = dtData, distanceMatrix = distanceMatrix) -> similarCases
+                       similarCases <- data.table::rbindlist(similarCases)
                        
                        # mark similar cases: 1:n ids
-                       similarCases$caseId <- rep(1:m, each=k)
+                       similarCases$caseId <- rep(1:k, m)
                        
                        if (merge) {
-                         dtData %>% 
+                         queryData %>% 
                            private$merge_matched_data(similarCases = similarCases, k = k) -> similarCases
                        }
                        similarCases
