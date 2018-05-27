@@ -87,11 +87,66 @@ Alternatively, you may just be interested in the distance matrix, then you go th
 
 ```{r}
 ovarian %>%
-  coxBeta$calc_distance_matrix() -> ditMatrix
+  coxBeta$calc_distance_matrix() -> distMatrix
 ```
 `coxBeta$calc_distance_matrix()` calculates the full distance matrix. This matrix the dimension: cases of data versus cases of query data. If the query dataset is bot available, this functions calculates a n times n distance matrix of all pairs in data. 
 The distance matrix is saved internally in the cbrCoxModel object: ` coxBeta$distMat`.
 
+
+## Example: RandomForest-Model
+
+### Initialization 
+
+In the second example, we present the Random Forest model for a distance measure approximation applied on the `ovarian` data set from the `survival` package. This package offers two ways for distance/similarity calculation (see documentation): 
+
+- proximity
+
+- depth 
+
+Let's initialize the R6 data object. 
+
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(survival)
+library(CaseBasedReasoning)
+ovarian$resid.ds <- factor(ovarian$resid.ds)
+ovarian$rx <- factor(ovarian$rx)
+ovarian$ecog.ps <- factor(ovarian$ecog.ps)
+
+# initialize R6 object
+rfSC <- RFModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps)
+```
+
+All cases with missing values in the learning and end point variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. `character` variables will be transformed to `factor`.
+
+Optionally, you may want to adjust some parameters in the fitting step of the random forest algorithm. Possible arguments are: , `ntree`, `mtry`, and `splitrule`. The documentation of this parameters can be found in the ranger R-package. Furthermore, you are able to choose the two distance measures:
+
++ `Proximity`: the proximity matrix 
++ `Depth` (Default): Calculates the average edge length over all trees
+
+This can be done by
+
+```{r, warning=FALSE, message=FALSE}
+rfSC$set_dist(distMethod = "Proximity")
+```
+All other steps (excluding checking for proportional hazard assumption are the same as for the Cox-Model). 
+
+
+**Similar Cases:**
+```{r}
+# fit model 
+ovarian %>% 
+  coxBeta$fit()
+# get similar cases
+ovarian %>%
+  coxBeta$get_similar_cases(k = 3) -> matchedData
+```
+
+**Distance Matrix Calculation:**
+```{r}
+ovarian %>%
+  rfSC$calc_distance_matrix() -> ditMatrix
+```
 
 ## Contribution
 
@@ -100,8 +155,6 @@ The distance matrix is saved internally in the cbrCoxModel object: ` coxBeta$dis
 - [PD Dr. J&uuml;rgen Dippon](http://www.isa.uni-stuttgart.de/LstStoch/Dippon/), Institut f&uuml;r Stochastik und Anwendungen, Universit&auml;t Stuttgart
 
 - [Dr. Simon M&uuml;ller](http://muon-stat.com/), TTI GmbH - MUON-STAT
-
-<br>
 
 ### Medical Advisor
 
@@ -115,7 +168,6 @@ The distance matrix is saved internally in the cbrCoxModel object: ` coxBeta$dis
 ![Robert-Bosch-Stifung](img/RBS_Logo.png)
 
 The work was funded by the Robert Bosch Foundation. Special thanks go to Professor Dr. Friedel ([Thoraxchirugie - Klinik Schillerhöhe](http://www.rbk.de/standorte/klinik-schillerhoehe/abteilungen/thoraxchirurgie/team.html)).
-
 
 ## References
 
