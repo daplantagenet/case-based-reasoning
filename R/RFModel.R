@@ -69,40 +69,32 @@ RFModel <- R6Class(classname = "RFModel",
                                                         write.forest = T,
                                                         verbose      = T)
                        end <- Sys.time()
-                       
                        duration <- round(as.numeric(end - start), 2)
                        cat(paste0("Random Forest for Survival calculation finished in: ", duration, " seconds.\n"))
                      },
                      transform = function() {
                        
                      },
-                     set_dist=function(distMethod = "depth") {
-                       distMethod <- match.arg(distMethod, c("proximity", "depth"))
+                     set_dist=function(distMethod = "Depth") {
+                       distMethod <- match.arg(distMethod, c("Proximity", "Depth"))
                        self$distMethod <- distMethod
                      }
                    ),
                    private = list(
-                     get_distance_matrix = function(distMethod = "depth") {
+                     get_distance_matrix = function(distMethod = "Depth") {
                        # distance calculation
-                       if (!self$distMethod %in% c("proximity", "depth")) {
-                         stop("Error: distMethod should be: proximity or depth.")
+                       if (!self$distMethod %in% c("Proximity", "Depth")) {
+                         stop("Error: distMethod should be: Proximity or Depth.")
                        }
                        
                        if (is.null(self$rangerObj)) {
                          self$learn()
                        }
                        
-                       if (self$distMethod == "proximity") {
-                         self$distMat <- proximityMatrixRanger(x  = private$to_int(self$data),
-                                                               y  = private$to_int(self$queryData), 
-                                                               rf = self$rangerObj)
-                         # transform to distance
-                         self$distMat <- sqrt(1 - self$distMat)
-                       } else if (self$distMethod == "depth") {
-                         self$distMat <- depthMatrixRanger(x  = private$to_int(self$data),
-                                                           y  = private$to_int(self$queryData), 
-                                                           rf = self$rangerObj)
-                       }
+                       self$distMat <- distanceRandomForest(x      = private$to_int(self$data),
+                                                            y      = private$to_int(self$queryData), 
+                                                            method = self$distMethod,
+                                                            rf     = self$rangerObj)
                      }
                    )
 )
