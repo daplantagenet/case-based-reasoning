@@ -24,7 +24,7 @@ RFModel <- R6Class(classname = "RFModel",
                      distMat    = NULL,
                      orderMat   = NULL,
                      simCases   = NULL,
-                     distMethod = "depth",
+                     distMethod = "Depth",
                      print = function() {
                        cat("Case-Based-Reasoning with RandomForests\n")
                        cat("---------------------------------------\n")
@@ -56,8 +56,6 @@ RFModel <- R6Class(classname = "RFModel",
                        # Timing
                        start <- Sys.time()
                        cat("Start learning...\n")
-                       self$data %>%
-                         dplyr::select_(.dots = c(self$endPoint, self$terms)) -> dtData
                        
                        # Learning
                        self$rangerObj <- ranger::ranger(formula      = self$formula,
@@ -72,29 +70,18 @@ RFModel <- R6Class(classname = "RFModel",
                        duration <- round(as.numeric(end - start), 2)
                        cat(paste0("Random Forest for Survival calculation finished in: ", duration, " seconds.\n"))
                      },
-                     transform = function() {
-                       
-                     },
                      set_dist=function(distMethod = "Depth") {
                        distMethod <- match.arg(distMethod, c("Proximity", "Depth"))
                        self$distMethod <- distMethod
                      }
                    ),
                    private = list(
-                     get_distance_matrix = function(distMethod = "Depth") {
-                       # distance calculation
-                       if (!self$distMethod %in% c("Proximity", "Depth")) {
-                         stop("Error: distMethod should be: Proximity or Depth.")
-                       }
-                       
-                       if (is.null(self$rangerObj)) {
-                         self$learn()
-                       }
-                       
-                       self$distMat <- distanceRandomForest(x      = private$to_int(self$data),
-                                                            y      = private$to_int(self$queryData), 
-                                                            method = self$distMethod,
-                                                            rf     = self$rangerObj)
+                     get_distance_matrix = function(dtData, queryData = NULL) {
+                       testthat::expect_is(self$rangerObj, "ranger")
+                       self$distMat <- distanceRandomForest(x        = private$to_int(dtData),
+                                                            y        = private$to_int(queryData), 
+                                                            method   = self$distMethod,
+                                                            rfObject = self$rangerObj)
                      }
                    )
 )

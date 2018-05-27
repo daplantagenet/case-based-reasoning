@@ -131,9 +131,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// terminalNodeIDRanger
-arma::vec terminalNodeIDRanger(arma::mat& x, arma::vec& childNodes1, arma::vec& childNodes2, arma::vec& splitValues, arma::vec& splitVarIds);
-RcppExport SEXP _CaseBasedReasoning_terminalNodeIDRanger(SEXP xSEXP, SEXP childNodes1SEXP, SEXP childNodes2SEXP, SEXP splitValuesSEXP, SEXP splitVarIdsSEXP) {
+// cpp_terminalNodeID
+arma::vec cpp_terminalNodeID(arma::mat& x, arma::vec& childNodes1, arma::vec& childNodes2, arma::vec& splitValues, arma::vec& splitVarIds);
+RcppExport SEXP _CaseBasedReasoning_cpp_terminalNodeID(SEXP xSEXP, SEXP childNodes1SEXP, SEXP childNodes2SEXP, SEXP splitValuesSEXP, SEXP splitVarIdsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -142,7 +142,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec& >::type childNodes2(childNodes2SEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type splitValues(splitValuesSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type splitVarIds(splitVarIdsSEXP);
-    rcpp_result_gen = Rcpp::wrap(terminalNodeIDRanger(x, childNodes1, childNodes2, splitValues, splitVarIds));
+    rcpp_result_gen = Rcpp::wrap(cpp_terminalNodeID(x, childNodes1, childNodes2, splitValues, splitVarIds));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -158,7 +158,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CaseBasedReasoning_weighted_knn", (DL_FUNC) &_CaseBasedReasoning_weighted_knn, 5},
     {"_CaseBasedReasoning_cpp_orderMatrix", (DL_FUNC) &_CaseBasedReasoning_cpp_orderMatrix, 3},
     {"_CaseBasedReasoning_cpp_orderVector", (DL_FUNC) &_CaseBasedReasoning_cpp_orderVector, 3},
-    {"_CaseBasedReasoning_terminalNodeIDRanger", (DL_FUNC) &_CaseBasedReasoning_terminalNodeIDRanger, 5},
+    {"_CaseBasedReasoning_cpp_terminalNodeID", (DL_FUNC) &_CaseBasedReasoning_cpp_terminalNodeID, 5},
     {NULL, NULL, 0}
 };
 

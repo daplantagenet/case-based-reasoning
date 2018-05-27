@@ -23,11 +23,11 @@ terminalNodeIDs <- function(x, rfObject) {
                          info   = "Ranger object does not contain a forest.")
   x <- as.matrix(x)
   res=sapply(1:rfObject$num.trees, function(tree) {
-    CaseBasedReasoning:::cpp_terminalNodeID(x = x, 
-                                            childNodes1 = rfObject$forest$child.nodeIDs[[tree]][[1]], 
-                                            childNodes2 = rfObject$forest$child.nodeIDs[[tree]][[2]], 
-                                            splitValues = as.double(rfObject$forest$split.values[[tree]]),
-                                            splitVarIds = rfObject$forest$split.varIDs[[tree]])
+    cpp_terminalNodeID(x = x, 
+                       childNodes1 = rfObject$forest$child.nodeIDs[[tree]][[1]], 
+                       childNodes2 = rfObject$forest$child.nodeIDs[[tree]][[2]], 
+                       splitValues = as.double(rfObject$forest$split.values[[tree]]),
+                       splitVarIds = rfObject$forest$split.varIDs[[tree]])
   }, simplify = F)
   res <- do.call(cbind, res)
   as.matrix(res)

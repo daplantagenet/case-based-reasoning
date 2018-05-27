@@ -38,9 +38,9 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", th
   
   # Distance calculation
   if (method == "Proximity") {
-    .proximityMatrix(x = x, y = y, rfObject = rfObject)
+    proximityMatrix(x = x, y = y, rfObject = rfObject)
   } else if (method == "Depth") {
-    .depthMatrix(x = x, y = y, rfObject = rfObject)
+    depthMatrix(x = x, y = y, rfObject = rfObject)
   }
 }
 
@@ -59,19 +59,20 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", th
 #' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-#' proximityMatrixRanger(x = iris[, -5], rf = rf)
+#' proximityMatrix(x = iris[, -5], rf = rf)
 #' 
 #' set.seed(1234L)
 #' learn <- sample(1:150, 100)
 #' test <- (1:150)[-learn]
 #' rf <- ranger(Species ~ ., data = iris[learn, ], num.trees = 500, write.forest = TRUE)
-#' proximityMatrixRanger(x = iris[learn, -5], y = iris[test, -5], rf = rf)
+#' proximityMatrix(x = iris[learn, -5], y = iris[test, -5], rf = rf)
 #' }
 #' 
-.proximityMatrix <- function(x, y = NULL, rfObject) {
+#' @export
+proximityMatrix <- function(x, y = NULL, rfObject) {
   x %>% 
     as.matrix() %>% 
-    terminalNodeIdsRanger(rf) -> xNodes
+    terminalNodeIDs(rfObject) -> xNodes
   if (is.null(y)) {
     d <- cpp_proximityMatrix(xNodes)
     n <- nrow(x)
@@ -80,7 +81,7 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", th
   } else {
     y %>% 
       as.matrix() %>% 
-      terminalNodeIdsRanger(rf) -> yNodes
+      terminalNodeIDs(rfObject) -> yNodes
     cpp_proximityMatrixRangerXY(xNodes, yNodes)
   }
 }
@@ -96,13 +97,14 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", th
 #' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-#' depthMatrixRanger(x=iris[, -5], rf=rf)
+#' .depthMatrix(x=iris[, -5], rf=rf)
 #' }
 #' 
-.depthMatrix <- function(x, y=NULL, rfObject) {
+#' @export
+depthMatrix <- function(x, y=NULL, rfObject) {
   x %>% 
     as.matrix() %>% 
-    terminalNodeIdsRanger(rfObject) -> xNodes
+    terminalNodeIDs(rfObject) -> xNodes
   rfObject %>% 
     forestToMatrix() -> rfTrees
   if (is.null(y)) {
@@ -113,7 +115,7 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", th
   } else {
     y %>% 
       as.matrix() %>% 
-      terminalNodeIdsRanger(rf) -> yNodes
+      terminalNodeIDs(rfObject) -> yNodes
     cpp_depthMatrixRangerXY(xNodes, yNodes, rfTrees)
   }
 }
@@ -158,7 +160,7 @@ distanceTerminalNodes <- function(rfObject) {
 #' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-#' terminalNodeIdsRanger(iris[, -5], rf)
+#' terminalNodeIDs(iris[, -5], rf)
 #' }
 #' 
 #' @export

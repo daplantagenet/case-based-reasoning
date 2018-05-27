@@ -23,7 +23,7 @@ Weighted Distance calculation
 \dontrun{
 require(ranger)
 rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-terminalNodeIdsRanger(iris[, -5], rf)
+terminalNodeIDs(iris[, -5], rf)
 }
 
 }

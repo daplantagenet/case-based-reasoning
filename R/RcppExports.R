@@ -41,7 +41,7 @@ cpp_orderVector <- function(x, sortDirection, k = 0L) {
     .Call('_CaseBasedReasoning_cpp_orderVector', PACKAGE = 'CaseBasedReasoning', x, sortDirection, k)
 }
 
-terminalNodeIDRanger <- function(x, childNodes1, childNodes2, splitValues, splitVarIds) {
-    .Call('_CaseBasedReasoning_terminalNodeIDRanger', PACKAGE = 'CaseBasedReasoning', x, childNodes1, childNodes2, splitValues, splitVarIds)
+cpp_terminalNodeID <- function(x, childNodes1, childNodes2, splitValues, splitVarIds) {
+    .Call('_CaseBasedReasoning_cpp_terminalNodeID', PACKAGE = 'CaseBasedReasoning', x, childNodes1, childNodes2, splitValues, splitVarIds)
 }
 

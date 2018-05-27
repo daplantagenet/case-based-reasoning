@@ -61,12 +61,16 @@ coxBeta <- CoxBetaModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps
 
 After the initialization, we may want to get for each case in the query data the most similar case from the learning data. 
 ```{r}
+n <- nrow(ovarian)
+trainID <- sample(1:n, floor(0.8 * n), F)
+testID <- (1:n)[-trainID]
+
 # fit model 
-ovarian %>% 
+ovarian[trainID, ] %>% 
   coxBeta$fit()
 # get similar cases
-ovarian %>%
-  coxBeta$get_similar_cases(k = 3) -> matchedData
+ovarian[trainID, ] %>%
+  coxBeta$get_similar_cases(queryData = ovarian[testID, ], k = 3) -> matchedData
 ```
 
 You may extract then the similar cases and the verum data and put them together:
@@ -134,18 +138,22 @@ All other steps (excluding checking for proportional hazard assumption are the s
 
 **Similar Cases:**
 ```{r}
+n <- nrow(ovarian)
+trainID <- sample(1:n, floor(0.8 * n), F)
+testID <- (1:n)[-trainID]
+
 # fit model 
-ovarian %>% 
-  coxBeta$fit()
+ovarian[trainID, ] %>% 
+  rfSC$fit()
 # get similar cases
-ovarian %>%
-  coxBeta$get_similar_cases(k = 3) -> matchedData
+ovarian[trainID, ] %>%
+  rfSC$get_similar_cases(queryData = ovarian[testID, ], k = 3) -> matchedData
 ```
 
 **Distance Matrix Calculation:**
 ```{r}
 ovarian %>%
-  rfSC$calc_distance_matrix() -> ditMatrix
+  rfSC$calc_distance_matrix() -> distMatrix
 ```
 
 ## Contribution
