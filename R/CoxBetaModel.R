@@ -159,15 +159,15 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                           # transform_data:
                           # we transform all factors to their corresponding
                           # weights and set weight equal to 1 for factor variables
-                          transform_data = function(queryData, data, learnVars, weights) {
+                          transform_data = function(queryData, dtData, learnVars, weights) {
                             nVars <- length(learnVars)
                             trafoWeights <- rep(0, nVars)
                             for (j in 1:nVars) {
-                              if (is.factor(data[[learnVars[j]]])) {
+                              if (is.factor(dtData[[learnVars[j]]])) {
                                 if (!is.null(queryData)) {
                                   queryData[[learnVars[j]]] <- weights[[learnVars[j]]][queryData[[learnVars[j]]]]
                                 }
-                                data[[learnVars[j]]] <- weights[[learnVars[j]]][data[[learnVars[j]]]]
+                                dtData[[learnVars[j]]] <- weights[[learnVars[j]]][dtData[[learnVars[j]]]]
                                 trafoWeights[j] <- 1
                               } else { # else keep weights
                                 trafoWeights[j] <- weights[[learnVars[j]]]
@@ -181,22 +181,27 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                               queryData <- unname(as.matrix(queryData[, learnVars, with=F]))
                             }
                             return(list(queryData    = queryData,
-                                        data         = unname(as.matrix(data[, learnVars, with=F])),
+                                        data         = unname(as.matrix(dtData[, learnVars, with=F])),
                                         trafoWeights = trafoWeights))
                           },
                           # calculate weighted absolute distance 
                           get_distance_matrix=function(dtData, queryData = NULL) {
+                            if (is(dtData, "data.table")) {
+                              dtData <- data.table::copy(dtData)
+                            } else {
+                              dtData <- data.table::copy(data.table::as.data.table(dtData))
+                            }
                             # learn if weights are empty
                             testthat::expect_is(self$weights, "list", info = "Model not trained")
                             testthat::expect_false(private$check_weights(), info = "NA values in regression beta coefficients!")
                             
-                            if (!is.null(self$queryData)) {
-                              queryData <- data.table::copy(queryData)
+                            if (is.null(queryData)) {
+                              queryData <- data.table::copy(dtData)
                             } 
                             
                             # transform for weighted distance calculations
-                            trData <- private$transform_data(queryData = queryData, 
-                                                             data      = data.table::copy(dtData), 
+                            trData <- private$transform_data(queryData = queryData,  
+                                                             dtData    = dtData, 
                                                              learnVars = self$terms, 
                                                              weights   = self$weights)
                             

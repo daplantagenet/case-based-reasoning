@@ -28,7 +28,7 @@ CBRBase <- R6Class("CBRBase",
                        cat("Start calculating distance matrix...\n")
                        # get distance matrix
                        dtData %>% 
-                         private$get_distance_matrix(queryData = queryData) -> distanceMatrix
+                         private$get_distance_matrix(dtData = ., queryData = queryData) -> distanceMatrix
                        end <- Sys.time()
                        duration <- round(as.numeric(end - start), 2)
                        cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
@@ -37,7 +37,7 @@ CBRBase <- R6Class("CBRBase",
                      # get similar cases from reference data
                      get_similar_cases = function(dtData, queryData, k = 1, addDistance = T, merge = T) {
                        
-                       # check nCases input
+                       # check nCases input 
                        testthat::expect_is(k, "numeric")
                        testthat::expect_true(k >= 0, "numeric")
                        # catch floating numbers
@@ -50,6 +50,8 @@ CBRBase <- R6Class("CBRBase",
                        if (missing(queryData)) {
                          cat("No query data.\n") 
                          queryData <- data.table::copy(dtData)
+                       } else {
+                         queryData <- data.table::as.data.table(queryData)
                        }
                        
                        start <- Sys.time()

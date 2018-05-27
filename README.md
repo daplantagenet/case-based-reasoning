@@ -73,6 +73,17 @@ ovarian %>%
 
 **Note 2:** The `data.table` returned from `coxBeta$get_similar_cases` has an additional column `caseId`. By this column you may map the similar cases to cases in data, e.g. if you had chosen ` k = 3`, then the first three elements in the column `caseId` will be ` 1` (following three ` 2` and so on). This means that this three cases are the three most similar cases to case ` 1` in verum data.
 
+### Distance Matrix
+
+Alternatively, you may just be interested in the distance matrix, then you go this way:
+
+```{r}
+ovarian %>%
+  coxBeta$calc_distance_matrix() -> ditMatrix
+```
+`coxBeta$calc_distance_matrix()` calculates the full distance matrix. This matrix the dimension: cases of data versus cases of query data. If the query dataset is bot available, this functions calculates a n times n distance matrix of all pairs in data. 
+The distance matrix is saved internally in the cbrCoxModel object: ` coxBeta$distMat`.
+
 
 ## References
 
