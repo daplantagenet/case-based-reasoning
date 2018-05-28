@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{forestToMatrix}
 \alias{forestToMatrix}
-\title{Transform trees of a \code{ranger}-object to a matrix}
+\title{Forest2Matrix}
 \usage{
 forestToMatrix(rfObject)
 }
@@ -15,6 +15,9 @@ Column 1: tree ID
 Column 2: node ID
 Column 3: child node ID 1
 Column 4: child node ID 2
+}
+\description{
+Transform trees of a \code{ranger}-object to a matrix
 }
 \examples{
 \dontrun{

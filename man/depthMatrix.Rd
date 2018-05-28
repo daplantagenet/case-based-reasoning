@@ -11,7 +11,7 @@ depthMatrix(x, y = NULL, rfObject)
 
 \item{y}{a new dataset}
 
-\item{rf}{\code{ranger} object}
+\item{rfObject}{\code{ranger} object}
 }
 \description{
 Get depth distance matrix
@@ -20,7 +20,7 @@ Get depth distance matrix
 \dontrun{
 require(ranger)
 rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-.depthMatrix(x=iris[, -5], rf=rf)
+.depthMatrix(x=iris[, -5], rfObject=rf)
 }
 
 }

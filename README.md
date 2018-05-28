@@ -173,7 +173,7 @@ ovarian %>%
 
 ### Funding
 
-![Robert-Bosch-Stifung](img/RBS_Logo.png)
+![Robert-Bosch-Stifung](inst/img/RBS_Logo.png)
 
 The work was funded by the Robert Bosch Foundation. Special thanks go to Professor Dr. Friedel ([Thoraxchirugie - Klinik Schillerhöhe](http://www.rbk.de/standorte/klinik-schillerhoehe/abteilungen/thoraxchirurgie/team.html)).
 

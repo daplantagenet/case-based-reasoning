@@ -4,18 +4,9 @@
 \name{RFModel}
 \alias{RFModel}
 \title{RandomForest Proximity}
-\format{An \code{\link{R6Class}} generator object}
+\format{\code{\link[R6]{R6Class}} object}
 \usage{
 RFModel
-}
-\arguments{
-\item{formula}{: formula for learning the Cox model}
-
-\item{data}{: the dataset for learning the model}
-
-\item{queryData}{(optional) : Query data set. For each case in the query data,
-we are looking for the k (=1,…,l) similar cases in the learning data.
-Learning and query datasets need the same structure (variable names and scales)}
 }
 \description{
 This class uses the proximity matrix of the random survival forest algorithm 
@@ -24,5 +15,26 @@ cases. By default all cases with at least one missing values are dropped
 from learning, calculating the distance matrix, and searching for similar
 cases.
 }
-\keyword{Cox}
-\keyword{Model}
+\section{Usage}{
+
+For usage details see \bold{Methods, Arguments, and Examples} sections.
+}
+
+\section{Methods}{
+
+\describe{
+  \item{\code{new(formula, ...)}}{This method is used to create an
+  object of this class \code{RFModel}. Formula for analysis has to be 
+  provided. Further parameters for the ranger call can be provided here.}
+  \item{\code{fit(dtData)}}{Fits the RandomForest model.}
+  \item{\code{set_dist(method)}}{Set the proximity measure, 'Depth' (Default)
+  and 'Proximity' are allowed.}
+  \item{...}{See \link{CBRBase} class.}
+  }
+}
+
+\references{
+Englund and Verikas. A novel approach to estimate proximity in a random 
+forest: An exploratory study.
+}
+\keyword{datasets}

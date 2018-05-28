@@ -6,5 +6,5 @@
 #' @import Rcpp
 #' @import RcppArmadillo
 #' @importFrom RcppParallel RcppParallelLibs
-#' @useDynLib CaseBasedReasoning
+#' @useDynLib CaseBasedReasoning, .registration = TRUE
 NULL

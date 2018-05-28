@@ -6,16 +6,7 @@
 \title{Cox-Beta Model}
 \format{An \code{\link{R6Class}} generator object}
 \usage{
-cbrCoxModel$new
-}
-\arguments{
-\item{formula}{: formula for learning the Cox model}
-
-\item{data}{: the dataset for learning the model}
-
-\item{queryData}{(optional) : Query data set. For each case in the query data,
-we are looking for the k (=1,…,l) similar cases in the learning data.
-Learning and query datasets need the same structure (variable names and scales)}
+CoxBetaModel
 }
 \description{
 Regression beta coefficients are use for building a weighted distance measure between
@@ -28,21 +19,20 @@ smilar cases from the learning data. The rms-package is used for model fitting,
 variable selection, and checking the assumptions.
 If query data is ommitted, a n x n- distance matrix is returned.
 }
-\section{Fields}{
+\section{Usage}{
+
+For usage details see \bold{Methods, Arguments, and Examples} sections.
+}
+
+\section{Methods}{
 
 \describe{
-\item{\code{new}}{Initialization of the cbrRegressionModel}
+  \item{\code{new(formula, ...)}}{This method is used to create an
+  object of this class \code{RFModel}. Formula for analysis has to be 
+  provided. Further parameters for the ranger call can be provided here.}
+  \item{\code{fit(dtData)}}{Fits the RandomForest model.}
+  \item{...}{See \link{CBRBase} class.}
+  }
+}
 
-\item{\code{variable_selection}}{: performs a fast backward variable selection}
-
-\item{\code{learn}}{Fit cox model on the learning data set}
-
-\item{\code{check_ph}}{Check proportional hazard assumption}
-
-\item{\code{calc_distance_matrix}}{Calculates full n x m / (n x n)-distance matrix}
-
-\item{\code{calc_similar_cases}}{get for each case in verum data nCases (=1,...,l < n)
-similar cases from the learning data; (1:nCases matching)}
-}}
-
-\keyword{Beta}
+\keyword{datasets}

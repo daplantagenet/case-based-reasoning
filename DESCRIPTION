@@ -5,24 +5,24 @@ Version: 0.1
 Date: 2018-05-26
 Author: Dr. Simon Mueller <info@muon-stat.com>, PD Dr. Juergen Dippon <juergen.dippon@mathematik.uni-stuttgart.de>
 Maintainer: Dr. Simon Mueller <info@muon-stat.com>
-Description: Case Based Reasoning an machine learning approach
+Description: Case Based Reasoning package enables you to find similar cases with machine learning.
 URL: https://github.com/sipemu/case-based-reasoning
 License: AGPL
 LazyData: TRUE
-Depends:
+Imports:
     R6,
     ranger,
     dplyr,
     data.table,
     magrittr,
-    rms
-Imports:
+    rms,
     Rcpp,
     RcppArmadillo,
     RcppParallel
 Suggests:
     testthat
 LinkingTo: Rcpp, RcppParallel, RcppArmadillo
+VignetteBuilder: knitr
 SystemRequirements: C++11
 LazyLoad: yes
 ByteCompile: yes

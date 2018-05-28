@@ -34,7 +34,9 @@ terminalNodeIDs <- function(x, rfObject) {
 }
 
 
-#' @title Transform trees of a \code{ranger}-object to a matrix
+#' @title Forest2Matrix
+#' 
+#' @description Transform trees of a \code{ranger}-object to a matrix
 #' 
 #' @param rfObject \code{ranger} object
 #' 
@@ -66,6 +68,10 @@ forestToMatrix <- function(rfObject) {
 
 
 #' Converts a distance vector into an object of class \code{dist}
+#' 
+#' @param x data vector
+#' @param n length of x
+#' @param method method description
 #' 
 #' @export
 asDistObject <- function(x, n, method) {

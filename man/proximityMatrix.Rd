@@ -11,7 +11,7 @@ proximityMatrix(x, y = NULL, rfObject)
 
 \item{y}{a second new dataset (Default: NULL)}
 
-\item{rf}{\code{ranger} object}
+\item{rfObject}{\code{ranger} object}
 }
 \value{
 a \code{dist} or a matrix object with pairwise proximity of 
@@ -24,13 +24,13 @@ Get proximity matrix of an ranger object
 \dontrun{
 require(ranger)
 rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-proximityMatrixRanger(x = iris[, -5], rf = rf)
+proximityMatrix(x = iris[, -5], rfObject = rf)
 
 set.seed(1234L)
 learn <- sample(1:150, 100)
 test <- (1:150)[-learn]
 rf <- ranger(Species ~ ., data = iris[learn, ], num.trees = 500, write.forest = TRUE)
-proximityMatrix(x = iris[learn, -5], y = iris[test, -5], rf = rf)
+proximityMatrix(x = iris[learn, -5], y = iris[test, -5], rfObject = rf)
 }
 
 }

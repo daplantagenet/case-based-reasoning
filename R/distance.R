@@ -50,7 +50,7 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", th
 #'
 #' @param x a new dataset
 #' @param y a second new dataset (Default: NULL)
-#' @param rf \code{ranger} object
+#' @param rfObject \code{ranger} object
 #' 
 #' @return a \code{dist} or a matrix object with pairwise proximity of 
 #' observations in x vs y (if not null)
@@ -59,13 +59,13 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", th
 #' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-#' proximityMatrix(x = iris[, -5], rf = rf)
+#' proximityMatrix(x = iris[, -5], rfObject = rf)
 #' 
 #' set.seed(1234L)
 #' learn <- sample(1:150, 100)
 #' test <- (1:150)[-learn]
 #' rf <- ranger(Species ~ ., data = iris[learn, ], num.trees = 500, write.forest = TRUE)
-#' proximityMatrix(x = iris[learn, -5], y = iris[test, -5], rf = rf)
+#' proximityMatrix(x = iris[learn, -5], y = iris[test, -5], rfObject = rf)
 #' }
 #' 
 #' @export
@@ -91,13 +91,13 @@ proximityMatrix <- function(x, y = NULL, rfObject) {
 #' 
 #' @param x a new dataset
 #' @param y a new dataset
-#' @param rf \code{ranger} object
+#' @param rfObject \code{ranger} object
 #' 
 #' @examples
 #' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-#' .depthMatrix(x=iris[, -5], rf=rf)
+#' .depthMatrix(x=iris[, -5], rfObject=rf)
 #' }
 #' 
 #' @export
@@ -144,7 +144,7 @@ distanceTerminalNodes <- function(rfObject) {
                          info   = "Ranger object does not contain a forest.")
   rfObject %>% 
     forestToMatrix() %>% 
-    CaseBasedReasoning:::cpp_TerminalNodeDistance()
+    cpp_TerminalNodeDistance()
 }
 
 
