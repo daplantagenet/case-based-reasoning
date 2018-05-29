@@ -86,11 +86,3 @@ pp
 ### Validation of the matching Variables
 
 **TBD**
-
-## References
-
-- Dippon et al. [A statistical approach to case based reasoning, with application to breast cancer data](http://dl.acm.org/citation.cfm?id=608456) (2002),
-
-- Klenk et al. [Missing Link](http://www.vis.uni-stuttgart.de/~klenksn/paper/medicaldb.pdf) (2009), and
-
-- Friedel et al. [Postoperative Survival of Lung Cancer Patients: Are There Predictors beyond TNM?](http://ar.iiarjournals.org/content/33/4/1609.short) (2012).

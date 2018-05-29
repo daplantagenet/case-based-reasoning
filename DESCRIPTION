@@ -1,6 +1,6 @@
 Package: CaseBasedReasoning
 Type: Package
-Title: Case-Based Resoning
+Title: Case-Based Reasoning
 Version: 0.1
 Date: 2018-05-26
 Author: Dr. Simon Mueller <simon.mueller@muon-stat.com>, PD Dr. Juergen Dippon <juergen.dippon@mathematik.uni-stuttgart.de>
@@ -12,11 +12,12 @@ LazyData: TRUE
 Imports:
     R6,
     ranger,
+    survival,
+    tidyverse,
     dplyr,
     data.table,
     magrittr,
     rms,
-    Rcpp,
     RcppArmadillo,
     RcppParallel
 Suggests:
