@@ -1,5 +1,5 @@
-[![cran version](http://www.r-pkg.org/badges/version/cbr)](https://cran.rstudio.com/web/packages/zoon) 
-[![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/cbr?)](https://cran.r-project.org/web/packages/cbr/)
+[![cran version](http://www.r-pkg.org/badges/version/CaseBasedReasoning)](https://cran.rstudio.com/web/packages/CaseBasedReasoning) 
+[![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/CaseBasedReasoning?)](https://cran.r-project.org/web/packages/CaseBasedReasoning/)
 [![Build Status](https://travis-ci.org/sipemu/case-based-reasoning.svg?branch=master)](https://travis-ci.org/sipemu/case-based-reasoning)
 
 # Case Based Reasoning
@@ -69,7 +69,7 @@ testID <- (1:n)[-trainID]
 ovarian[trainID, ] %>% 
   coxBeta$fit()
 # get similar cases
-ovarian[trainID, ] %>%
+ovarian[testID, ] %>%
   coxBeta$get_similar_cases(queryData = ovarian[testID, ], k = 3) -> matchedData
 ```
 
@@ -182,8 +182,6 @@ The work was funded by the Robert Bosch Foundation. Special thanks go to Profess
 ### Main
 
 - Dippon et al. [A statistical approach to case based reasoning, with application to breast cancer data](http://dl.acm.org/citation.cfm?id=608456) (2002),
-
-- Klenk et al. [Missing Link](http://www.vis.uni-stuttgart.de/~klenksn/paper/medicaldb.pdf) (2009), and
 
 - Friedel et al. [Postoperative Survival of Lung Cancer Patients: Are There Predictors beyond TNM?](http://ar.iiarjournals.org/content/33/4/1609.short) (2012).
 
