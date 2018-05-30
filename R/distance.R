@@ -10,7 +10,6 @@
 #' observations in x vs y (if not null)
 #' 
 #' @examples
-#' \dontrun{
 #' library(ranger)
 #' # proximity pairwise distances
 #' rf.fit <- ranger(Species ~ ., data = iris, num.trees = 500, write.forest = TRUE)
@@ -22,7 +21,6 @@
 #' test <- (1:150)[-learn]
 #' rf.fit <- ranger(Species ~ ., data = iris[learn, ], num.trees = 500, write.forest = TRUE)
 #' distanceRandomForest(x = iris[learn, -5], y = iris[test, -5], rfObject = rf.fit, method = "Depth")
-#' }
 #' 
 #' @export
 distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", threads = NULL) {

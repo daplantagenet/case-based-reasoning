@@ -47,11 +47,9 @@ terminalNodeIDs <- function(x, rfObject) {
 #' Column 4: child node ID 2
 #'
 #' @examples
-#' \dontrun{
 #' library(ranger)
 #' rf.fit <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-#' forestToMatrix(rf.fit)
-#' }
+#' forestMat <- forestToMatrix(rf.fit)
 #' 
 #' @export
 forestToMatrix <- function(rfObject) {

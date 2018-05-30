@@ -44,9 +44,7 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                             start <- Sys.time()
                             cat("Start learning...\n")
                             #  datadist scoping
-                            on.exit(detach("design.options"))
-                            attach(list(), name="design.options")
-                            assign('cbrCoxModel_data', rms::datadist(dtData), pos='design.options')
+                            cbrCoxModel_data <<- rms::datadist(dtData)
                             options(datadist="cbrCoxModel_data")
                             
                             # Cox Regression
@@ -76,11 +74,11 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                             start <- Sys.time()
                             cat("Start learning...\n")
                             #  datadist scoping
-                            on.exit(detach("design.options"))
-                            attach(list(), name="design.options")
-                            assign('cbrCoxModel_data', rms::datadist(dtData), pos='design.options')
+                            # attach(list(), name="design.options")
+                            # on.exit(detach("design.options"))
+                            # assign('cbrCoxModel_data', rms::datadist(dtData), pos='design.options')
+                            cbrCoxModel_data <<- rms::datadist(dtData)
                             options(datadist="cbrCoxModel_data")
-                            
                             # Cox Regression
                             dtData %>% 
                               rms::cph(formula = self$formula, data = ., x = TRUE, y = TRUE, surv = T) -> self$coxFit
