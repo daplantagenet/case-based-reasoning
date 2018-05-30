@@ -68,16 +68,28 @@ If feature $k$ is categorical, then we define
 
 $$d(x_i^k, x_j^k) = 1 \text{ when } x_i^k = x_j^k \text{ else } 0$$ and
 $$\alpha(x_i^k, x_j^k) = \frac{\hat{\beta_k}^i - \hat{\beta_k}^j}{\sum \hat{\beta_k}}.$$
-Where the $\hat{\beta_k}^k$ are coefficients of a regression model (linear, logistic, or PH model).
+Where the $\hat{\beta_k}^k$ are coefficients of a regression model (linear, logistic, or Cox model).
 
 This approach solves all three problems described above. 
 
 
 # Random Survival Forests
 
-tt
+## Proximity Measure
 
+Two observations $i$ and $j$ are more similar when the fraction of trees in which patient $i$ and $j$ share the same terminal node is close to one (Breiman, 2002).
 
+$$
+d(x_i, x_j)^2 = 1 - \frac{1}{M}\sum\limits_{t=1}^T 1_{[x_i \text{ and } x_j \text{ share the same terminal node in tree } t]},
+$$
+where $M$ is the number of trees that contains both observations and $T$ is the number of trees. A drawback of this measure is that the decision is binary and possibly similar observations may counted as not similar, e.g. assume a final cut off is always made around age 58 and observation 1 is 56 and observation is 60, then the distance of observation 1 to 2 is the same as from observation 1 to an observation with age 80.
 
+## Depth Measure: A modified proximity measure
 
+The depth measure uses instead of final noed of each three the number of edges between two observations, that is finally averaged over all trees. More precicely, this distance measure is defined as:
+
+$$
+d(x_i, x_j)^2 = 1 - \frac{1}{M}\sum\limits_{t=1}^T \exp{(-1\cdot \omega\cdot g_{ij})},
+$$
+where $\omega \geq 0$ is a weighting factor and $g_{ij}$ is the number of edges between end nodes of observation $i$ and $j$ in tree $t$. More details can be found in the publication Englund and Verikas [A novel approach to estimate proximity in a random forest: An exploratory study](https://www.researchgate.net/publication/257404436_A_novel_approach_to_estimate_proximity_in_a_random_forest_An_exploratory_study).
 
