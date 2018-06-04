@@ -4,7 +4,7 @@
 \name{CaseBasedReasoning}
 \alias{CaseBasedReasoning}
 \alias{CaseBasedReasoning-package}
-\title{Case-Based Reasoning}
+\title{Case Based Reasoning}
 \description{
-Case-Based Reasoning
+Case Based Reasoning
 }

@@ -1,4 +1,4 @@
-#' Case-Based Reasoning
+#' Case Based Reasoning
 #' @docType package
 #' @name CaseBasedReasoning
 #' @import R6

@@ -20,10 +20,8 @@ Column 4: child node ID 2
 Transform trees of a \code{ranger}-object to a matrix
 }
 \examples{
-\dontrun{
 library(ranger)
 rf.fit <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-forestToMatrix(rf.fit)
-}
+forestMat <- forestToMatrix(rf.fit)
 
 }
