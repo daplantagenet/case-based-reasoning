@@ -22,12 +22,12 @@ Imports:
     magrittr,
     rms,
     Rcpp,
-    RcppParallel,
-    RcppArmadillo
+    RcppParallel
 Suggests:
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    RcppArmadillo
 LinkingTo: Rcpp, RcppArmadillo, RcppParallel
 SystemRequirements: C++11
 LazyLoad: yes
