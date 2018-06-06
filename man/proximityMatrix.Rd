@@ -21,7 +21,6 @@ observations in x vs y (if not null)
 Get proximity matrix of an ranger object
 }
 \examples{
-\dontrun{
 require(ranger)
 rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 proximityMatrix(x = iris[, -5], rfObject = rf)
@@ -31,6 +30,5 @@ learn <- sample(1:150, 100)
 test <- (1:150)[-learn]
 rf <- ranger(Species ~ ., data = iris[learn, ], num.trees = 500, write.forest = TRUE)
 proximityMatrix(x = iris[learn, -5], y = iris[test, -5], rfObject = rf)
-}
 
 }

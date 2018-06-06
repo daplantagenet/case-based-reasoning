@@ -54,7 +54,6 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", th
 #' observations in x vs y (if not null)
 #'      
 #' @examples
-#' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 #' proximityMatrix(x = iris[, -5], rfObject = rf)
@@ -64,7 +63,6 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", th
 #' test <- (1:150)[-learn]
 #' rf <- ranger(Species ~ ., data = iris[learn, ], num.trees = 500, write.forest = TRUE)
 #' proximityMatrix(x = iris[learn, -5], y = iris[test, -5], rfObject = rf)
-#' }
 #' 
 #' @export
 proximityMatrix <- function(x, y = NULL, rfObject) {

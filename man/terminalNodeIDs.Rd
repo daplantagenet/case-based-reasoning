@@ -20,10 +20,8 @@ Extracts for each observation and for each tree in the forest the terminal
 node id.
 }
 \examples{
-\dontrun{
 library(ranger)
 rf.fit <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-terminalNodeIDs(iris[, -5], rf.fit)
-}
+dfNodes <- terminalNodeIDs(iris[, -5], rf.fit)
 
 }
