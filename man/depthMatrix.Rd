@@ -17,10 +17,8 @@ depthMatrix(x, y = NULL, rfObject)
 Get depth distance matrix
 }
 \examples{
-\dontrun{
 require(ranger)
 rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 .depthMatrix(x=iris[, -5], rfObject=rf)
-}
 
 }

@@ -90,11 +90,9 @@ proximityMatrix <- function(x, y = NULL, rfObject) {
 #' @param rfObject \code{ranger} object
 #' 
 #' @examples
-#' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 #' .depthMatrix(x=iris[, -5], rfObject=rf)
-#' }
 #' 
 #' @export
 depthMatrix <- function(x, y=NULL, rfObject) {
@@ -127,11 +125,9 @@ depthMatrix <- function(x, y=NULL, rfObject) {
 #' @return a \code{matrix} object with pairwise terminal node edge length
 #'    
 #' @examples
-#' \dontrun{
 #' require(ranger)
 #' rf.fit <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 #' distanceTerminalNodes(rf.fit)
-#' }
 #' 
 #' @export
 distanceTerminalNodes <- function(rfObject) {
@@ -153,11 +149,9 @@ distanceTerminalNodes <- function(rfObject) {
 #' @return a \code{dist} or \code{matrix} object
 #' 
 #' @examples
-#' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 #' terminalNodeIDs(iris[, -5], rf)
-#' }
 #' 
 #' @export
 weightedDistance <- function(x, y=NULL, weights=NULL) {
