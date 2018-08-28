@@ -87,7 +87,7 @@ You may extract then the similar cases and the verum data and put them together:
 
 ### Distance Matrix
 
-Alternatively, you may be interested in the distance matrix. Then you have to call:
+Alternatively, you may be interested in the distance matrix:
 
 ```{r}
 ovarian %>%
@@ -101,13 +101,13 @@ The distance matrix is saved internally in the `CoxBetaModel` object: `coxBeta$d
 
 ### Initialization 
 
-In the second example, we apply a RandomForest model for approximating the distance measure approximation for the `ovarian` data. Two possibilities for distance/similarity calculation are offered (details can be found in the documentation): 
+In the second example, we apply a RandomForest model for approximating the distance measure  on the `ovarian` data. Two possibilities for distance/similarity calculation are offered (details can be found in the documentation): 
 
-- proximity
+- Proximity: When comparing two observations, the mean of having the same end node over all trees is calculated
 
-- depth 
+- Depth: When comparing two observations, the mean length of edges between the two end nodes over all trees is calculated 
 
-Let's initialize the model object. 
+Let's initialize the model object: 
 
 ```{r, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -123,21 +123,18 @@ rfSC <- RFModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps)
 
 All observations with missing values in training and endpoint variables are dropped (`na.omit`) and the reduced data without missing values is stored internally. You get a text output on how many cases were dropped. Furthermore, `character` variables will be transformed to `factor`.
 
-Optionally, you can adjust RandomForest parameters. The documentation of this parameters can be found in the ranger R-package. 
+Optionally, you can adjust RandomForest parameters when initializing the model. The documentation of setable parameters can be found in the ranger R-package. 
 
-Two distance measures are offered:
+As described, we offer two distance measures are offered:
 
-+ `Proximity`: the proximity matrix ()
-+ `Depth` (Default): Calculates the average edge length over all trees
-
-The distance measure can be set by:
++ `Depth` (Default)
++ `Proximity`
 
 ```{r, warning=FALSE, message=FALSE}
 rfSC$set_dist(distMethod = "Proximity")
 ```
 
-All following steps are similar as above:
-
+All following steps are the same as above:
 
 **Similar Cases:**
 ```{r}
