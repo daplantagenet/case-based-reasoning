@@ -4,7 +4,7 @@
 
 # Case-Based Reasoning
 
-The R package case-based-reasoning provides an R interface case-based reasoning using machine learning.
+The R package case-based-reasoning provides an R interface case-based reasoning using machine learning methods.
 
 ## Installation
 
@@ -25,7 +25,7 @@ devtools::install_github("sipemu/case-based-reasoning")
 
 This R package provides two methods case-based reasoning by using an endpoint:
 
-- Linear, logistic, and Cox regression
+- Linear, logistic, and CPH Regression
 
 - Proximity and Depth Measure extracted from a fitted random forest ([ranger](https://github.com/imbs-hl/ranger) package)
 
@@ -38,7 +38,7 @@ Besides the functionality of searching for similar cases, we added some addition
 - C++-functions for distance calculation
 
 
-## Example: Cox-Beta-Model
+## Example: Cox Beta Model
 
 ### Initialization
 
@@ -93,21 +93,21 @@ Alternatively, you may be interested in the distance matrix. Then you have to ca
 ovarian %>%
   coxBeta$calc_distance_matrix() -> distMatrix
 ```
-`coxBeta$calc_distance_matrix()` calculates the full distance matrix. This matrix the dimension: cases of data versus cases of query data. If the query dataset is not available, this functions calculate a n times n distance matrix of all pairs in data. 
-The distance matrix is saved internally in the cbrCoxModel object: ` coxBeta$distMat`.
+`coxBeta$calc_distance_matrix()` calculates the distance matrix between train and test data, when test data is omitted, the distances between observations in the test data is calculated. Rows are observations in train and columns observations of test.
+The distance matrix is saved internally in the `CoxBetaModel` object: `coxBeta$distMat`.
 
 
-## Example: RandomForest-Model
+## Example: RandomForest Model
 
 ### Initialization 
 
-In the second example, we present the Random Forest model for a distance measure approximation applied to the `ovarian` data set from the `survival` package. This package offers two ways for distance/similarity calculation (see documentation): 
+In the second example, we apply a RandomForest model for approximating the distance measure approximation for the `ovarian` data. Two possibilities for distance/similarity calculation are offered (details can be found in the documentation): 
 
 - proximity
 
 - depth 
 
-Let's initialize the R6 data object. 
+Let's initialize the model object. 
 
 ```{r, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -121,19 +121,22 @@ ovarian$ecog.ps <- factor(ovarian$ecog.ps)
 rfSC <- RFModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps)
 ```
 
-All cases with missing values in the learning and endpoint variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. `character` variables will be transformed to `factor`.
+All observations with missing values in training and endpoint variables are dropped (`na.omit`) and the reduced data without missing values is stored internally. You get a text output on how many cases were dropped. Furthermore, `character` variables will be transformed to `factor`.
 
-Optionally, you may want to adjust some parameters in the fitting step of the random forest algorithm. Possible arguments are: , `ntree`, `mtry`, and `splitrule`. The documentation of this parameters can be found in the ranger R-package. Furthermore, you are able to choose the two distance measures:
+Optionally, you can adjust RandomForest parameters. The documentation of this parameters can be found in the ranger R-package. 
 
-+ `Proximity`: the proximity matrix 
+Two distance measures are offered:
+
++ `Proximity`: the proximity matrix ()
 + `Depth` (Default): Calculates the average edge length over all trees
 
-This can be done by
+The distance measure can be set by:
 
 ```{r, warning=FALSE, message=FALSE}
 rfSC$set_dist(distMethod = "Proximity")
 ```
-All other steps (excluding checking for proportional hazard assumption are the same as for the Cox-Model). 
+
+All following steps are similar as above:
 
 
 **Similar Cases:**
@@ -142,7 +145,7 @@ n <- nrow(ovarian)
 trainID <- sample(1:n, floor(0.8 * n), F)
 testID <- (1:n)[-trainID]
 
-# fit model 
+# train model 
 ovarian[trainID, ] %>% 
   rfSC$fit()
 # get similar cases
