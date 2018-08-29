@@ -29,7 +29,7 @@
 #' @docType class
 #' @importFrom R6 R6Class
 #' @export
-#' @format An \code{\link{R6Class}} generator object
+#' @format A \code{\link{R6Class}} generator object
 RFModel <- R6Class(classname = "RFModel",
                    inherit = CBRBase,
                    public=list(

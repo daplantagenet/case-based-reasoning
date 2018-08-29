@@ -15,7 +15,8 @@ CBRBase <- R6Class("CBRBase",
                        formula <- formula(formula)
                        testthat::expect_is(formula, "formula", "Invalid formula.")
                        self$formula <- formula
-                       self$terms <- attr(terms(formula, data=self$data), which = "term.labels")
+                       self$terms <- attr(terms(formula, data=self$data), 
+                                          which = "term.labels")
                        self$endPoint <- all.vars(formula)[1:2]
                      },
                      fit = function(dtData) {

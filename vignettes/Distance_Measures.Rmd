@@ -31,9 +31,9 @@ $$
 
 But this naive approach arise some problems:
 
-1. This is well defined for numerical features, but what's about categorical features, e.g. gender (male/female). How shall we define the distance here?
+1. This is well defined for numerical features, but what's about categorical features, e.g., gender (male/female). How shall we define the distance here?
 
-2. $|x_i^k - x_j^k|$ is not scale invariant, e.g. if you change from meters to centimetres, the contribution of this feature would explode by a factor of 100. Features with large values will dominate the distance. 
+2. $|x_i^k - x_j^k|$ is not scale invariant, e.g., if you change from meters to centimetres, the contribution of this feature would explode by a factor of 100. Features with large values will dominate the distance. 
 
 3. All features are treated the same way, e.g. lung cancer: smoker (no/yes) seems to be more important than the city the patient is living.
 
@@ -42,7 +42,9 @@ We propose a machine learning approach for overcoming this issues.
 ## Weighted Distance Measure
 
 Two steps have to be done to overcome above problems:
+
 1. Generalize the L1-distance on the feature scale, such that it can deal with different variable types
+
 2. Each feature needs to be weighted suitable 
   a. to rule out dependency on the scale
   b. account for varying importance across features
@@ -54,9 +56,11 @@ $$
 d(x_i, x_j) = \sum\limits_{k=1}^p |\alpha(x_i^k, x_j^k) d(x_i^k, x_j^k)|
 $$
 
+In the next section we will show how to get weights $\alpha(x_i^k, x_j^k)$ from our training data.
+
 # Statistical Model
 
-Let $\alpha(x_i^k, x_j^k)$ the weighting and $d(x_i^k, x_j^k)$ the distance for feature $k$. They are defined as follows:
+Let $\alpha(x_i^k, x_j^k)$ the weights and $d(x_i^k, x_j^k)$ the distance for feature $k$ and observation $i$ and $j$. We will define them as:
 
 If feature $k$ is numerical, then
 
@@ -64,14 +68,11 @@ $$d(x_i^k, x_j^k) = x_i^k - x_j^k$$ and
 
 $$\alpha(x_i^k, x_j^k) = \frac{\hat{\beta_k}}{\sum \hat{\beta_k}}$$
 
-If feature $k$ is categorical, then we define
+If feature $k$ is categorical, then
 
 $$d(x_i^k, x_j^k) = 1 \text{ when } x_i^k = x_j^k \text{ else } 0$$ and
-$$\alpha(x_i^k, x_j^k) = \frac{\hat{\beta_k}^i - \hat{\beta_k}^j}{\sum \hat{\beta_k}}.$$
-Where the $\hat{\beta_k}^k$ are coefficients of a regression model (linear, logistic, or Cox model).
-
-This approach solves all three problems described above. 
-
+$$\alpha(x_i^k, x_j^k) = \frac{\hat{\beta_k}^i - \hat{\beta_k}^j}{\sum \hat{\beta_k}},$$
+where $\hat{\beta_k}^k$ are coefficients of a regression model (linear, logistic, or CPH model).
 
 # Random Survival Forests
 

@@ -2,6 +2,8 @@
 
 export("%>%")
 export(CoxBetaModel)
+export(LinearBetaModel)
+export(LogisticBetaModel)
 export(RFModel)
 export(asDistObject)
 export(depthMatrix)

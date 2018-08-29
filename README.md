@@ -42,7 +42,7 @@ Besides the functionality of searching for similar cases, we added some addition
 
 ### Initialization
 
-In the first example, we use the Cox-Model and the `ovarian` data set from the 
+In the first example, we use theCPH model and the `ovarian` data set from the 
 `survival` package. In the first step, we initialize the R6 data object. 
 
 ```
@@ -60,6 +60,7 @@ coxBeta <- CoxBetaModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps
 ### Similar Cases 
 
 After the initialization, we may want to get for each case in the query data the most similar case from the learning data. 
+
 ```{r}
 n <- nrow(ovarian)
 trainID <- sample(1:n, floor(0.8 * n), F)
