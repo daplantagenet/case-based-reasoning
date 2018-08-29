@@ -2,7 +2,7 @@
 [![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/CaseBasedReasoning?)](https://cran.r-project.org/web/packages/CaseBasedReasoning/)
 [![Build Status](https://travis-ci.org/sipemu/case-based-reasoning.svg?branch=master)](https://travis-ci.org/sipemu/case-based-reasoning)
 
-# Case-Based Reasoning
+# Case Based Reasoning
 
 The R package case-based-reasoning provides an R interface case-based reasoning using machine learning methods.
 
