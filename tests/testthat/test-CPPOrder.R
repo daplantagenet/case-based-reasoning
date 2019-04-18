@@ -3,7 +3,7 @@ testthat::context("Order")
 testthat::test_that("Vector ordering", {
   set.seed((1234))
   x <- sample(1:20, size = 20)
-  xOrder <- orderCPP(x)
+  xOrder <- as.numeric(orderVectorCPP(x, 0))
   yOrder <- order(x)
   testthat::expect_equal(xOrder, yOrder)
 })

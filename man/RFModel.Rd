@@ -5,9 +5,6 @@
 \alias{RFModel}
 \title{RandomForest Proximity}
 \format{An \code{\link{R6Class}} generator object}
-\usage{
-RFModel
-}
 \arguments{
 \item{formula}{: formula for learning the Cox model}
 

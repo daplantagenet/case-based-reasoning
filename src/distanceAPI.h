@@ -4,16 +4,15 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include<RcppArmadillo.h>
 
-#include "distance.cpp"
-#include "parallelFramework.cpp"
+#include "distance/distance.h"
+#include "parallelFrameworks.h"
 
 #include "ranger/rangerForest.h"
 #include "containers/nodeDistContainer.h"
 
-
 /**
- * Distance Calculation
- */
+* Distance Calculation
+*/
 class distanceAPI {
 public:
   distanceAPI() {};
@@ -28,6 +27,47 @@ protected:
   arma::vec output_;
 };
 
+
+/**
+* Weighted Distance Calculation
+*/
+class weightedDistanceAPI : public distanceAPI {
+public:
+  void init(arma::mat& x, arma::rowvec& weights);
+  
+protected:
+  virtual void set_distance(arma::rowvec& weights);
+};
+
+
+/**
+* XY Distance Calculation
+*/
+class xyDistanceAPI : public distanceAPI {
+public:
+  void init(arma::mat& x, arma::mat& y, std::string method = "euclidian", std::size_t p = 2);
+  arma::mat get() {return output_;};
+  
+protected:
+  virtual void calc(arma::mat& x, arma::mat& y);
+  arma::mat output_;
+};
+
+
+/**
+* Weighted XY Distance Calculation
+*/
+class weightedXYDistanceAPI : public xyDistanceAPI {
+public:
+  void init(arma::mat& x, arma::mat& y, arma::rowvec& weights);
+  arma::mat get() {return output_;};
+  
+protected:
+  void calc(arma::mat& x, arma::mat& y);
+  virtual void set_distance(arma::rowvec& weights);
+  
+  arma::mat output_;
+};
 
 
 /**
@@ -58,8 +98,8 @@ protected:
 };
 
 /**
-* RandomForests XY Proximity Matrix
-*/
+ * RandomForests XY Proximity Matrix
+ */
 class rfProximityXYDistanceAPI : public rfProximityDistanceAPI {
 public:
   void init(arma::mat& x, arma::mat& y);
@@ -73,8 +113,8 @@ protected:
 
 
 /**
-* RandomForests Depth Distance Calculation
-*/
+ * RandomForests Depth Distance Calculation
+ */
 class rfDepthDistanceAPI : public distanceAPI {
 public:
   void init(arma::mat& xNodeIDs, arma::umat& terminalNodeIDs);
@@ -86,8 +126,8 @@ protected:
 
 
 /**
-* RandomForests XY Depth Distance Calculation
-*/
+ * RandomForests XY Depth Distance Calculation
+ */
 class rfDepthXYDistanceAPI : public rfDepthDistanceAPI {
 public:
   void init(arma::mat& xNodeIDs, arma::mat& yNodeIDs, arma::umat& terminalNodeIDs);

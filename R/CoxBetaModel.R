@@ -33,9 +33,10 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @keywords Beta
+#' @name CoxBetaModel
+#' @export
 CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                         inherit = CBRBase,
                         public=list(
@@ -100,22 +101,22 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                             names(weights) <- self$terms
                             # get weights
                             for (i in 1:nVars) {
-                              if (is.factor(self$data[[self$terms[i]]])) {
-                                nLev <- nlevels(self$data[[self$terms[i]]])
+                              if (is.factor(dtData[[self$terms[i]]])) {
+                                nLev <- nlevels(dtData[[self$terms[i]]])
                                 weightsTmp <- rep(NA, times = nLev)
-                                names(weightsTmp) <- levels(self$data[[self$terms[i]]])
+                                names(weightsTmp) <- levels(dtData[[self$terms[i]]])
                                 for (j in 1:nLev) {
-                                  myLevel <- paste(self$terms[i], "=", levels(self$data[[self$terms[i]]])[j], sep="")
+                                  myLevel <- paste(self$terms[i], "=", levels(dtData[[self$terms[i]]])[j], sep="")
                                   if (j==1) {
                                     weightsTmp[j] <- 0
                                   } else {
-                                    weightsTmp[j] <- coxFit$coefficients[myLevel]
+                                    weightsTmp[j] <- self$coxFit$coefficients[myLevel]
                                   }
                                 }
                                 weights[[i]] <- weightsTmp
                               } else {  # else numeric
                                 myLevel <- paste(self$terms[i])
-                                weights[[i]] <- coxFit$coefficients[myLevel]
+                                weights[[i]] <- self$coxFit$coefficients[myLevel]
                               }
                             }
                             self$weights <- weights
@@ -201,9 +202,9 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                                                              weights   = self$weights)
                             
                             # calculate distance matrix
-                            self$distMat <- cbr:::wDistance(x       = trData$data, 
-                                                            y       = trData$queryData, 
-                                                            weights = trData$trafoWeights) %>% 
+                            self$distMat <- CaseBasedReasoning:::wDistanceXYCPP(x       = trData$data, 
+                                                                                y       = trData$queryData, 
+                                                                                weights = trData$trafoWeights) %>% 
                               as.matrix()
                           }
                         )

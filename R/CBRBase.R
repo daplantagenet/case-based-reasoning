@@ -36,7 +36,6 @@ CBRBase <- R6Class("CBRBase",
                      },
                      # get similar cases from reference data
                      get_similar_cases = function(dtData, queryData, k = 1, addDistance = T, merge = T) {
-                       
                        # check nCases input
                        testthat::expect_is(k, "numeric")
                        testthat::expect_true(k >= 0, "numeric")
@@ -52,7 +51,8 @@ CBRBase <- R6Class("CBRBase",
                        
                        # calculate distance matrix
                        dtData %>% 
-                         private$get_distance_matrix(queryData = queryData) -> distanceMatrix
+                         as.data.table() %>% 
+                         private$get_distance_matrix(queryData = as.data.table(queryData)) -> distanceMatrix
                        
                        # calculate distance and order of cases based on distance calculation
                        queryData %>% 
@@ -137,10 +137,10 @@ CBRBase <- R6Class("CBRBase",
                      # get similar cases
                      extract_similar_cases=function(dtData, distanceMatrix, k = 1, addDistance = T, merge = T) {
                        n <- nrow(distanceMatrix)
-                       m <- nrow(distanceMatrix)
+                       m <- ncol(distanceMatrix)
                        
                        distanceMatrix %>% 
-                         cbr::orderCPP(as.matrix(self$distMat), k = k) -> orderedMatrix
+                         orderMatrixCPP(sortDirection = 0, k = k) -> orderedMatrix
                        similarCases <- do.call(rbind, apply(orderedMatrix, 1, function(x, data=dtData) {data[x, ]}))
                        
                        # get distances

@@ -13,9 +13,10 @@
 #'  Learning and query datasets need the same structure (variable names and scales)
 #' @docType class
 #' @importFrom R6 R6Class
-#' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @keywords Cox Model
+#' @name RFModel
+#' @export
 RFModel <- R6Class(classname = "RFModel",
                    inherit = CBRBase,
                    public=list(

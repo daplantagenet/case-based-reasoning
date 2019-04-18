@@ -1,8 +1,8 @@
 Package: CaseBasedReasoning
 Type: Package
 Title: Case-Based-Resoning for Survival Data
-Version: 0.1
-Date: 2018-05-07
+Version: 0.1.1
+Date: 2019-04-11
 Author: Dr. Simon Mueller <info@muon-stat.com>, PD Dr. Juergen Dippon <juergen.dippon@mathematik.uni-stuttgart.de>
 Maintainer: Dr. Simon Mueller <info@muon-stat.com>
 Description: Case Based Reasoning for survival data
@@ -26,4 +26,4 @@ LinkingTo: Rcpp, RcppParallel, RcppArmadillo
 SystemRequirements: C++11
 LazyLoad: yes
 ByteCompile: yes
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

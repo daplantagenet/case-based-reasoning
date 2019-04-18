@@ -1,5 +1,36 @@
 #include "distanceAPI.h"
 
+void distanceAPI::init(arma::mat& x, std::string method, std::size_t p) {
+  this->set_distance(method, p);
+  this->calc(x);
+};
+
+void distanceAPI::set_distance(std::string distMethod, std::size_t p) {
+  if (distMethod.compare("euclidian") == 0) {
+    euclidianDistance dist;
+    dist.set_parameters();
+    dist_ = std::make_shared<euclidianDistance>(dist);
+  } else if (distMethod.compare("manhattan") == 0) {
+    manhattanDistance dist;
+    dist.set_parameters();
+    dist_ = std::make_shared<manhattanDistance>(dist);
+  } else if (distMethod.compare("minkowski") == 0) {
+    minkowskiDistance dist;
+    dist.set_parameters(p);
+    dist_ = std::make_shared<minkowskiDistance>(dist);
+  } else if (distMethod.compare("maximum") == 0) {
+    maximumDistance dist;
+    dist.set_parameters();
+    dist_ = std::make_shared<maximumDistance>(dist);
+  } else if (distMethod.compare("cosine") == 0) {
+    // cosineDistance dist;
+    // dist.set_parameters();
+    // dist_ = std::make_shared<cosineDistance>(dist);
+  } else {
+    distance dist;
+    dist_ = std::make_shared<distance>(dist);
+  }
+};
 
 void distanceAPI::calc(arma::mat& x) {
   int nrow = x.n_rows;
@@ -8,9 +39,64 @@ void distanceAPI::calc(arma::mat& x) {
   parallelFor(0, nrow, parallelDistance);
 };
 
+
 /**
- * RandomForests Terminal Node Distance
- */
+* Weighted Distance Calculation
+*/
+void weightedDistanceAPI::init(arma::mat& x, arma::rowvec& weights) {
+  this->set_distance(weights);
+  this->calc(x);
+}
+
+void weightedDistanceAPI::set_distance(arma::rowvec& weights) {
+  weightedDistance dist;
+  dist.set_parameters(weights);
+  dist_ = std::make_shared<weightedDistance>(dist);
+};
+
+
+/**
+* XY Distance Calculation
+*/
+void xyDistanceAPI::init(arma::mat& x, arma::mat& y, std::string method, std::size_t p) {
+  this->set_distance(method, p);
+  this->calc(x, y);
+};
+
+void xyDistanceAPI::calc(arma::mat& x, arma::mat& y) {
+  int nrow = x.n_rows;
+  arma::mat output(nrow, y.n_rows);
+  output_ = output;
+  parallelDistanceNM parallelDistanceNM(x, y, dist_, nrow, output_);
+  parallelFor(0, nrow, parallelDistanceNM);
+};
+
+
+/**
+* Weighted XY Distance Calculation
+*/
+void weightedXYDistanceAPI::init(arma::mat& x, arma::mat& y, arma::rowvec& weights) {
+  this->set_distance(weights);
+  this->calc(x, y);
+}
+
+void weightedXYDistanceAPI::set_distance(arma::rowvec& weights) {
+  weightedDistance dist;
+  dist.set_parameters(weights);
+  dist_ = std::make_shared<weightedDistance>(dist);
+};
+
+void weightedXYDistanceAPI::calc(arma::mat& x, arma::mat& y) {
+  int nrow = x.n_rows;
+  arma::mat output(nrow, y.n_rows);
+  output_= output;
+  parallelDistanceNM parallelDistanceNM(x, y, dist_, nrow, output_);
+  parallelFor(0, nrow, parallelDistanceNM);
+};
+
+/**
+* RandomForests Terminal Node Distance
+*/
 void rfTerminalNodeDistanceAPI::init(arma::umat& nodeIDs) {
   rangerForest rf(nodeIDs);
   output_ = rf.nodeDistance();
@@ -50,8 +136,8 @@ void rfProximityXYDistanceAPI::calc(arma::mat& x, arma::mat& y) {
 
 
 /**
- * RandomForests Depth Distance
- */
+* RandomForests Depth Distance
+*/
 void rfDepthDistanceAPI::init(arma::mat& xNodeIDs, arma::umat& terminalNodeIDs) {
   // calculate terminal node edge length
   rangerForest rf(terminalNodeIDs);

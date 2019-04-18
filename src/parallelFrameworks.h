@@ -5,9 +5,9 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
-#include "distance.cpp"
+#include "distance/distance.h"
 
-#include <memory> 
+#include <memory>
 
 typedef tbb::concurrent_unordered_map<std::pair<int, int>, double> tbbUPMap;
 typedef tbb::concurrent_unordered_map<int, double> tbbUMap;
