@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Initialization 
 
-In the first example, we use the Cox-Model and the `ovarian` data set from the 
+In the first example, we use the RandomForest based model and the `ovarian` data set from the 
 `survival` package. In the first step we initialize the R6 data object. 
 
 ```{r, warning=FALSE, message=FALSE}
@@ -32,7 +32,7 @@ ovarian$rx <- factor(ovarian$rx)
 ovarian$ecog.ps <- factor(ovarian$ecog.ps)
 
 # initialize R6 object
-coxBeta <- CoxBetaModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps)
+rfModel <- RFModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps)
 ```
 All cases with missing values in the learning and end point variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. `character` variables will be transformed to `factor`.
 
@@ -46,10 +46,10 @@ testID <- (1:n)[-trainID]
 
 # fit model 
 ovarian[trainID, ] %>% 
-  coxBeta$fit()
+  rfModel$fit()
 # get similar cases
 ovarian[trainID, ] %>%
-  coxBeta$get_similar_cases(queryData = ovarian[testID, ], k = 3) -> matchedData
+  rfModel$get_similar_cases(queryData = ovarian[testID, ], k = 3) -> matchedData
 knitr::kable(head(matchedData))
 ```
 You may extract then the similar cases and the verum data and put them together:
