@@ -27,5 +27,5 @@ generate_grid <- function(t2e, grid_length = 250) {
     purrr::reduce(c) -> grid_error
   
   list(grid_error = grid_error,
-       new_t2e   = new_grid)
+       new_t2e    = new_grid)
 }
