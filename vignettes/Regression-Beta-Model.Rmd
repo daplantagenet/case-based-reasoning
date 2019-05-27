@@ -1,37 +1,46 @@
 ---
-title: "Case Based Reasoning: Regression-Beta-Models"
+title: "Regression-Beta-Models"
 author: "Dr. Simon Müller"
 date: "`r Sys.Date()`"
 output:
-  html_document:
-    toc: true
-    toc_float: true
-    theme: readable
-    highlight: tango
+  html_vignette:
     css: kable.css
+    number_sections: yes
+    toc: yes
 vignette: >
-  %\VignetteIndexEntry{Case Based Reasoning: Regression-Beta-Models}
+  %\VignetteIndexEntry{Regression-Beta-Models}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidyquant)
+library(survival)
+library(CaseBasedReasoning)
+
+theme_set(theme_tq(base_size = 12))
 ```
 
-## Motivation
+# Motivation
 
-This section shows how to apply linear, logistic, and CPH regression for case based reasoning. 
+This section shows how to apply CPH regression for case based reasoning. The linear and logistic regression model can be applied similarly by initializing the model as follows:
 
-## CPH Model 
+```{r LinearBetaModel}
+# lmModel <- LinearBetaModel$new(y ~ x1 + x2 + x3)
+```
+
+```{r LogisticBetaModel}
+# logisticModel <- LogisticBetaModel$new(y ~ x1 + x2 + x3)
+```
+
+# Cox Proportional Hazard Model 
 
 In the first example, we use theCPH model and the `ovarian` data set from the 
 `survival` package. In the first step, we initialize the R6 data object. 
 
-```{r, warning=FALSE, message=FALSE}
-library(tidyverse)
-library(survival)
-library(CaseBasedReasoning)
+```{r initialization, warning=FALSE, message=FALSE}
 ovarian$resid.ds <- factor(ovarian$resid.ds)
 ovarian$rx <- factor(ovarian$rx)
 ovarian$ecog.ps <- factor(ovarian$ecog.ps)
@@ -41,11 +50,14 @@ coxBeta <- CoxBetaModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps
 ```
 All cases with missing values in the learning and endpoint variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. `character` variables will be transformed to `factor`.
 
+
+# Case Based Reasoning 
+
 ## Search for Similar Cases 
 
 After the initialization, we may want to get for each case in the query data the most similar case from the training data. 
 
-```{r}
+```{r similarity}
 n <- nrow(ovarian)
 trainID <- sample(1:n, floor(0.8 * n), F)
 testID <- (1:n)[-trainID]
@@ -71,27 +83,28 @@ You may extract then the similar cases and the verum data and put them together:
 4. `group`: Grouping matched or query data
 
 
-### Distance Matrix
-
-Alternatively, you may be interested in the distance matrix:
-
-```{r}
-ovarian %>%
-  coxBeta$calc_distance_matrix() -> distMatrix
-```
-`coxBeta$calc_distance_matrix()` calculates the distance matrix between train and test data, when test data is omitted, the distances between observations in the test data is calculated. Rows are observations in train and columns observations of test.
-The distance matrix is saved internally in the `CoxBetaModel` object: `coxBeta$distMat`.
-
-## Check Proportional Hazard Assumption:
+## Check Proportional Hazard Assumption
 
 Finally, the Cox proportional hazard assumption can/should be checked for model
 validity.
 
-```{r, warning=FALSE, message=FALSE}
-pp <- coxBeta$check_ph()
-pp
+```{r proportional hazard, warning=FALSE, message=FALSE, fig.width=8, fig.height=8}
+coxBeta$check_ph()
 ```
 
-### Validation of the matching Variables
+## Validation of the matching Variables
 
 **TBD**
+
+# Distance Matrix Calculation
+
+Alternatively, you may be interested in the distance matrix:
+
+```{r distance_matrix, fig.width=8, fig.height=8}
+ovarian %>%
+  coxBeta$calc_distance_matrix() -> distMatrix
+
+heatmap(distMatrix)
+```
+`coxBeta$calc_distance_matrix()` calculates the distance matrix between train and test data, when test data is omitted, the distances between observations in the test data is calculated. Rows are observations in train and columns observations of test.
+The distance matrix is saved internally in the `CoxBetaModel` object: `coxBeta$distMat`.
