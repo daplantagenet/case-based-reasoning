@@ -44,7 +44,7 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                               g <- ggplot2::ggplot(df, aes(x=x, y=y)) +
                                 ggplot2::geom_hline(yintercept=0, colour="grey") +
                                 ggplot2::geom_point() +
-                                ggplot2::geom_smooth(color="#2773ae", fill="#2773ae") +
+                                ggplot2::geom_smooth(color="#18BC9C", fill="#18BC9C") +
                                 ggplot2::ylab(paste0("Beta(t) of ", self$terms[i])) +
                                 ggplot2::xlab("Time to Event") +
                                 cowplot::background_grid(major="xy", minor="xy")

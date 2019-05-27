@@ -40,7 +40,6 @@ RegressionModel <- R6Class(classname = "RegressionModel",
                             cat(paste0("Initial variable set: ", paste(c(self$endPoint, self$terms), collapse = ", "), "\n"))
                             cat(paste0("Selected variable set: ", paste(vars$names.kept, collapse = ", "), "\n"))
                             selected_vars <- c(self$endPoint, self$terms)
-                            # self$formula <- as.formula(paste0("Surv(", vars[1], ", ", vars[2], "~", paste(vars$names.kept, collapse = "+")))
                             
                             # end timing
                             options(datadist=NULL)
@@ -59,7 +58,6 @@ RegressionModel <- R6Class(classname = "RegressionModel",
                             # Timing
                             start <- Sys.time()
                             cat("Start learning...\n")
-                            #  datadist scoping
                             #  datadist scoping
                             regression_data <<- rms::datadist(dtData)
                             options(datadist="regression_data")

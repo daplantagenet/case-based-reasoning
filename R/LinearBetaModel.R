@@ -24,9 +24,8 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @export
 #' @format A \code{\link{R6Class}} generator object
-#' 
+#' @export
 LinearBetaModel <- R6Class(classname = "LinearBetaModel",
                              inherit = RegressionModel,
                              public=list(
