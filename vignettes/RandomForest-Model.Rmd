@@ -1,5 +1,5 @@
 ---
-title: "Case Based Reasoning: RandomForest-Model"
+title: "RandomForest-Model"
 author: "Dr. Simon Müller"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,7 @@ output:
     number_sections: yes
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Case Based Reasoning: RandomForest-Model}
+  %\VignetteIndexEntry{RandomForest-Model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
