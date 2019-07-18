@@ -21,7 +21,7 @@ public:
 class weightedDistance : public distance {
 public:
   virtual double calc_distance(const arma::subview_row<double>& x, const arma::subview_row<double>& y) const {
-    return std::abs(arma::sum(weights_ % (x - y)));
+    return arma::sum(arma::abs(weights_ % (x - y)));
   };
   
   void set_parameters(arma::rowvec& weights) {
