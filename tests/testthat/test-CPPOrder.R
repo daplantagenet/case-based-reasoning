@@ -15,7 +15,7 @@ testthat::test_that("Vector ordering", {
 testthat::test_that("Matrix ordering", {
   set.seed((1234))
   x <- matrix(rnorm(100), 10)
-  xOrder <- cpp_orderMatrix(x)
+  xOrder <- cpp_orderMatrix(x, sortDirection = 0, k = 10)
   yOrder <- do.call(cbind, lapply(1:nrow(x), function(col) {order(x[, col])}))
   testthat::expect_equal(xOrder, yOrder)
 })

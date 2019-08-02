@@ -41,7 +41,6 @@ CBRBase <- R6Class("CBRBase",
                        # check nCases input
 =======
                      get_similar_cases = function(dtData, queryData, k = 1, addDistance = T, merge = T) { 
-                       
                        # check nCases input 
 >>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
                        testthat::expect_is(k, "numeric")
