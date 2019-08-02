@@ -7,7 +7,8 @@
 
 # C++ .o or .dll files
 src/*.o
-SONAR.dll
+src/*.so
+src/*.dll
 
 # Example code in package build process
 *-Ex.R

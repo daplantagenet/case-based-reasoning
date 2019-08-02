@@ -1,41 +1,20 @@
-#' Cox-Beta Model for Case-Based-Reasoning
-#'
-#' Regression beta coefficients obtained from a CPH regression model fitted on the 
-#' training data are used for building a weighted distance measure between
-#' train and test data. Afterwards, we will use these weights for calculating a 
-#' (n x m)-distance matrix, where n is the number of observations in the training data, 
-#' and m is the number of observations of the test data. The user can use this 
-#' distance matrix for further cluster analysis or for extracting for each test observation 
-#' k (= 1,...,l) similar cases from the train data. We use the rms-package for model fitting,
-#' variable selection, and checking model assumptions.
-#' If the user omits the test data, this functions returns a n x n-distance matrix.
-#'
-#' @section Usage:
-#' For usage details see \bold{Methods, Arguments, and Examples} sections.
+#' Root class for Regression Models, e.g., CPH, logistic, and linear regression
 #' 
-#' @section Methods:
-#' \describe{
-#'   \item{\code{new(formula, ...)}}{This method is used to create an
-#'   object of this class \code{CoxBetaModel}. Formula for analysis has to be 
-#'   provided.}
-#'   \item{\code{fit(dtData)}}{Fits the CPH model.}
-#'   \item{...}{See \link{CBRBase} class.}
-#'   }
-#'
-#' @docType class
-#' @importFrom R6 R6Class
-<<<<<<< HEAD
-#' @format An \code{\link{R6Class}} generator object
-#' @keywords Beta
-#' @name CoxBetaModel
-#' @export
-CoxBetaModel <- R6Class(classname = "CoxBetaModel",
+#' @keywords data-preparation
+RegressionModel <- R6Class(classname = "RegressionModel",
                         inherit = CBRBase,
                         public=list(
-                          weights    = NULL,
-                          coxFit     = NULL,
-                          cph        = NULL,
-                          modelValid = NULL,
+                          weights     = NULL,
+                          model       = '',
+                          model_param = list(x = T, y = T),
+                          model_fit   = NULL,
+                          print = function() {
+                            cat("Case-Based-Reasoning based Regression Beta Coefficients\n")
+                            cat("---------------------------------------\n")
+                            cat("Endpoints : ", paste(self$endPoint, collapse = ", "))
+                            cat("Variables : ", paste(self$terms, collapse = ", "))
+                            cat("Trained   : ", ifelse(is.null(self$weights), FALSE, TRUE))
+                          },
                           # fast backward variable selection with penalization
                           variable_selection = function(dtData) {
                             dtData %>%
@@ -46,27 +25,30 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                             start <- Sys.time()
                             cat("Start learning...\n")
                             #  datadist scoping
-                            on.exit(detach("design.options"))
-                            attach(list(), name="design.options")
-                            assign('cbrCoxModel_data', rms::datadist(dtData), pos='design.options')
-                            options(datadist="cbrCoxModel_data")
+                            regression_data <<- rms::datadist(dtData)
+                            options(datadist="regression_data")
                             
-                            # Cox Regression
-                            dtData %>% 
-                              rms::cph(formula = self$formula, data = ., x = TRUE, y = TRUE, surv = T) -> self$coxFit
+                            # train regression model
+                            func <- get(self$model, envir = as.environment('package:rms'))
+                            params <- self$model_param
+                            params$data <- dtData
+                            params$formula <- self$formula
+                            self$model_fit <- pryr::do_call(func, params)
                             
                             # Variable Selection
-                            vars <- rms::fastbw(fit = coxFit, type = "i")
+                            vars <- rms::fastbw(fit = self$model_fit, type = "i")
                             cat(paste0("Initial variable set: ", paste(c(self$endPoint, self$terms), collapse = ", "), "\n"))
                             cat(paste0("Selected variable set: ", paste(vars$names.kept, collapse = ", "), "\n"))
-                            vars <- c(self$endPoint, self$terms)
-                            self$formula <- as.formula(paste0("Surv(", vars[1], ", ", vars[2], "~", paste(vars$names.kept, collapse = "+")))
+                            selected_vars <- c(self$endPoint, self$terms)
+                            # self$formula <- as.formula(paste0("Surv(", vars[1], ", ", vars[2], "~", paste(vars$names.kept, collapse = "+")))
                             
                             # end timing
                             options(datadist=NULL)
                             end <- Sys.time()
                             duration <- round(as.numeric(end - start), 2)
                             cat(paste0("Learning finished in: ", duration, " seconds.\n"))
+                            
+                            selected_vars
                           },
                           # fit model
                           fit = function(dtData) {
@@ -78,19 +60,21 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                             start <- Sys.time()
                             cat("Start learning...\n")
                             #  datadist scoping
-                            on.exit(detach("design.options"))
-                            attach(list(), name="design.options")
-                            assign('cbrCoxModel_data', rms::datadist(dtData), pos='design.options')
-                            options(datadist="cbrCoxModel_data")
+                            #  datadist scoping
+                            regression_data <<- rms::datadist(dtData)
+                            options(datadist="regression_data")
                             
-                            # Cox Regression
-                            dtData %>% 
-                              rms::cph(formula = self$formula, data = ., x = TRUE, y = TRUE, surv = T) -> self$coxFit
-                            self$cph <- survival::cox.zph(self$coxFit, "rank")
+                            # train regression model
+                            func <- get(self$model, envir = as.environment('package:rms'))
+                            params <- self$model_param
+                            params$data <- dtData
+                            params$formula <- self$formula
+                            self$model_fit <- pryr::do_call(func, params)
                             
                             nVars <- length(self$terms) 
                             weights <- vector("list", nVars)
                             names(weights) <- self$terms
+                            
                             # get weights
                             for (i in 1:nVars) {
                               if (is.factor(dtData[[self$terms[i]]])) {
@@ -117,39 +101,7 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                             end <- Sys.time()
                             duration <- round(as.numeric(end - start), 2)
                             cat(paste0("Learning finished in: ", duration, " seconds.\n"))
-                          },
-=======
-#' @export
-#' @format A \code{\link{R6Class}} generator object
-#' 
-CoxBetaModel <- R6Class(classname = "CoxBetaModel",
-                        inherit = CBRBase,
-                        public=list(
-                          model       = 'cph',
-                          model_param = list(x = T, y = T, surv = T),
->>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
-                          # check proportional hazard
-                          check_ph=function() {
-                            # learn if weights are empty
-                            testthat::expect_is(self$weights, "list", info = "Model not trained")
-                            n <- length(self$terms)
-                            ggPlot <- list()
-                            zph <- survival::cox.zph(self$model_fit, "rank")
-                            for (i in 1:n) {
-                              df <- data.frame(x=zph$x, y=zph$y[, i])
-                              g <- ggplot2::ggplot(df, aes(x=x, y=y)) +
-                                ggplot2::geom_hline(yintercept=0, colour="grey") +
-                                ggplot2::geom_point() +
-                                ggplot2::geom_smooth(color="#2773ae", fill="#2773ae") +
-                                ggplot2::ylab(paste0("Beta(t) of ", self$terms[i])) +
-                                ggplot2::xlab("Time to Event") +
-                                cowplot::background_grid(major="xy", minor="xy")
-                              ggPlot <- c(ggPlot, list(g))
-                            }
-                            return(cowplot::plot_grid(plotlist = ggPlot,
-                                                      ncol     = 2))
                           }
-<<<<<<< HEAD
                         ),
                         private = list(
                           # check weights on NA
@@ -164,15 +116,15 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                           # transform_data:
                           # we transform all factors to their corresponding
                           # weights and set weight equal to 1 for factor variables
-                          transform_data = function(queryData, data, learnVars, weights) {
+                          transform_data = function(queryData, dtData, learnVars, weights) {
                             nVars <- length(learnVars)
                             trafoWeights <- rep(0, nVars)
                             for (j in 1:nVars) {
-                              if (is.factor(data[[learnVars[j]]])) {
+                              if (is.factor(dtData[[learnVars[j]]])) {
                                 if (!is.null(queryData)) {
                                   queryData[[learnVars[j]]] <- weights[[learnVars[j]]][queryData[[learnVars[j]]]]
                                 }
-                                data[[learnVars[j]]] <- weights[[learnVars[j]]][data[[learnVars[j]]]]
+                                dtData[[learnVars[j]]] <- weights[[learnVars[j]]][dtData[[learnVars[j]]]]
                                 trafoWeights[j] <- 1
                               } else { # else keep weights
                                 trafoWeights[j] <- weights[[learnVars[j]]]
@@ -186,32 +138,35 @@ CoxBetaModel <- R6Class(classname = "CoxBetaModel",
                               queryData <- unname(as.matrix(queryData[, learnVars, with=F]))
                             }
                             return(list(queryData    = queryData,
-                                        data         = unname(as.matrix(data[, learnVars, with=F])),
+                                        data         = unname(as.matrix(dtData[, learnVars, with=F])),
                                         trafoWeights = trafoWeights))
                           },
                           # calculate weighted absolute distance 
                           get_distance_matrix=function(dtData, queryData = NULL) {
+                            if (is(dtData, "data.table")) {
+                              dtData <- data.table::copy(dtData)
+                            } else {
+                              dtData <- data.table::copy(data.table::as.data.table(dtData))
+                            }
                             # learn if weights are empty
                             testthat::expect_is(self$weights, "list", info = "Model not trained")
                             testthat::expect_false(private$check_weights(), info = "NA values in regression beta coefficients!")
                             
-                            if (!is.null(self$queryData)) {
-                              queryData <- data.table::copy(queryData)
+                            if (is.null(queryData)) {
+                              queryData <- data.table::copy(dtData)
                             } 
                             
                             # transform for weighted distance calculations
-                            trData <- private$transform_data(queryData = queryData, 
-                                                             data      = data.table::copy(dtData), 
+                            trData <- private$transform_data(queryData = queryData,  
+                                                             dtData    = dtData, 
                                                              learnVars = self$terms, 
                                                              weights   = self$weights)
                             
                             # calculate distance matrix
-                            self$distMat <- CaseBasedReasoning:::wDistanceXYCPP(x       = trData$data, 
-                                                                                y       = trData$queryData, 
-                                                                                weights = trData$trafoWeights) %>% 
+                            self$distMat <- weightedDistance(x       = trData$data, 
+                                                             y       = trData$queryData, 
+                                                             weights = trData$trafoWeights) %>% 
                               as.matrix()
                           }
-=======
->>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
                         )
 )

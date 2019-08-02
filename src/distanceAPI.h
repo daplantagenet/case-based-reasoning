@@ -16,11 +16,11 @@
 class distanceAPI {
 public:
   distanceAPI() {};
-  void init(arma::mat& x, std::string method = "euclidian", std::size_t p = 2);
+  void init(arma::mat& x);
   arma::vec get() {return output_;};
   
 protected:
-  void set_distance(std::string distMethod = "euclidian", std::size_t p = 2);
+  void set_distance();
   void calc(arma::mat& x);
   
   std::shared_ptr<distance> dist_;
@@ -29,6 +29,7 @@ protected:
 
 
 /**
+<<<<<<< HEAD
 * Weighted Distance Calculation
 */
 class weightedDistanceAPI : public distanceAPI {
@@ -37,10 +38,24 @@ public:
   
 protected:
   virtual void set_distance(arma::rowvec& weights);
+=======
+ * XY Distance Calculation
+ */
+class xyDistanceAPI : public distanceAPI {
+public:
+  void init(arma::mat& x, arma::mat& y);
+  arma::mat get() {return output_;};
+  
+protected:
+  virtual void calc(arma::mat& x, arma::mat& y);
+  
+  arma::mat output_;
+>>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
 };
 
 
 /**
+<<<<<<< HEAD
 * XY Distance Calculation
 */
 class xyDistanceAPI : public distanceAPI {
@@ -51,10 +66,21 @@ public:
 protected:
   virtual void calc(arma::mat& x, arma::mat& y);
   arma::mat output_;
+=======
+ * Weighted Distance Calculation
+ */
+class weightedDistanceAPI : public distanceAPI {
+public:
+  void init(arma::mat& x, arma::rowvec& weights);
+  
+protected:
+  virtual void set_distance(arma::rowvec& weights);
+>>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
 };
 
 
 /**
+<<<<<<< HEAD
 * Weighted XY Distance Calculation
 */
 class weightedXYDistanceAPI : public xyDistanceAPI {
@@ -67,12 +93,22 @@ protected:
   virtual void set_distance(arma::rowvec& weights);
   
   arma::mat output_;
+=======
+ * Weighted XY Distance Calculation
+ */
+class weightedXYDistanceAPI : public xyDistanceAPI {
+public:
+  void init(arma::mat& x, arma::mat& y, arma::rowvec& weights);
+protected:
+  void calc(arma::mat& x, arma::mat& y);
+  virtual void set_distance(arma::rowvec& weights);
+>>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
 };
 
 
 /**
-* RandomForests Terminal Node Distance
-*/
+ * RandomForests Terminal Node Distance
+ */
 class rfTerminalNodeDistanceAPI : public distanceAPI {
 public:
   void init(arma::umat& nodeIDs);
@@ -81,14 +117,14 @@ public:
 protected:
   void set_distance() {};
   void calc() {};
-  
+
   RfDistContainer output_;
 };
 
 
 /**
-* RandomForests Proximity Matrix
-*/
+ * RandomForests Proximity Matrix
+ */
 class rfProximityDistanceAPI : public distanceAPI {
 public:
   void init(arma::mat& x);

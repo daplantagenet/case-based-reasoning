@@ -52,4 +52,5 @@ Validate <- R6Class("Validate",
                         }
                         return()
                       }
-                    ))
+                    )
+)

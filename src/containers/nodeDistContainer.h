@@ -54,32 +54,32 @@ public:
   };
   
   Rcpp::DataFrame asDataFrame() const {
-    Rcpp::NumericVector x, y, dist, null;
-    Rcpp::CharacterVector namevec;
-    Rcpp::List lists(ntrees_ + 2);
-    
-    std::vector<double> v(ntrees_, -1);
-    std::vector<std::vector <double> > dists(ntrees_);
-    namevec.push_back("x");
-    namevec.push_back("y");
-    
-    std::string namestem = "tree_";
-    for(auto it1 = this->container_.begin(); it1 != this->container_.end(); ++it1) {
-      x.push_back(it1->first.first);
-      y.push_back(it1->first.second);
-      for (std::size_t n=0;n<ntrees_;++n) {
-        dists[n].push_back(it1->second[n]);
+      Rcpp::NumericVector x, y, dist, null;
+      Rcpp::CharacterVector namevec;
+      Rcpp::List lists(ntrees_ + 2);
+
+      std::vector<double> v(ntrees_, -1);
+      std::vector<std::vector <double> > dists(ntrees_);
+      namevec.push_back("x");
+      namevec.push_back("y");
+
+      std::string namestem = "tree_";
+      for(auto it1 = this->container_.begin(); it1 != this->container_.end(); ++it1) {
+        x.push_back(it1->first.first);
+        y.push_back(it1->first.second);
+        for (std::size_t n=0;n<ntrees_;++n) {
+          dists[n].push_back(it1->second[n]);
+        }
       }
-    }
-    lists[0] = x;
-    lists[1] = y;
-    for (std::size_t k=0;k<ntrees_;++k) {
-      namevec.push_back(namestem + std::to_string(k + 1));
-      lists[k + 2] = dists[k];
-    }
-    lists.attr("names") = namevec;
-    Rcpp::DataFrame df(lists);
-    return df;
+      lists[0] = x;
+      lists[1] = y;
+      for (std::size_t k=0;k<ntrees_;++k) {
+        namevec.push_back(namestem + std::to_string(k + 1));
+        lists[k + 2] = dists[k];
+      }
+      lists.attr("names") = namevec;
+      Rcpp::DataFrame df(lists);
+      return df;
   }
   
   void setDataFrame(Rcpp::DataFrame df) {
@@ -92,3 +92,4 @@ private:
 };
 
 #endif
+

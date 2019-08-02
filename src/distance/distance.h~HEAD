@@ -31,6 +31,65 @@ private:
   arma::rowvec weights_;
 };
 
+// euclidian distance
+class euclidianDistance : public distance {
+public:
+  virtual double calc_distance(const arma::subview_row<double>& x, const arma::subview_row<double>& y) const {
+    return std::sqrt(arma::sum(arma::square((x - y))));
+  };
+  
+  void set_parameters() {
+  };
+};
+
+// minkowski distance
+class minkowskiDistance : public distance {
+public:
+  virtual double calc_distance(const arma::subview_row<double>& x, const arma::subview_row<double>& y) const {
+    return std::pow(arma::sum(arma::abs(arma::pow(x - y, p_))), 1. / p_);
+  };
+  
+  void set_parameters(std::size_t p) {
+    p_ = p;
+  };
+private:
+  std::size_t p_;
+};
+
+// manhattan distance
+class manhattanDistance : public distance {
+public:
+  virtual double calc_distance(const arma::subview_row<double>& x, const arma::subview_row<double>& y) const {
+    return arma::sum(arma::abs(x - y));
+  };
+  void set_parameters() {
+  };
+};
+
+// maximum distance
+class maximumDistance : public distance {
+public:
+  virtual double calc_distance(const arma::subview_row<double>& x, const arma::subview_row<double>& y) const {
+    return arma::max(arma::abs(x - y));
+  };
+  void set_parameters() {};
+};
+
+
+// cosine distance
+// class cosineDistance : public distance {
+// public:
+//   virtual double calc_distance(const arma::subview_row<double>& x, const arma::subview_row<double>& y) const {
+//     double denom = std::sqrt(arma::sum(arma::square(x))) * std::sqrt(arma::sum(arma::square(y)));
+//     if (denom == 0)
+//       return 0.0;
+//     else
+//       return arma::dot(x, y) / denom;
+//   };
+//   void set_parameters() {};
+// };
+
+
 // random forest proximity
 class rangerProximity : public distance {
 public:
