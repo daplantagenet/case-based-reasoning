@@ -11,8 +11,8 @@
 #include "containers/nodeDistContainer.h"
 
 /**
- * Distance Calculation
- */
+* Distance Calculation
+*/
 class distanceAPI {
 public:
   distanceAPI() {};
@@ -29,6 +29,16 @@ protected:
 
 
 /**
+<<<<<<< HEAD
+* Weighted Distance Calculation
+*/
+class weightedDistanceAPI : public distanceAPI {
+public:
+  void init(arma::mat& x, arma::rowvec& weights);
+  
+protected:
+  virtual void set_distance(arma::rowvec& weights);
+=======
  * XY Distance Calculation
  */
 class xyDistanceAPI : public distanceAPI {
@@ -40,10 +50,23 @@ protected:
   virtual void calc(arma::mat& x, arma::mat& y);
   
   arma::mat output_;
+>>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
 };
 
 
 /**
+<<<<<<< HEAD
+* XY Distance Calculation
+*/
+class xyDistanceAPI : public distanceAPI {
+public:
+  void init(arma::mat& x, arma::mat& y, std::string method = "euclidian", std::size_t p = 2);
+  arma::mat get() {return output_;};
+  
+protected:
+  virtual void calc(arma::mat& x, arma::mat& y);
+  arma::mat output_;
+=======
  * Weighted Distance Calculation
  */
 class weightedDistanceAPI : public distanceAPI {
@@ -52,10 +75,25 @@ public:
   
 protected:
   virtual void set_distance(arma::rowvec& weights);
+>>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
 };
 
 
 /**
+<<<<<<< HEAD
+* Weighted XY Distance Calculation
+*/
+class weightedXYDistanceAPI : public xyDistanceAPI {
+public:
+  void init(arma::mat& x, arma::mat& y, arma::rowvec& weights);
+  arma::mat get() {return output_;};
+  
+protected:
+  void calc(arma::mat& x, arma::mat& y);
+  virtual void set_distance(arma::rowvec& weights);
+  
+  arma::mat output_;
+=======
  * Weighted XY Distance Calculation
  */
 class weightedXYDistanceAPI : public xyDistanceAPI {
@@ -64,6 +102,7 @@ public:
 protected:
   void calc(arma::mat& x, arma::mat& y);
   virtual void set_distance(arma::rowvec& weights);
+>>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
 };
 
 

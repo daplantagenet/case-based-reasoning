@@ -4,9 +4,21 @@
 \name{RFModel}
 \alias{RFModel}
 \title{RandomForest Proximity}
+<<<<<<< HEAD
+\format{An \code{\link{R6Class}} generator object}
+\arguments{
+\item{formula}{: formula for learning the Cox model}
+
+\item{data}{: the dataset for learning the model}
+
+\item{queryData}{(optional) : Query data set. For each case in the query data,
+we are looking for the k (=1,…,l) similar cases in the learning data.
+Learning and query datasets need the same structure (variable names and scales)}
+=======
 \format{\code{\link[R6]{R6Class}} object}
 \usage{
 RFModel
+>>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
 }
 \description{
 This class uses the proximity matrix of the random survival forest algorithm 

@@ -28,8 +28,15 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
+<<<<<<< HEAD
+#' @format An \code{\link{R6Class}} generator object
+#' @keywords Cox Model
+#' @name RFModel
+#' @export
+=======
 #' @export
 #' @format A \code{\link{R6Class}} generator object
+>>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
 RFModel <- R6Class(classname = "RFModel",
                    inherit = CBRBase,
                    public=list(
