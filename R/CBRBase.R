@@ -36,13 +36,8 @@ CBRBase <- R6Class("CBRBase",
                        distanceMatrix
                      },
                      # get similar cases from reference data
-<<<<<<< HEAD
-                     get_similar_cases = function(dtData, queryData, k = 1, addDistance = T, merge = T) {
-                       # check nCases input
-=======
                      get_similar_cases = function(dtData, queryData, k = 1, addDistance = T, merge = T) { 
                        # check nCases input 
->>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
                        testthat::expect_is(k, "numeric")
                        testthat::expect_true(k >= 0, "numeric")
                        # catch floating numbers
@@ -149,24 +144,14 @@ CBRBase <- R6Class("CBRBase",
                        # model specific
                      },
                      # get similar cases
-<<<<<<< HEAD
-                     extract_similar_cases=function(dtData, distanceMatrix, k = 1, addDistance = T, merge = T) {
-                       n <- nrow(distanceMatrix)
-=======
                      extract_similar_cases=function(dtData, queryData, distanceMatrix, k = 1, addDistance = T, merge = T) {
->>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
                        m <- ncol(distanceMatrix)
                        
                        # get closest elements
                        distanceMatrix %>% 
-<<<<<<< HEAD
-                         orderMatrixCPP(sortDirection = 0, k = k) -> orderedMatrix
-                       similarCases <- do.call(rbind, apply(orderedMatrix, 1, function(x, data=dtData) {data[x, ]}))
-=======
                          as.matrix() %>% 
                          cpp_orderMatrix(sortDirection = 0,
                                          k             = k) -> orderedMatrix
->>>>>>> 87ba9a42a639891864e0592dbe1166751248c06d
                        
                        colID <- 1:ncol(orderedMatrix)
                        orderedMatrix %>% 
