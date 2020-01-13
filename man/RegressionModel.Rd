@@ -4,7 +4,7 @@
 \name{RegressionModel}
 \alias{RegressionModel}
 \title{Root class for Regression Models, e.g., CPH, logistic, and linear regression}
-\format{An object of class \code{R6ClassGenerator} of length 24.}
+\format{An object of class \code{R6ClassGenerator} of length 25.}
 \usage{
 RegressionModel
 }

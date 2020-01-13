@@ -58,7 +58,7 @@ protected:
 /**
  * Weighted XY Distance Calculation
  */
-class weightedXYDistanceAPI : public xyDistanceAPI {
+class weightedXYDistanceAPI : public distanceAPI {
 public:
   void init(arma::mat& x, arma::mat& y, arma::rowvec& weights);
 protected:

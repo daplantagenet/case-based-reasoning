@@ -22,7 +22,7 @@ Rcpp::List weighted_knn(arma::mat x,
     for (std::size_t j=0;j <nVars;++j) {
       tmpDist = tmpDist + abs(weights(j) * (x.col(j) - query(i, j)));
     }
-    order = arma::sort_index(tmpDist, sortDirection);
+    order = arma::sort_index(tmpDist, "ascend");
     for (std::size_t l=0; l<k;++l) {
       retDist(i, l) = tmpDist(order(l));
       retOrder(i, l) = order(l) + 1;

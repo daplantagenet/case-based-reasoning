@@ -4,7 +4,7 @@
 \name{CBRBase}
 \alias{CBRBase}
 \title{Root class for common functionality of this package}
-\format{An object of class \code{R6ClassGenerator} of length 24.}
+\format{An object of class \code{R6ClassGenerator} of length 25.}
 \usage{
 CBRBase
 }
