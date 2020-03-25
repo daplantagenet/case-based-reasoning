@@ -3,7 +3,8 @@ testthat::context("Proximity & Depth Distance")
 testthat::test_that("Terminal Nodes", {
   set.seed((1234))
   rf <- ranger::ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-  tn1 <- terminalNodes(iris[, -5], rf)
+  # we use different indices in our calculations
+  tn1 <- terminalNodes(iris[, -5], rf) - 1
   tn2 <- predict(rf, iris[, -5], type = "terminalNodes")
   testthat::expect_equal(tn1, tn2$predictions)
 })
