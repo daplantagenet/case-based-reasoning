@@ -147,17 +147,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_weighted_knn
-Rcpp::List cpp_weighted_knn(arma::mat x, arma::mat query, arma::vec weights, const char sortDirection, const std::size_t k);
-RcppExport SEXP _CaseBasedReasoning_cpp_weighted_knn(SEXP xSEXP, SEXP querySEXP, SEXP weightsSEXP, SEXP sortDirectionSEXP, SEXP kSEXP) {
+Rcpp::List cpp_weighted_knn(arma::mat x, arma::mat query, arma::vec weights, const std::size_t k);
+RcppExport SEXP _CaseBasedReasoning_cpp_weighted_knn(SEXP xSEXP, SEXP querySEXP, SEXP weightsSEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type query(querySEXP);
     Rcpp::traits::input_parameter< arma::vec >::type weights(weightsSEXP);
-    Rcpp::traits::input_parameter< const char >::type sortDirection(sortDirectionSEXP);
     Rcpp::traits::input_parameter< const std::size_t >::type k(kSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_weighted_knn(x, query, weights, sortDirection, k));
+    rcpp_result_gen = Rcpp::wrap(cpp_weighted_knn(x, query, weights, k));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -174,7 +173,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CaseBasedReasoning_cpp_orderMatrix", (DL_FUNC) &_CaseBasedReasoning_cpp_orderMatrix, 3},
     {"_CaseBasedReasoning_cpp_orderVector", (DL_FUNC) &_CaseBasedReasoning_cpp_orderVector, 3},
     {"_CaseBasedReasoning_cpp_terminalNodeID", (DL_FUNC) &_CaseBasedReasoning_cpp_terminalNodeID, 5},
-    {"_CaseBasedReasoning_cpp_weighted_knn", (DL_FUNC) &_CaseBasedReasoning_cpp_weighted_knn, 5},
+    {"_CaseBasedReasoning_cpp_weighted_knn", (DL_FUNC) &_CaseBasedReasoning_cpp_weighted_knn, 4},
     {NULL, NULL, 0}
 };
 

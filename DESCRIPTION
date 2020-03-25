@@ -18,6 +18,7 @@ Depends:
     ggplot2,
     cowplot,
     dplyr,
+    purrr,
     data.table,
     magrittr,
     rms,
