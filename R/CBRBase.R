@@ -28,6 +28,7 @@ CBRBase <- R6Class("CBRBase",
                        self$formula <- formula
                        self$terms <- labels(terms(formula, data=data))
                        self$endPoint <- setdiff(all.vars(formula), '.')
+                       self$endPoint <- setdiff(self$endPoint, self$terms )
                      },
                      #' @description 
                      #' Fit the Model
@@ -44,8 +45,7 @@ CBRBase <- R6Class("CBRBase",
                      calc_distance_matrix = function(x, query = NULL) {
                        # get distance matrix
                        x %>% 
-                         private$get_distance_matrix(x = ., query = query) -> distanceMatrix
-                       end <- Sys.time()
+                         private$get_distance_matrix(query = query) -> distanceMatrix
                        distanceMatrix
                      },
                      #' @description 
@@ -119,9 +119,9 @@ CBRBase <- R6Class("CBRBase",
                        return(x)
                      },
                      drop_missing = function(x, isLearning=F) {
-                       dtData <- x %>% 
+                       x <- x %>% 
                          dplyr::select(c(self$endPoint, self$terms))
-                       rs <- rowSums(is.na(dtData))
+                       rs <- rowSums(is.na(x))
                        idDrop <- which(rs > 0)
                        cat(paste0("Dropped cases with missing values: ", length(idDrop), "\n"))
                        if (length(idDrop) > 0)
@@ -149,10 +149,8 @@ CBRBase <- R6Class("CBRBase",
                          return(x)
                        
                        for (i in 1:ncol(x)) {
-                         if (is(x, "data.table")) {
+                         if (!is.numeric(x[[i]])) {
                            x[[i]] <- as.numeric(as.factor(x[[i]]))
-                         } else {
-                           x[, i] <- as.numeric(as.factor(x[, i]))
                          }
                        }
                        return(x)
