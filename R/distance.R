@@ -10,7 +10,7 @@
 #' observations in x vs y (if not null)
 #' 
 #' @examples
-#' \donotrun{
+#' \dontrun{
 #' library(ranger)
 #' # proximity pairwise distances
 #' rf.fit <- ranger(Species ~ ., data = iris, num.trees = 500, write.forest = TRUE)
@@ -38,10 +38,12 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", th
   
   # Distance calculation
   if (method == "Proximity") {
-    proximity_distance(x = x, y = y, rfObject = rfObject)
+    rf_dist <- proximity_distance(x = x, y = y, rfObject = rfObject)
   } else if (method == "Depth") {
-    depth_distance(x = x, y = y, rfObject = rfObject)
+    rf_dist <- depth_distance(x = x, y = y, rfObject = rfObject)
+    rf_dist <- rf_dist / rf_fit$num.trees
   }
+  rf_dist
 }
 
 
@@ -56,7 +58,7 @@ distanceRandomForest <- function(x, y = NULL, rfObject, method = "Proximity", th
 #' observations in x vs y (if not null)
 #'      
 #' @examples
-#' \donotrun{
+#' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 #' proximity_distance(x = iris[, -5], rfObject = rf)
@@ -102,9 +104,11 @@ proximity_distance <- function(x, y = NULL, rfObject, as_dist=T) {
 #' @param rfObject \code{ranger} object
 #' 
 #' @examples
+#' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 #' depth_distance(x=iris[, -5], rfObject=rf)
+#' }
 #' 
 #' @export
 depth_distance <- function(x, y=NULL, rfObject) {
@@ -139,9 +143,11 @@ depth_distance <- function(x, y=NULL, rfObject) {
 #' @return a \code{matrix} object with pairwise terminal node edge length
 #'    
 #' @examples
+#' \dontrun{
 #' require(ranger)
 #' rf.fit <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 #' edges_between_terminal_nodes(rf.fit)
+#' }
 #' 
 #' @export
 edges_between_terminal_nodes <- function(rfObject) {
@@ -163,9 +169,11 @@ edges_between_terminal_nodes <- function(rfObject) {
 #' @return a \code{dist} or \code{matrix} object
 #' 
 #' @examples
+#' \dontrun{
 #' require(ranger)
 #' rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
 #' terminalNodes(iris[, -5], rf)
+#' }
 #' 
 #' @export
 weightedDistance <- function(x, y=NULL, weights=NULL) {

@@ -13,7 +13,7 @@
 #' @export
 CoxBetaModel <- R6Class(
   classname = "CoxBetaModel",
-  inherit   = CBRBase,
+  inherit   = RegressionModel,
   public    = list(
     #' @field model the statistical model
     model        = 'cph',

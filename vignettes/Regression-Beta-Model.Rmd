@@ -15,17 +15,12 @@ vignette: >
 
 ```{r setup, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(tidyquant)
-library(survival)
 library(CaseBasedReasoning)
-
-theme_set(theme_tq(base_size = 12))
 ```
 
 # Motivation
 
-This section shows how to apply CPH regression for case based reasoning. The linear and logistic regression model can be applied similarly by initializing the model as follows:
+This section shows how to apply CPH regression for case-based-reasoning. The linear and logistic regression model can be applied similarly by initializing the model as follows:
 
 ```{r LinearBetaModel}
 # lmModel <- LinearBetaModel$new(y ~ x1 + x2 + x3)
@@ -37,7 +32,7 @@ This section shows how to apply CPH regression for case based reasoning. The lin
 
 # Cox Proportional Hazard Model 
 
-In the first example, we use theCPH model and the `ovarian` data set from the 
+In the first example, we use the CPH model and the `ovarian` data set from the 
 `survival` package. In the first step, we initialize the R6 data object. 
 
 ```{r initialization, warning=FALSE, message=FALSE}
@@ -46,9 +41,9 @@ ovarian$rx <- factor(ovarian$rx)
 ovarian$ecog.ps <- factor(ovarian$ecog.ps)
 
 # initialize R6 object
-coxBeta <- CoxBetaModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps)
+coxBeta <- CoxBetaModel$new(Surv(futime, fustat) ~ age + resid.ds + rx + ecog.ps, ovarian)
 ```
-All cases with missing values in the learning and endpoint variables are dropped (`na.omit`) and the reduced data set without missing values is saved internally. You get a text output on how many cases were dropped. `character` variables will be transformed to `factor`.
+All cases with missing values in the learning and endpoint variables are dropped (`na.omit`), aand the reduced data set without missing values is saved internally. One get a text output on how many cases were dropped. `character` variables will be transformed to `factor`.
 
 
 # Case Based Reasoning 
@@ -67,7 +62,7 @@ ovarian[trainID, ] %>%
   coxBeta$fit()
 # get similar cases
 ovarian[trainID, ] %>%
-  coxBeta$get_similar_cases(queryData = ovarian[testID, ], k = 3) -> matchedData
+  coxBeta$get_similar_cases(query = ovarian[testID, ], k = 3) -> matchedData
 knitr::kable(head(matchedData))
 ```
 
