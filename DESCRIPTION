@@ -36,4 +36,5 @@ SystemRequirements: C++11
 LazyLoad: yes
 ByteCompile: yes
 VignetteBuilder: knitr
+Encoding: UTF-8
 RoxygenNote: 7.1.0
