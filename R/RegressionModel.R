@@ -25,7 +25,7 @@ RegressionModel <- R6Class(
     #' @param x Training data of class data.frame
     variable_selection = function(x) {
       x %>%
-        dplyr::select_(.dots = c(self$endPoint, self$terms)) -> x
+        dplyr::select(c(self$endPoint, self$terms)) -> x
       x <- private$check_data(x)
       
       # Timing
@@ -62,12 +62,9 @@ RegressionModel <- R6Class(
     #' @param x Training data of class data.frame
     fit = function(x) {
       x %>%
-        dplyr::select_(.dots = c(self$endPoint, self$terms)) -> x
+        dplyr::select(c(self$endPoint, self$terms)) -> x
       x <- private$check_data(x)
       
-      # Timing
-      start <- Sys.time()
-      cat("Start learning...\n")
       #  datadist scoping
       regression_data <<- rms::datadist(x)
       options(datadist="regression_data")
@@ -104,11 +101,7 @@ RegressionModel <- R6Class(
         }
       }
       self$weights <- weights
-      # end timing
       options(datadist=NULL)
-      end <- Sys.time()
-      duration <- round(as.numeric(end - start), 2)
-      cat(paste0("Learning finished in: ", duration, " seconds.\n"))
     }
   ),
   private = list(

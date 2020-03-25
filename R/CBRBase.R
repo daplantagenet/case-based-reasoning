@@ -42,15 +42,10 @@ CBRBase <- R6Class("CBRBase",
                      #' @param x Training data of class data.frame
                      #' @param query Query data of class data.frame
                      calc_distance_matrix = function(x, query = NULL) {
-                       # Start calculation
-                       start <- Sys.time()
-                       cat("Start calculating distance matrix...\n")
                        # get distance matrix
                        x %>% 
                          private$get_distance_matrix(x = ., query = query) -> distanceMatrix
                        end <- Sys.time()
-                       duration <- round(as.numeric(end - start), 2)
-                       cat(paste0("Distance matrix calculation finished in: ", duration, " seconds.\n"))
                        distanceMatrix
                      },
                      #' @description 
@@ -125,7 +120,7 @@ CBRBase <- R6Class("CBRBase",
                      },
                      drop_missing = function(x, isLearning=F) {
                        dtData <- x %>% 
-                         dplyr::select_(.dots = c(self$endPoint, self$terms))
+                         dplyr::select(c(self$endPoint, self$terms))
                        rs <- rowSums(is.na(dtData))
                        idDrop <- which(rs > 0)
                        cat(paste0("Dropped cases with missing values: ", length(idDrop), "\n"))
@@ -206,7 +201,7 @@ CBRBase <- R6Class("CBRBase",
                        matchedData$scCaseId <- rep(1:nrow(query), each = k)
                        matchedData$group <- "Matched"
                        query %>% 
-                         dplyr::select_(.dots = names(matchedData)) -> query
+                         dplyr::select(names(matchedData)) -> query
                        rbind(query, matchedData) %>% 
                          dplyr::arrange(scCaseId)
                      }

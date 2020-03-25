@@ -35,6 +35,7 @@ RFModel <- R6Class(
     #' Initialize a RandomForest object for searching similar cases.
     #'
     #' @param formula Object of class formula or character describing the model fit.
+    #' @param data Training data of class data.frame
     #' @param ... ranger RandomForest arguments 
     initialize = function(formula, data, ...) {
       super$initialize(formula, data)
@@ -48,12 +49,8 @@ RFModel <- R6Class(
     #' @param x Training data of class data.frame
     fit = function(x) {
       x %>%
-        dplyr::select_(.dots = c(self$endPoint, self$terms)) -> x
+        dplyr::select(c(self$endPoint, self$terms)) -> x
       x <- private$check_data(x)
-      
-      # Timing
-      start <- Sys.time()
-      cat("Start learning...\n")
       
       # Parameters
       # train regression model
@@ -62,9 +59,6 @@ RFModel <- R6Class(
       params$data <- x
       params$formula <- self$formula
       self$model_fit <- pryr::do_call(func, params)
-      end <- Sys.time()
-      duration <- round(as.numeric(end - start), 2)
-      cat(paste0("Random Forest for Survival calculation finished in: ", duration, " seconds.\n"))
     },
     #' @description 
     #' Set the distance method. Available are Proximity and Depth

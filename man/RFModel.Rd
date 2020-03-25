@@ -75,6 +75,8 @@ Initialize a RandomForest object for searching similar cases.
 \describe{
 \item{\code{formula}}{Object of class formula or character describing the model fit.}
 
+\item{\code{data}}{Training data of class data.frame}
+
 \item{\code{...}}{ranger RandomForest arguments}
 }
 \if{html}{\out{</div>}}
