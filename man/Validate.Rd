@@ -4,11 +4,46 @@
 \name{Validate}
 \alias{Validate}
 \title{R6 Validation Class for case based reasoning}
-\format{An \code{\link{R6Class}} generator object}
-\usage{
-Validate
+\format{
+An \code{\link{R6Class}} generator object
 }
 \description{
 R6 Validation Class for case based reasoning
+
+R6 Validation Class for case based reasoning
 }
 \keyword{validation}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-validate}{\code{Validate$validate()}}
+\item \href{#method-clone}{\code{Validate$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-validate"></a>}}
+\if{latex}{\out{\hypertarget{method-validate}{}}}
+\subsection{Method \code{validate()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Validate$validate(queryData, similarCases, learnVars, plots = FALSE)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Validate$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
+}

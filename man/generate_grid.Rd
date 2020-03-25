@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate_grid.R
 \name{generate_grid}
 \alias{generate_grid}
-\title{Generarte Grid}
+\title{Generate Grid}
 \usage{
 generate_grid(t2e, grid_length = 250)
 }

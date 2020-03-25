@@ -84,12 +84,26 @@ void rfProximityDistanceAPI::init(arma::mat& x) {
   this->calc(x);
 }
 
+void rfProximityDistanceAPI::set_distance(arma::mat& x) {
+  rangerProximity dist;
+  dist.set_parameters(x.n_cols);
+  dist_ = std::make_shared<rangerProximity>(dist);
+}
+
 /**
  * RandomForests XY Proximity Matrix
  */
 void rfProximityXYDistanceAPI::init(arma::mat& x, arma::mat& y) {
   this->set_distance(x);
   this->calc(x, y);
+};
+
+void rfProximityXYDistanceAPI::calc(arma::mat& x, arma::mat& y) {
+  int nrow = x.n_rows;
+  arma::mat output(nrow, y.n_rows);
+  output_ = output;
+  parallelDistanceNM parallelDistanceNM(x, y, dist_, nrow, output_);
+  parallelFor(0, nrow, parallelDistanceNM);
 };
 
 /**

@@ -3,8 +3,4 @@
 \docType{package}
 \name{CaseBasedReasoning}
 \alias{CaseBasedReasoning}
-\alias{CaseBasedReasoning-package}
 \title{Case Based Reasoning}
-\description{
-Case Based Reasoning
-}

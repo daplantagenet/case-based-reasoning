@@ -10,47 +10,36 @@
 #' variable selection, and checking model assumptions.
 #' If the user omits the test data, this functions returns a n x n-distance matrix.
 #'
-#' @section Usage:
-#' For usage details see \bold{Methods, Arguments, and Examples} sections.
-#' 
-#' @section Methods:
-#' \describe{
-#'   \item{\code{new(formula, ...)}}{This method is used to create an
-#'   object of this class \code{CoxBetaModel}. Formula for analysis has to be 
-#'   provided.}
-#'   \item{\code{fit(dtData)}}{Fits the CPH model.}
-#'   \item{...}{See \link{CBRBase} class.}
-#'   }
-#'
-#' @docType class
-#' @importFrom R6 R6Class
 #' @export
-#' @format A \code{\link{R6Class}} generator object
-CoxBetaModel <- R6Class(classname = "CoxBetaModel",
-                        inherit = CBRBase,
-                        public=list(
-                          model       = 'cph',
-                          model_param = list(x = T, y = T, surv = T),
-                          # check proportional hazard
-                          check_ph=function() {
-                            # learn if weights are empty
-                            testthat::expect_is(self$weights, "list", info = "Model not trained")
-                            n <- length(self$terms)
-                            ggPlot <- list()
-                            zph <- survival::cox.zph(self$model_fit, "rank")
-                            for (i in 1:n) {
-                              df <- data.frame(x=zph$x, y=zph$y[, i])
-                              g <- ggplot2::ggplot(df, aes(x=x, y=y)) +
-                                ggplot2::geom_hline(yintercept=0, colour="grey") +
-                                ggplot2::geom_point() +
-                                ggplot2::geom_smooth(color="#18BC9C", fill="#18BC9C") +
-                                ggplot2::ylab(paste0("Beta(t) of ", self$terms[i])) +
-                                ggplot2::xlab("Time to Event") +
-                                cowplot::background_grid(major="xy", minor="xy")
-                              ggPlot <- c(ggPlot, list(g))
-                            }
-                            return(cowplot::plot_grid(plotlist = ggPlot,
-                                                      ncol     = 2))
-                          }
-                        )
+CoxBetaModel <- R6Class(
+  classname = "CoxBetaModel",
+  inherit   = CBRBase,
+  public    = list(
+    #' @field model the statistical model
+    model        = 'cph',
+    #' @field model_params rms arguments
+    model_params = list(x = T, y = T, surv = T),
+    #' @description 
+    #' Check proportional hazard assumption graphically
+    check_ph=function() {
+      # learn if weights are empty
+      testthat::expect_is(self$weights, "list", info = "The model is not trained.")
+      n <- length(self$terms)
+      ggPlot <- list()
+      zph <- survival::cox.zph(self$model_fit, "rank")
+      for (i in 1:n) {
+        df <- data.frame(x=zph$x, y=zph$y[, i])
+        g <- ggplot2::ggplot(df, aes(x=x, y=y)) +
+          ggplot2::geom_hline(yintercept=0, colour="grey") +
+          ggplot2::geom_point() +
+          ggplot2::geom_smooth(color="#18BC9C", fill="#18BC9C") +
+          ggplot2::ylab(paste0("Beta(t) of ", self$terms[i])) +
+          ggplot2::xlab("Time to Event") +
+          cowplot::background_grid(major="xy", minor="xy")
+        ggPlot <- c(ggPlot, list(g))
+      }
+      return(cowplot::plot_grid(plotlist = ggPlot,
+                                ncol     = 2))
+    }
+  )
 )

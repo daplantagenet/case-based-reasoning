@@ -22,6 +22,6 @@ Weighted Distance calculation
 \examples{
 require(ranger)
 rf <- ranger(Species ~ ., data = iris, num.trees = 5, write.forest = TRUE)
-terminalNodeIDs(iris[, -5], rf)
+terminalNodes(iris[, -5], rf)
 
 }

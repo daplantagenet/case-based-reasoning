@@ -1,4 +1,4 @@
-#' Generarte Grid
+#' Generate Grid
 #' 
 #' Generates a uniform grid over the distribution of the time2event variable, 
 #' calculates closest point and returns this point for each input time2event 
