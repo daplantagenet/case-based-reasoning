@@ -1,4 +1,4 @@
-testthat::context("Proximity & Depth Distance")
+testthat::context("Distance")
 
 testthat::test_that("Terminal Nodes", {
   set.seed((1234))
@@ -52,4 +52,9 @@ testthat::test_that("Perfect Separation Test", {
   # Depth
   d <- distanceRandomForest(x = df[, -1], rfObject = rf_fit, method = 'Depth')
   testthat::expect_equal(sum(diag(table(cutree(hclust(d), k=3), df$class))), 300, info = 'Depth Distance')
+})
+
+
+testthat::test_that("Perfect Separation Test", {
+  
 })
