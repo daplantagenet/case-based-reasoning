@@ -67,6 +67,11 @@ CBRBase <- R6Class("CBRBase",
                          x <- data.table::as.data.table(x)
                        }
                        
+                       if (any(self$endPoint %in% names(x))) {
+                         x %>% 
+                           dplyr::select(self$terms) -> x
+                       }
+                       
                        if (missing(query)) {
                          cat("No query data.\n") 
                          query <- data.table::copy(x)
@@ -74,13 +79,14 @@ CBRBase <- R6Class("CBRBase",
                          query <- data.table::as.data.table(query)
                        }
                        
-                       start <- Sys.time()
-                       cat("Start caclulating similar cases...\n")
+                       if (any(self$endPoint %in% names(query))) {
+                         query %>% 
+                           dplyr::select(self$terms) -> query
+                       }
                        
                        # calculate distance matrix
                        x %>% 
-                         as.data.table() %>% 
-                         private$get_distance_matrix(query = as.data.table(query)) -> distanceMatrix
+                         private$get_distance_matrix(query = query) -> distanceMatrix
                        
                        # calculate distance and order of cases based on distance calculation
                        x %>% 
@@ -89,10 +95,6 @@ CBRBase <- R6Class("CBRBase",
                                                        k              = k, 
                                                        addDistance    = addDistance, 
                                                        merge          = merge) -> df_sc
-                       end <- Sys.time()
-                       duration <- round(as.numeric(end - start), 2)
-                       cat(paste0("Similar cases calculation finished in: ", duration, " seconds.\n"))
-                       
                        df_sc
                      }
                    ),

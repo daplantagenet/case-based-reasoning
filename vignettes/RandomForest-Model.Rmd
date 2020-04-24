@@ -22,7 +22,6 @@ In the first example, we use the RandomForest based model and the `ovarian` data
 `survival` package. In the first step we initialize the R6 data object. 
 
 ```{r, warning=FALSE, message=FALSE}
-library(tidyverse)
 library(survival)
 library(CaseBasedReasoning)
 ovarian$resid.ds <- factor(ovarian$resid.ds)
